@@ -90,11 +90,7 @@ class ParticleSystem {
   collisionHandler(e) {
     for (let p of e.pairs) {
       console.log(p);
-      if (
-        (p.bodyA.particle || {}).substance != "water" ||
-        (p.bodyA.particle || {}).substance != "water"
-      )
-        continue;
+
       // console.log(p)
       // debugger
       // console.log(p.bodyA, p.bodyB)
@@ -329,64 +325,6 @@ class ParticleSystem {
     return isColliding;
   }
 
-  createCompo(w, h) {
-    let arr = [];
-    let diam = this.config.wood.diameter;
-    let gap = diam - 2;
-    for (
-      let x = 100;
-      x < 100 + w * 2 * diam;
-      x += this.config.wood.diameter + gap
-    ) {
-      for (
-        let y = 100;
-        y < 100 + h * 2 * diam;
-        y += this.config.wood.diameter + gap
-      ) {
-        // class Particle {
-        //   constructor(
-        //     x,
-        //     y,
-        //     substance,
-        //     temperature,
-        //     particleSystem,
-        //     energyContained,
-        //     isStatic,
-        //     doNotAddBodyToWorld
-        //   ) {
-        const p = new Particle(x, y, "wood", 20, this, null, false, true);
-        p.isPartOfABody = true;
-        this.particles.push(p);
-        arr.push(p.body);
-      }
-    } //for
-    //create the body that contains all the particles:
-    let newBody = this.Matter.Body.create({
-      parts: arr,
-      isStatic: false,
-      mass: 0,
-      friction: 0.2,
-      // frictionAir: 0,
-      restitution: 0,
-      render: { visible: true },
-    });
-
-    this.compoundBodies.push(newBody);
-
-    this.world.add(this.engine.world, [newBody]);
-  }
-
-  removeEmptyCompoundBodies() {
-    for (let cb of this.compoundBodies) {
-      if (cb.parts.length == 1 && cb.parts[0] == cb) {
-        //remove the compound body from the world
-        this.world.remove(this.engine.world, cb);
-        //remove it from the array
-        this.compoundBodies = this.compoundBodies.filter((k) => k != cb);
-      }
-    }
-  }
-
   createStick(w, h) {
     let arr = [];
     let diam = this.config.wood.diameter;
@@ -401,9 +339,7 @@ class ParticleSystem {
         y < 100 + h * 2 * diam;
         y += this.config.wood.diameter + gap
       ) {
-        arr.push(
-          this.addParticle(x, y, "wood", 20, undefined, false, this.gooBuilding)
-        );
+        arr.push(this.addParticle(x, y));
       }
     } //for
     this.addAutomaticConnections(arr);
@@ -597,25 +533,20 @@ class ParticleSystem {
     this.world.add(this.engine.world, [ground, leftWall, rightWall]);
   }
 
-  addParticle(x, y, substance, temperature, energy, isStatic, doGooBuilding) {
+  addParticle(x, y) {
     // let substance = "wood";
     /// IT CAN BE WOOD GAS ;)
 
-    const particle = new Particle(
+    const particle = new Particle({
       x,
       y,
-      substance,
-      Math.floor(temperature),
-      this,
-      energy,
-      isStatic
-    );
+
+      diameter: 20,
+      particleSystem: this,
+    });
     particle.particles = this.particles;
     this.particles.push(particle);
 
-    if (doGooBuilding) {
-      this.addAutomaticConnections([particle]);
-    }
     return particle;
   }
 
@@ -644,20 +575,20 @@ class ParticleSystem {
     }
   }
 
-  calculateAverageTemperature(subst) {
-    // Calculate the average temperature of all particles
-    let chosenPArticles;
-    if (subst) {
-      chosenPArticles = this.particles.filter((k) => k.substance == subst);
-    } else {
-      chosenPArticles = this.particles;
-    }
-    let totalTemperature = 0;
-    for (const particle of chosenPArticles) {
-      totalTemperature += particle.temperature;
-    }
-    return totalTemperature / chosenPArticles.length;
-  }
+  // calculateAverageTemperature(subst) {
+  //   // Calculate the average temperature of all particles
+  //   let chosenPArticles;
+  //   if (subst) {
+  //     chosenPArticles = this.particles.filter((k) => k.substance == subst);
+  //   } else {
+  //     chosenPArticles = this.particles;
+  //   }
+  //   let totalTemperature = 0;
+  //   for (const particle of chosenPArticles) {
+  //     totalTemperature += particle.temperature;
+  //   }
+  //   return totalTemperature / chosenPArticles.length;
+  // }
 
   //   render() {
   //     // Clear the canvas
@@ -718,122 +649,122 @@ class ParticleSystem {
     if (which.length > 0) return which[0];
   }
 
-  addAutomaticConnections(arr, doNotCareAboutGooBuilding) {
-    // console.log("#add automatic", numberOfAutomaticConnections, arr)
-    // if (numberOfAutomaticConnections == undefined) numberOfAutomaticConnections = 3
+  // addAutomaticConnections(arr, doNotCareAboutGooBuilding) {
+  //   // console.log("#add automatic", numberOfAutomaticConnections, arr)
+  //   // if (numberOfAutomaticConnections == undefined) numberOfAutomaticConnections = 3
 
-    let howManyConnectionsWeMadeNow = 0;
+  //   let howManyConnectionsWeMadeNow = 0;
 
-    arr = arr ? arr : this.particles.filter((k) => k.substance == "wood");
-    for (let i = 0; i < arr.length; i++) {
-      //EACH BODY
+  //   arr = arr ? arr : this.particles.filter((k) => k.substance == "wood");
+  //   for (let i = 0; i < arr.length; i++) {
+  //     //EACH BODY
 
-      if (arr[i].substance == "woodGas") continue;
+  //     if (arr[i].substance == "woodGas") continue;
 
-      let maxDistanceDependingOnGooModeOrNot =
-        this.config[arr[i].substance].maxDistanceToAttach *
-        (doNotCareAboutGooBuilding && this.gooBuilding ? 2 : 1);
+  //     let maxDistanceDependingOnGooModeOrNot =
+  //       this.config[arr[i].substance].maxDistanceToAttach *
+  //       (doNotCareAboutGooBuilding && this.gooBuilding ? 2 : 1);
 
-      let b = arr[i].body;
-      let closestP = this.getParticlesAndTheirDistance(
-        b.position.x,
-        b.position.y,
-        arr[i].substance
-      );
+  //     let b = arr[i].body;
+  //     let closestP = this.getParticlesAndTheirDistance(
+  //       b.position.x,
+  //       b.position.y,
+  //       arr[i].substance
+  //     );
 
-      //ONLY CLOSE PARTICLES, MADE OF THE SAME SUBSTANCE
-      closestP = (closestP || []).filter(
-        (k) =>
-          k.distance < maxDistanceDependingOnGooModeOrNot &&
-          k.body.particle.substance == arr[i].substance
-      );
+  //     //ONLY CLOSE PARTICLES, MADE OF THE SAME SUBSTANCE
+  //     closestP = (closestP || []).filter(
+  //       (k) =>
+  //         k.distance < maxDistanceDependingOnGooModeOrNot &&
+  //         k.body.particle.substance == arr[i].substance
+  //     );
 
-      //GET THE CLOSEST BODIES
-      for (let i = 0; i < closestP.length; i++) {
-        // if (counterOfConstraints >= numberOfAutomaticConnections) break
-        let closeParticle = closestP[i];
+  //     //GET THE CLOSEST BODIES
+  //     for (let i = 0; i < closestP.length; i++) {
+  //       // if (counterOfConstraints >= numberOfAutomaticConnections) break
+  //       let closeParticle = closestP[i];
 
-        let closePArticleSubstance = closeParticle.body.particle.substance;
+  //       let closePArticleSubstance = closeParticle.body.particle.substance;
 
-        if (!closeParticle) continue;
-        if (closeParticle.body == b) continue;
-        if (closeParticle.distance == 0) continue;
-        if (
-          this.findOutIfThereIsAlreadyAConstraintWithTheseTwoBodies(
-            closeParticle.body,
-            b
-          )
-        ) {
-          continue;
-        }
-        //CHECK HOW MANY CONSTRAINTS IT ALREADY HAS
-        //I KEEP TRACK OF THIS MYSELF IN EACH BODY
-        if (
-          (b.constraints || []).length >=
-            this.config[closePArticleSubstance].maxNumberOfConnectionsPerBody ||
-          (closeParticle.constraints || []).length >=
-            this.config[closePArticleSubstance].maxNumberOfConnectionsPerBody
-        ) {
-          break;
-        }
+  //       if (!closeParticle) continue;
+  //       if (closeParticle.body == b) continue;
+  //       if (closeParticle.distance == 0) continue;
+  //       if (
+  //         this.findOutIfThereIsAlreadyAConstraintWithTheseTwoBodies(
+  //           closeParticle.body,
+  //           b
+  //         )
+  //       ) {
+  //         continue;
+  //       }
+  //       //CHECK HOW MANY CONSTRAINTS IT ALREADY HAS
+  //       //I KEEP TRACK OF THIS MYSELF IN EACH BODY
+  //       if (
+  //         (b.constraints || []).length >=
+  //           this.config[closePArticleSubstance].maxNumberOfConnectionsPerBody ||
+  //         (closeParticle.constraints || []).length >=
+  //           this.config[closePArticleSubstance].maxNumberOfConnectionsPerBody
+  //       ) {
+  //         break;
+  //       }
 
-        // alert(1)
+  //       // alert(1)
 
-        let newConstraint = this.Matter.Constraint.create({
-          pointA: { x: 0, y: 0 },
-          pointB: { x: 0, y: 0 },
-          // length:
+  //       let newConstraint = this.Matter.Constraint.create({
+  //         pointA: { x: 0, y: 0 },
+  //         pointB: { x: 0, y: 0 },
+  //         // length:
 
-          angularStiffness: 0.9,
-          stiffness: 1,
-          damping: 0,
-          render: {
-            visible: false,
-            anchors: false,
-            // strokeStyle: "rgba(255,255,255,0.3)",
-            // lineWidth: 1,
-            strokeStyle:
-              closePArticleSubstance == "wood"
-                ? makeRGBA(getRandomBrownishColor(0.1, 0.22))
-                : "rgba(255,255,255,0.5)",
-            lineWidth:
-              closePArticleSubstance == "wood"
-                ? this.config[closePArticleSubstance].diameter * 3
-                : 1,
-          },
-          bodyA: closeParticle.body,
-          bodyB: b,
-        });
-        //ADD CONSTRAINT TO THE WORLD
-        this.world.add(this.engine.world, [newConstraint]);
+  //         angularStiffness: 0.9,
+  //         stiffness: 1,
+  //         damping: 0,
+  //         render: {
+  //           visible: false,
+  //           anchors: false,
+  //           // strokeStyle: "rgba(255,255,255,0.3)",
+  //           // lineWidth: 1,
+  //           strokeStyle:
+  //             closePArticleSubstance == "wood"
+  //               ? makeRGBA(getRandomBrownishColor(0.1, 0.22))
+  //               : "rgba(255,255,255,0.5)",
+  //           lineWidth:
+  //             closePArticleSubstance == "wood"
+  //               ? this.config[closePArticleSubstance].diameter * 3
+  //               : 1,
+  //         },
+  //         bodyA: closeParticle.body,
+  //         bodyB: b,
+  //       });
+  //       //ADD CONSTRAINT TO THE WORLD
+  //       this.world.add(this.engine.world, [newConstraint]);
 
-        //ADD CONSTRAINT TO BOTH BODIES, TO KEEP TRACK OF THEM
-        if (!Array.isArray(b.constraints)) b.constraints = [];
-        b.constraints.push(newConstraint);
+  //       //ADD CONSTRAINT TO BOTH BODIES, TO KEEP TRACK OF THEM
+  //       if (!Array.isArray(b.constraints)) b.constraints = [];
+  //       b.constraints.push(newConstraint);
 
-        if (!Array.isArray(closeParticle.body.constraints))
-          closeParticle.body.constraints = [];
-        closeParticle.body.constraints.push(newConstraint);
+  //       if (!Array.isArray(closeParticle.body.constraints))
+  //         closeParticle.body.constraints = [];
+  //       closeParticle.body.constraints.push(newConstraint);
 
-        howManyConnectionsWeMadeNow++;
-      } //for
-    } //for
+  //       howManyConnectionsWeMadeNow++;
+  //     } //for
+  //   } //for
 
-    console.log("#we added ", howManyConnectionsWeMadeNow, " contraints");
-  }
+  //   console.log("#we added ", howManyConnectionsWeMadeNow, " contraints");
+  // }
 
-  toggleGooBuilding() {
-    this.gooBuilding = !this.gooBuilding;
-    this.showAlert(this.gooBuilding ? "goo mode enabled" : "goo mode disabled");
-  }
+  // toggleGooBuilding() {
+  //   this.gooBuilding = !this.gooBuilding;
+  //   this.showAlert(this.gooBuilding ? "goo mode enabled" : "goo mode disabled");
+  // }
 
-  toggleViewConstraints() {
-    for (let c of this.engine.world.constraints) {
-      c.render.visible = !this.constraintsVisible;
-    }
-    this.constraintsVisible = !this.constraintsVisible;
-    this.showAlert(
-      this.constraintsVisible ? "constraints visible" : "constraints hidden"
-    );
-  }
+  // toggleViewConstraints() {
+  //   for (let c of this.engine.world.constraints) {
+  //     c.render.visible = !this.constraintsVisible;
+  //   }
+  //   this.constraintsVisible = !this.constraintsVisible;
+  //   this.showAlert(
+  //     this.constraintsVisible ? "constraints visible" : "constraints hidden"
+  //   );
+  // }
 }

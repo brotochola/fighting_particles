@@ -1,158 +1,49 @@
 // https://codepen.io/davepvm/pen/Hhstl
 // Particle class representing each molecule
 class Particle {
-  constructor(
-    x,
-    y,
-    substance,
-    temperature,
-    particleSystem,
-    energyContained,
-    isStatic,
-    doNotAddBodyToWorld
-  ) {
-    this.isStatic = isStatic;
+  constructor(opt) {
+    const { x, y, particleSystem } = opt;
+
     this.particleSystem = particleSystem;
     this.Matter = particleSystem.Matter;
     this.engine = particleSystem.engine;
 
-    this.diameter = particleSystem.config[substance].diameter;
-    this.maxNumberOfConnectionsPerBody =
-      particleSystem.config[substance].maxNumberOfConnectionsPerBody;
-    this.maxDistanceToAttach =
-      particleSystem.config[substance].maxDistanceToAttach;
+    this.diameter = 10;
 
     this.world = particleSystem.world;
 
     this.pos = new p5.Vector(x, y);
     this.vel = new p5.Vector(0, 0);
-    this.substance = substance || "wood"; // substance of the particle
 
-    let defaultColors = {
-      wood: {
-        fillStyle: getRandomBrownishColor(0.66, 1),
-        strokeStyle: getRandomBrownishColor(0.3, 0.7),
-      },
-      woodGas: {
-        fillStyle: "none",
-        strokeStyle: "none",
-      },
-      water: {
-        fillStyle: "blue",
-        strokeStyle: "none",
-      },
+    this.defaultColor = {
+      fillStyle: getRandomBrownishColor(0.66, 1),
+      strokeStyle: getRandomBrownishColor(0.3, 0.7),
     };
 
-    this.defaultColor = defaultColors[this.substance];
-
-    this.createBody(doNotAddBodyToWorld);
-    if (this.substance != "woodGas") this.createCircleInPixi();
+    this.createBody();
+    this.createCircleInPixi();
 
     this.nearParticles = [];
 
-    this.heatCapacityAccordingToSubstance();
-    this.massAccordingToSubstance();
-    this.calculateEneryContained(energyContained);
-    this.thermalConductivityAccordingToSubstance();
-    this.burningTemperatureAccordingToSubstance();
+    // this.heatCapacityAccordingToSubstance();
+    // this.massAccordingToSubstance();
+    // this.calculateEneryContained(energyContained);
+    // this.thermalConductivityAccordingToSubstance();
+    // this.burningTemperatureAccordingToSubstance();
 
-    this.temperature = temperature || 20;
-    this.setStartingState();
-
-    this.onFire = this.substance == "woodGas"; //woodgas starts burning
+    // this.onFire = this.substance == "woodGas"; //woodgas starts burning
     this.updateMyPositionInCell();
   }
 
-  setStartingState() {
-    if (
-      this.temperature < this.evaporationTemperature &&
-      this.temperature > this.freezingTemperature
-    ) {
-      this.state = "liquid";
-    } else if (this.temperature < this.freezingTemperature) {
-      this.state = "solid";
-      // this.freeze();
-    } else if (this.temperature > this.evaporationTemperature) {
-      this.state = "gas";
-      // this.evaporate();
-    } else if (this.temperature < this.evaporationTemperature) {
-      this.state = "liquid";
-      // this.condense();
-    }
-  }
-
-  stateAccordingToTemperature() {
-    if (
-      this.freezingTemperature == undefined ||
-      this.evaporationTemperature == undefined
-    ) {
-      return;
-    }
-    //DOES THIS SUBSTANCE MELT AND FREEZE?
-    //WOOD AND WOODGAS DON'T
-    //WATER DOES
-
-    if (
-      this.temperature < this.evaporationTemperature &&
-      this.temperature > this.freezingTemperature &&
-      this.state == "solid"
-    ) {
-      // this.state = "liquid";
-      this.melt();
-    } else if (
-      this.temperature < this.freezingTemperature &&
-      this.state == "liquid"
-    ) {
-      // this.state = "solid";
-      this.freeze();
-    } else if (
-      this.temperature > this.evaporationTemperature &&
-      this.state == "liquid"
-    ) {
-      // this.state = "gas";
-      this.evaporate();
-    } else if (
-      this.temperature < this.evaporationTemperature &&
-      this.state == "gas"
-    ) {
-      // this.state = "liquid";
-      this.condense();
-    }
-  }
-
-  createBody(doNotAddBodyToWorld) {
-    let renderTypes = {
-      wood: {
-        visible: false,
-      },
-      woodGas: {
-        visible: false,
-      },
-      water: {
-        visible: false,
-      },
-    };
-
-    let slops = {
-      wood: 0, // this.diameter,
-      woodGas: -this.diameter * 2,
-      water: -1, //this.diameter,
-    };
-
-    //for the simulation, not to calculate energies:
-    let masses = {
-      wood: 0,
-      woodGas: 0,
-      water: 0,
-    };
+  createBody() {
     let bodyOptions = {
-      restitution: this.substance == "wood" ? 0.1 : 0.1,
-      mass: masses[this.substance],
-      friction: this.substance == "wood" ? 1 : 0,
-      slop: slops[this.substance],
-      // frictionAir: 0,
+      restitution: 0.1,
+      mass: 0.01,
+      friction: 1,
+      slop: 0,
+      frictionAir: 0.5,
       // isSensor: true,
-      render: renderTypes[this.substance],
+      render: { visible: false },
       isStatic: !!this.isStatic,
       // density: 99999999999999
       // mass: 0
@@ -181,93 +72,7 @@ class Particle {
     this.body.constraints = []; //i need to keep track which constraints each body has
     this.body.particle = this;
 
-    if (!doNotAddBodyToWorld) this.world.add(this.engine.world, [this.body]);
-  }
-
-  getAttractionFactorAccordingToTemperature() {
-    // -272 :2
-    // this.freezingTemperature -> 1
-    // this.evaporationTemperature ->0
-    // this.maxTemperature -> -1
-
-    if (this.temperature < this.freezingTemperature) {
-      let maxFactor = 2;
-      let minFactor = 1;
-      // -272 -> maxFactor
-      // this.freezingTemperature ->minFactor
-      // this.temperature -> x
-
-      let m = (maxFactor - minFactor) / (-this.freezingTemperature - 272);
-
-      let b =
-        maxFactor +
-        (272 * (maxFactor - minFactor)) / (-this.freezingTemperature - 272);
-
-      return m * this.temperature + b;
-    } else if (
-      this.temperature > this.freezingTemperature &&
-      this.temperature < this.evaporationTemperature
-    ) {
-      return 0;
-    } else if (this.temperature > this.evaporationTemperature) {
-      return -1;
-    }
-  }
-  burningTemperatureAccordingToSubstance() {
-    if (this.substance == "wood") {
-      this.burningTemperature = 250;
-      this.maxTemperature = 1093;
-    } else if (this.substance == "woodGas") {
-      this.burningTemperature = 200; //lower than wood
-      this.maxTemperature = 1200; //roughly accurate
-    } else if (this.substance == "water") {
-      this.evaporationTemperature = 100;
-      this.freezingTemperature = 0;
-      this.maxTemperature = 375;
-    }
-  }
-  thermalConductivityAccordingToSubstance() {
-    if (this.substance == "wood") this.thermalConductivity = 0.000025;
-    else if (this.substance == "woodGas")
-      this.thermalConductivity = 0.0000025; //10x less
-    else if (this.substance == "water") this.thermalConductivity = 0.0075; //water has 3x the thermal conductivity of wood
-  }
-  calculateEneryContained(energyContained) {
-    //energy contained in joules
-    // if (this.substance == "wood") this.energyContained = this.mass * 10000
-    if (this.substance == "wood") {
-      this.energyContained = this.mass * 2000000000;
-      this.originalEnergycontained = this.mass * 2000000000;
-    } else if (this.substance == "woodGas") {
-      //WHEN WOODGAS IS LIBERATED, I WANT IT TO HAVE THE ENERGY THAT I TAKE OUT FROM THE WOOD
-      if (energyContained) {
-        this.energyContained = energyContained;
-        this.originalEnergycontained = energyContained;
-      } else {
-        //10x less than wood
-        this.energyContained = this.mass * 200000000;
-        this.originalEnergycontained = this.mass * 200000000;
-      }
-    }
-  }
-  heatCapacityAccordingToSubstance() {
-    //energy in joules to raise this particles (1mm3) 1 degree C
-    if (this.substance == "wood") this.heatCapacity = 0.001025;
-    else if (this.substance == "woodGas")
-      this.heatCapacity = 0.0015; //50% than wood
-    else if (this.substance == "water") this.heatCapacity = 0.0031; //3x wood
-  }
-  massAccordingToSubstance() {
-    //mass in grams
-    //each particle is 1mm3
-    //0,0005gr / mm3
-
-    if (this.substance == "wood") this.mass = 0.0005;
-    else if (this.substance == "woodGas") this.mass = 0.00005;
-    else if (this.substance == "water") this.mass = 0.0007;
-  }
-  applyHeat(joules) {
-    this.temperature += Math.floor(joules) * this.heatCapacity;
+    this.world.add(this.engine.world, [this.body]);
   }
 
   remove(opt) {
@@ -303,21 +108,6 @@ class Particle {
     // if ((opt || {}).leaveAshes) {
     // }
   }
-  releaseWoodGas(energy) {
-    //   addParticle(x, y, substance, temperature, energy) {
-    // console.log(energy);
-    // debugger;
-    this.particleSystem.addParticle(
-      this.pos.x - this.diameter * 0.5 + Math.random() * this.diameter,
-      this.pos.y - this.diameter,
-      "woodGas",
-      this.temperature,
-      energy,
-      false,
-      false
-    );
-  }
-
   updateMyPositionInCell() {
     // let ret;
 
@@ -391,7 +181,7 @@ class Particle {
 
     this.nearParticles = this.getNearParticles();
 
-    this.updateState();
+    // this.updateState();
 
     this.calculateVelVectorAccordingToTarget();
     let FORCE_REDUCER = 0.00001;
@@ -418,12 +208,6 @@ class Particle {
         this.vel = vectorThatAimsToTheTarger.limit(1);
       }
     } else {
-      // //CRAZY WANDER AROUND
-      // this.vel.add(
-      //   new p5.Vector(Math.random() * 2 - 1, Math.random() * 2 - 1).limit(
-      //     (Math.random() * this.getMaxSpeed()) / 2
-      //   )
-      // );
     }
 
     //  this.vel.limit(this.genes.maxSpeed);
@@ -434,14 +218,6 @@ class Particle {
 
   updateState() {
     this.state = 1;
-  }
-
-  getAvgTempOfNearParticles() {
-    let avg = 0;
-    for (let p of this.nearParticles) {
-      avg += p.temperature;
-    }
-    return avg / this.nearParticles.length;
   }
 
   getNearParticles() {
@@ -491,32 +267,5 @@ class Particle {
     this.graphics.drawCircle(0, 0, this.diameter);
     this.graphics.endFill();
     this.particleSystem.pixiApp.stage.addChild(this.graphics);
-  }
-
-  setColorAccordingToTemperature() {
-    let fillR = this.defaultColor.fillStyle.r;
-    let strokeR = this.defaultColor.strokeStyle.r;
-
-    let tempRatio = this.temperature / this.burningTemperature;
-    let newFillR = tempRatio * (255 - fillR) + fillR;
-
-    // let newStrokeR = tempRatio * (255 - strokeR) + strokeR;
-
-    // this.body.render.fillStyle = makeRGBA({
-    //   ...this.defaultColor.fillStyle,
-    //   r: newFillR,
-    // });
-    let rgba = makeRGBA({
-      ...this.defaultColor.fillStyle,
-      r: newFillR,
-    });
-
-    let newColor = rgba2hex2(rgba);
-    this.graphics.tint = newColor;
-
-    // this.body.render.strokeStyle = makeRGBA({
-    //   ...this.defaultColor.strokeStyle,
-    //   r: newStrokeR,
-    // });
   }
 }
