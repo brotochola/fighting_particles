@@ -50,9 +50,9 @@ class ParticleSystem {
 
     this.addShortCuts();
 
-    // Matter.Events.on(this.engine, "collisionActive", (e) => {
-    //   this.collisionHandler(e);
-    // });
+    Matter.Events.on(this.engine, "collisionActive", (e) => {
+      this.collisionHandler(e);
+    });
   }
 
   createPixiStage(cb) {
@@ -89,7 +89,7 @@ class ParticleSystem {
 
   collisionHandler(e) {
     for (let p of e.pairs) {
-      console.log(p);
+      // console.log(p);
 
       // console.log(p)
       // debugger
@@ -100,49 +100,12 @@ class ParticleSystem {
 
       let maxConnectionsPerParticle = 3;
 
-      if (p.bodyA.id == "ground" || p.bodyB.id == "ground") continue;
-      if (
-        this.findOutIfThereIsAlreadyAConstraintWithTheseTwoBodies(
-          p.bodyA,
-          p.bodyB
-        )
-      ) {
+      if (p.bodyA.label == "ground" || p.bodyB.label == "ground") continue;
+      if ((p.bodyA.particle || {}).team == (p.bodyB.particle || {}).team)
         continue;
-      }
-      if (
-        (p.bodyA.constraints || []).length > 6 ||
-        (p.bodyB.constraints || []).length >= maxConnectionsPerParticle
-      ) {
-        continue;
-      }
-      let newConstraint = this.Matter.Constraint.create({
-        pointA: { x: 0, y: 0 },
-        pointB: { x: 0, y: 0 },
-        // length: diameter,
-        angularStiffness: 1,
-        // isSensor: false,
-        // isSleeping: true,
-        stiffness: 1,
-        damping: 0.01,
-        render: {
-          visible: true,
-          anchors: false,
-          strokeStyle: "white",
-          lineWidth: 1,
-        },
-        bodyA: p.bodyA,
-        bodyB: p.bodyB,
-      });
 
-      if (!Array.isArray(p.bodyA.constraints)) p.bodyA.constraints = [];
-      p.bodyA.constraints.push(newConstraint);
-
-      if (!Array.isArray(p.bodyB.constraints)) p.bodyB.constraints = [];
-      p.bodyB.constraints.push(newConstraint);
-
-      this.world.add(this.engine.world, [newConstraint]);
-
-      console.log("Agregando constraint", newConstraint);
+      p.bodyA.particle.recieveDamage(p.bodyB.particle);
+      p.bodyB.particle.recieveDamage(p.bodyA.particle);
     }
   }
 
@@ -483,6 +446,16 @@ class ParticleSystem {
       render: { fillStyle: "black" },
     });
 
+    var roof = Bodies.rectangle(0, -95, 3000, 200, {
+      restitution: 0,
+      friction: 0.5,
+      slop: 0,
+      label: "ground",
+
+      isStatic: true,
+      render: { fillStyle: "black" },
+    });
+
     var leftWall = Bodies.rectangle(
       -90,
       this.worldHeight / 2,
@@ -493,10 +466,7 @@ class ParticleSystem {
         friction: 0.5,
         slop: 0,
         label: "ground",
-        render: {
-          fillStyle: "red",
-          lineWidth: 0,
-        },
+
         isStatic: true,
         render: { fillStyle: "black" },
       }
@@ -512,17 +482,14 @@ class ParticleSystem {
         friction: 0.5,
         slop: 0,
         label: "ground",
-        render: {
-          fillStyle: "red",
-          lineWidth: 0,
-        },
+
         isStatic: true,
         render: { fillStyle: "black" },
       }
     );
 
     // add all of the bodies to the world
-    this.world.add(this.engine.world, [ground, leftWall, rightWall]);
+    this.world.add(this.engine.world, [ground, leftWall, rightWall, roof]);
   }
 
   addParticle(x, y) {

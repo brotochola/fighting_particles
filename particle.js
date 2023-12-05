@@ -10,6 +10,8 @@ class Particle {
     this.engine = particleSystem.engine;
 
     this.diameter = 10;
+    this.health = 1;
+    this.strength = Math.random() * 0.05 + 0.05;
 
     this.world = particleSystem.world;
 
@@ -29,6 +31,15 @@ class Particle {
 
     // this.onFire = this.substance == "woodGas"; //woodgas starts burning
     this.updateMyPositionInCell();
+
+    this.state = "searching";
+  }
+
+  recieveDamage(part) {
+    if (!part) return;
+    this.highlight();
+    setTimeout(() => this.unHighlight(), 100);
+    this.health -= part.strength;
   }
 
   createBody() {
@@ -86,16 +97,7 @@ class Particle {
 
     this.particleSystem.pixiApp.stage.removeChild(this.graphics);
 
-    if (this.isPartOfABody) {
-      //REMOVE THIS PARTICLE FROM THE BODY
-      this.body.parent.parts = this.body.parent.parts.filter(
-        (k) => k != this.body
-      );
-      //CHECK IF IT'S EMPTY
-      this.particleSystem.removeEmptyCompoundBodies();
-    } else {
-      this.world.remove(this.engine.world, this.body);
-    }
+    this.world.remove(this.engine.world, this.body);
 
     this.particleSystem.particles = this.particleSystem.particles.filter(
       (k) => k.body.id != this.body.id
@@ -197,7 +199,7 @@ class Particle {
 
     if (!("x" in this.vel) || !("x" in this.pos)) return;
 
-    if (this.target) {
+    if (this.target && ((this.target || {}).health || 1) > 0) {
       // debugger;
       if (this.target.pos) {
         let vectorThatAimsToTheTarger = p5.Vector.sub(
@@ -208,7 +210,10 @@ class Particle {
 
         this.vel = vectorThatAimsToTheTarger.limit(1);
       }
-    } else {
+    } else if ((this.target || {}).state == "dead") {
+      this.target = null;
+      this.vel.x = 0;
+      this.vel.y = 0;
     }
 
     //  this.vel.limit(this.genes.maxSpeed);
@@ -218,7 +223,16 @@ class Particle {
   getMaxSpeed = () => 10;
 
   updateState() {
-    this.state = "searching";
+    // this.state = "searching";
+
+    if (this.health < 0) {
+      this.die();
+    }
+  }
+
+  die() {
+    this.state = "dead";
+    this.remove();
   }
 
   getNearParticles() {
