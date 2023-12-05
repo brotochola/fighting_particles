@@ -2,8 +2,9 @@
 // Particle class representing each molecule
 class Particle {
   constructor(opt) {
-    const { x, y, particleSystem } = opt;
+    const { x, y, particleSystem, team } = opt;
 
+    this.team = team;
     this.particleSystem = particleSystem;
     this.Matter = particleSystem.Matter;
     this.engine = particleSystem.engine;
@@ -14,11 +15,6 @@ class Particle {
 
     this.pos = new p5.Vector(x, y);
     this.vel = new p5.Vector(0, 0);
-
-    this.defaultColor = {
-      fillStyle: getRandomBrownishColor(0.66, 1),
-      strokeStyle: getRandomBrownishColor(0.3, 0.7),
-    };
 
     this.createBody();
     this.createCircleInPixi();
@@ -181,14 +177,19 @@ class Particle {
 
     this.nearParticles = this.getNearParticles();
 
-    // this.updateState();
+    this.updateState();
+
+    this.doStuffAccordingToState();
 
     this.calculateVelVectorAccordingToTarget();
-    let FORCE_REDUCER = 0.00001;
+    let FORCE_REDUCER = 0.00005;
     this.body.force.y = this.vel.y * FORCE_REDUCER;
     this.body.force.x = this.vel.x * FORCE_REDUCER;
 
     this.render();
+  }
+  doStuffAccordingToState() {
+    if (this.state == "searching") this.findTarget();
   }
 
   calculateVelVectorAccordingToTarget() {
@@ -217,7 +218,7 @@ class Particle {
   getMaxSpeed = () => 10;
 
   updateState() {
-    this.state = 1;
+    this.state = "searching";
   }
 
   getNearParticles() {
@@ -255,11 +256,37 @@ class Particle {
     if (this.highlighted) {
       this.graphics.tint = "0xffffff";
       // return;
+    } else if (this.team == 1) {
+      this.graphics.tint = "0xff0000";
+    } else if (this.team == 2) {
+      this.graphics.tint = "0x00ff00";
     }
   }
 
   setTarget(target) {
     this.target = target;
+  }
+
+  findTarget() {
+    let maxDistance = this.diameter * 40;
+
+    let arr = this.particleSystem.particles
+      .filter((k) => k.team != this.team)
+      .map((k) => {
+        let x = this.cellX - k.cellX;
+        let y = this.cellY - k.cellY;
+        return {
+          dist: this.particleSystem.CELL_SIZE * (Math.abs(x) + Math.abs(y)),
+          part: k,
+        };
+      });
+    let newArr = arr.sort((a, b) => (a.dist > b.dist ? 1 : -1));
+    newArr = newArr.filter((k) => k.dist < maxDistance);
+    if (newArr.length == 0) return;
+
+    let closestEnemy = newArr[0].part;
+
+    this.setTarget(closestEnemy);
   }
   createCircleInPixi() {
     this.graphics = new PIXI.Graphics();

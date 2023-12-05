@@ -377,17 +377,9 @@ class ParticleSystem {
       if (e.which == 1) this.indicateWhichParticleItIs(x, y);
       else if (e.which == 3) {
         if (this.checkIfAPointCollidesWithTheGrounds(x, y)) {
-          this.addParticle(x, y, "wood", 20, undefined, true, false);
+          this.addParticle(x, y);
         } else {
-          this.addParticle(
-            x,
-            y,
-            "wood",
-            20,
-            undefined,
-            false,
-            this.gooBuilding
-          );
+          this.addParticle(x, y);
         }
       }
     };
@@ -543,6 +535,7 @@ class ParticleSystem {
 
       diameter: 20,
       particleSystem: this,
+      team: window.addingParticlesOfTeam,
     });
     particle.particles = this.particles;
     this.particles.push(particle);
