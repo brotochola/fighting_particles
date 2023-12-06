@@ -4,6 +4,12 @@ function dist(x1, y1, x2, y2) {
   return Math.sqrt(a * a + b * b);
 }
 
+function cheaperDist(x1, y1, x2, y2) {
+  var a = x1 - x2;
+  var b = y1 - y2;
+  return Math.abs(a) + Math.abs(b);
+}
+
 function getRandomBrownishColor(minA, maxA) {
   let r = Math.floor(100 + Math.random() * 45);
   let g = Math.floor(20 + Math.random() * 40);

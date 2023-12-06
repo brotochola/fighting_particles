@@ -165,33 +165,22 @@ class Particle {
 
     this.updateMyPositionInCell();
 
-    // for (const particle of particles) {
-    //     if (particle !== this) {
-    //         const distance = Math.sqrt(
-    //             Math.pow(this.pos.x - particle.x, 2) + Math.pow(this.pos.y - particle.y, 2)
-    //         );
-    //         const energyTransfer = Math.min(this.heat / distance, this.heat);
-    //         // particle.heat += energyTransfer;
-    //         particle.applyHeat(energyTransfer);
-    //         this.applyHeat(energyTransfer)
-    //     }
-    // }
-
     this.nearParticles = this.getNearParticles();
-
-    this.updateState();
+    this.updateStateAccordingToStuff();
 
     this.doStuffAccordingToState();
-
-    this.calculateVelVectorAccordingToTarget();
-    let FORCE_REDUCER = 0.00005;
-    this.body.force.y = this.vel.y * FORCE_REDUCER;
-    this.body.force.x = this.vel.x * FORCE_REDUCER;
 
     this.render();
   }
   doStuffAccordingToState() {
-    if (this.state == "searching") this.findTarget();
+    if (this.state == "searching") {
+      if (this.COUNTER % 4 == 0) this.findTarget();
+    } else if (this.state == "chasing") {
+      this.calculateVelVectorAccordingToTarget();
+      let FORCE_REDUCER = 0.00004;
+      this.body.force.y = this.vel.y * FORCE_REDUCER;
+      this.body.force.x = this.vel.x * FORCE_REDUCER;
+    }
   }
 
   calculateVelVectorAccordingToTarget() {
@@ -214,6 +203,7 @@ class Particle {
       this.target = null;
       this.vel.x = 0;
       this.vel.y = 0;
+      this.setState("searching");
     }
 
     //  this.vel.limit(this.genes.maxSpeed);
@@ -222,16 +212,19 @@ class Particle {
   }
   getMaxSpeed = () => 10;
 
-  updateState() {
+  updateStateAccordingToStuff() {
     // this.state = "searching";
 
     if (this.health < 0) {
       this.die();
     }
   }
+  setState(state) {
+    this.state = state;
+  }
 
   die() {
-    this.state = "dead";
+    this.setState("dead");
     this.remove();
   }
 
@@ -279,10 +272,11 @@ class Particle {
 
   setTarget(target) {
     this.target = target;
+    this.state = "chasing";
   }
 
   findTarget() {
-    let maxDistance = this.diameter * 40;
+    let maxDistance = this.diameter * 400;
 
     let arr = this.particleSystem.particles
       .filter((k) => k.team != this.team)
