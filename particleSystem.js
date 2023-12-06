@@ -28,7 +28,7 @@ class ParticleSystem {
     // this.canvas.width = width;
     // this.canvas.height = height;
     this.particles = []; // array to hold all particles
-
+    this.bullets = [];
     this.createPixiStage();
 
     this.createGrid();
@@ -89,7 +89,7 @@ class ParticleSystem {
 
   collisionHandler(e) {
     for (let p of e.pairs) {
-      // console.log(p);
+      // console.log(p.bodyA);
 
       // console.log(p)
       // debugger
@@ -98,14 +98,41 @@ class ParticleSystem {
       // if (p.bodyA.id != "ground") p.bodyA.isSensor = true
       // if (p.bodyB.id != "ground") p.bodyB.isSensor = true
 
-      let maxConnectionsPerParticle = 3;
+      // let maxConnectionsPerParticle = 3;
 
-      if (p.bodyA.label == "ground" || p.bodyB.label == "ground") continue;
-      if ((p.bodyA.particle || {}).team == (p.bodyB.particle || {}).team)
-        continue;
+      console.log(p.bodyA.label, p.bodyB.label);
 
-      p.bodyA.particle.recieveDamage(p.bodyB.particle);
-      p.bodyB.particle.recieveDamage(p.bodyA.particle);
+      if (p.bodyA.label == "bullet" && p.bodyB.label == "bullet") {
+        p.bodyA.particle.remove();
+        p.bodyB.particle.remove();
+      }
+
+      if (p.bodyA.label == "bullet" && p.bodyB.label == "particle") {
+        p.bodyB.particle.recieveDamage(p.bodyA.particle, "bullet");
+        setTimeout(() => p.bodyA.particle.remove(), 50);
+      }
+
+      if (p.bodyB.label == "bullet" && p.bodyA.label == "particle") {
+        p.bodyA.particle.recieveDamage(p.bodyB.particle, "bullet");
+        setTimeout(() => p.bodyB.particle.remove(), 50);
+      }
+
+      if (p.bodyA.label == "ground" && p.bodyB.label == "bullet") {
+        p.bodyB.particle.remove();
+      }
+
+      if (p.bodyB.label == "ground" && p.bodyA.label == "bullet") {
+        p.bodyA.particle.remove();
+      }
+
+      if (
+        p.bodyA.label == "particle" &&
+        p.bodyB.label == "particle" &&
+        (p.bodyA.particle || {}).team != (p.bodyB.particle || {}).team
+      ) {
+        p.bodyA.particle.recieveDamage(p.bodyB.particle);
+        p.bodyB.particle.recieveDamage(p.bodyA.particle);
+      }
     }
   }
 
@@ -125,23 +152,23 @@ class ParticleSystem {
         this.toggleGravity();
       } else if (e.keyCode == 84) {
         //G
-        this.addTargetToAllParticles(e);
+        // this.addTargetToAllParticles(e);
       }
     };
   }
 
-  addTargetToAllParticles(e) {
-    this.particles.forEach((particle) => {
-      particle.target = {
-        type: "randomTarget",
-        pos: new p5.Vector(this.mouseX, this.mouseY),
-      };
-    });
-  }
-  toggleGravity() {
-    this.engine.world.gravity.y = this.engine.world.gravity.y ? 0 : 1;
-    this.showAlert(this.engine.world.gravity.y ? "gravity on" : "gravity off");
-  }
+  // addTargetToAllParticles(e) {
+  //   this.particles.forEach((particle) => {
+  //     particle.target = {
+  //       type: "randomTarget",
+  //       pos: new p5.Vector(this.mouseX, this.mouseY),
+  //     };
+  //   });
+  // }
+  // toggleGravity() {
+  //   this.engine.world.gravity.y = this.engine.world.gravity.y ? 0 : 1;
+  //   this.showAlert(this.engine.world.gravity.y ? "gravity on" : "gravity off");
+  // }
   showAlert(msg) {
     try {
       showAlert(msg);
@@ -367,43 +394,43 @@ class ParticleSystem {
         //ADD PARTICLES WHILE DRAGGING
 
         //GOO MODE DOESN'T WORK WHILE DRAGGING!
-        this.addParticle(x, y, "wood", 20, undefined, false, false);
+        this.addParticle(x, y);
       }
 
       //KEYS
       if (window.keyIsDown == 87) {
         // console.log(1);
         //W
-        this.addParticle(x, y, "water", 20, undefined, false, false);
+        this.addParticle(x, y, true);
       } else if (window.keyIsDown == 72) {
         //H (heat)
-        let closeParticles = this.getParticlesAndTheirDistance(x, y, null);
-        for (let p of closeParticles) {
-          let part = p.body.particle || {};
-
-          if (p.distance < 25) {
-            let part = p.body.particle || {};
-            part.highlight();
-            part.heatUp(5);
-          } else {
-            part.unHighlight();
-          }
-        }
-      } else if (window.keyIsDown == 67) {
-        //C (cold)
-        let closeParticles = this.getParticlesAndTheirDistance(x, y, null);
-        for (let p of closeParticles) {
-          let part = p.body.particle || {};
-
-          if (p.distance < 25) {
-            let part = p.body.particle || {};
-            part.highlight();
-            part.heatUp(-50);
-          } else {
-            part.unHighlight();
-          }
-        }
+        // let closeParticles = this.getParticlesAndTheirDistance(x, y, null);
+        // for (let p of closeParticles) {
+        //   let part = p.body.particle || {};
+        //   if (p.distance < 25) {
+        //     let part = p.body.particle || {};
+        //     part.highlight();
+        //     part.heatUp(5);
+        //   } else {
+        //     part.unHighlight();
+        //   }
+        // }
       }
+      // else if (window.keyIsDown == 67) {
+      //   //C (cold)
+      //   let closeParticles = this.getParticlesAndTheirDistance(x, y, null);
+      //   for (let p of closeParticles) {
+      //     let part = p.body.particle || {};
+
+      //     if (p.distance < 25) {
+      //       let part = p.body.particle || {};
+      //       part.highlight();
+      //       part.heatUp(-50);
+      //     } else {
+      //       part.unHighlight();
+      //     }
+      //   }
+      // }
     };
   }
 
@@ -492,7 +519,7 @@ class ParticleSystem {
     this.world.add(this.engine.world, [ground, leftWall, rightWall, roof]);
   }
 
-  addParticle(x, y) {
+  addParticle(x, y, isStatic) {
     // let substance = "wood";
     /// IT CAN BE WOOD GAS ;)
 
@@ -503,11 +530,28 @@ class ParticleSystem {
       diameter: 20,
       particleSystem: this,
       team: window.addingParticlesOfTeam,
+      isStatic,
     });
     particle.particles = this.particles;
     this.particles.push(particle);
 
     return particle;
+  }
+
+  addBullet(part) {
+    // console.log(part.vel);
+
+    let bullet = new Bullet({
+      engine: this.engine,
+      x: part.pos.x,
+      y: part.pos.y,
+      vel: part.vel,
+      particleSystem: this,
+      Matter: this.Matter,
+      diameter: part.diameter,
+    });
+    this.bullets.push(bullet);
+    // console.log(bullet);
   }
 
   onTick(e) {
@@ -532,6 +576,9 @@ class ParticleSystem {
 
     for (const particle of this.particles) {
       particle.update(this.COUNTER);
+    }
+    for (const bullet of this.bullets) {
+      bullet.update(this.COUNTER);
     }
   }
 

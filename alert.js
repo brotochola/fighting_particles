@@ -16,6 +16,8 @@ function createAlert() {
         top: 15px;
         padding: 20px;
         white-space: nowrap;
+        z-index:999999;
+        border: 1px solid gray;
     }
   `;
 

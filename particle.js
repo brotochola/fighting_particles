@@ -2,16 +2,17 @@
 // Particle class representing each molecule
 class Particle {
   constructor(opt) {
-    const { x, y, particleSystem, team } = opt;
+    const { x, y, particleSystem, team, isStatic } = opt;
 
     this.team = team;
     this.particleSystem = particleSystem;
     this.Matter = particleSystem.Matter;
     this.engine = particleSystem.engine;
+    this.isStatic = isStatic;
 
     this.diameter = 10;
     this.health = 1;
-    this.strength = Math.random() * 0.05 + 0.05;
+    this.strength = Math.random() * 0.005 + 0.005;
 
     this.world = particleSystem.world;
 
@@ -35,11 +36,24 @@ class Particle {
     this.state = "searching";
   }
 
-  recieveDamage(part) {
+  fireBullet() {
+    if (!this.target || this.state == "dead") return;
+
+    this.particleSystem.addBullet(this);
+  }
+
+  recieveDamage(part, what) {
+    console.log(part, this.health, part.strength, what);
+
+    if (what == "bullet") {
+      console.log(part, this.health, part.strength);
+    }
+    // debugger;
     if (!part) return;
+    this.health -= (part || {}).strength || 0;
+
     this.highlight();
     setTimeout(() => this.unHighlight(), 100);
-    this.health -= part.strength;
   }
 
   createBody() {
@@ -49,9 +63,10 @@ class Particle {
       friction: 1,
       slop: 0,
       frictionAir: 0.5,
+      label: "particle",
       // isSensor: true,
       render: { visible: false },
-      isStatic: !!this.isStatic,
+      isStatic: false,
       // density: 99999999999999
       // mass: 0
       plugin: {
@@ -91,9 +106,9 @@ class Particle {
       console.warn("no cell");
     }
 
-    for (let constr of this.body.constraints) {
-      this.world.remove(this.engine.world, constr);
-    }
+    // for (let constr of this.body.constraints) {
+    //   this.world.remove(this.engine.world, constr);
+    // }
 
     this.particleSystem.pixiApp.stage.removeChild(this.graphics);
 
@@ -103,8 +118,19 @@ class Particle {
       (k) => k.body.id != this.body.id
     );
 
+    this.removeMeAsTarget();
+
     // if ((opt || {}).leaveAshes) {
     // }
+  }
+
+  removeMeAsTarget() {
+    let particlesWithMeAsTarget = this.particleSystem.particles.filter(
+      (k) => k.target == this
+    );
+    if (particlesWithMeAsTarget.length > 0) {
+      particlesWithMeAsTarget.map((k) => k.setTarget(null));
+    }
   }
   updateMyPositionInCell() {
     // let ret;
@@ -173,13 +199,17 @@ class Particle {
     this.render();
   }
   doStuffAccordingToState() {
-    if (this.state == "searching") {
-      if (this.COUNTER % 4 == 0) this.findTarget();
-    } else if (this.state == "chasing") {
-      this.calculateVelVectorAccordingToTarget();
-      let FORCE_REDUCER = 0.00004;
-      this.body.force.y = this.vel.y * FORCE_REDUCER;
-      this.body.force.x = this.vel.x * FORCE_REDUCER;
+    // if (this.state == "searching") {
+
+    // } else if (this.state == "chasing") {
+
+    // }
+
+    if (this.COUNTER % 4 == 0) this.findTarget();
+    if (this.COUNTER % 2 == 0) this.calculateVelVectorAccordingToTarget();
+
+    if (this.target && this.isStatic) {
+      if (this.COUNTER % 5 == 0) this.fireBullet();
     }
   }
 
@@ -191,13 +221,19 @@ class Particle {
     if (this.target && ((this.target || {}).health || 1) > 0) {
       // debugger;
       if (this.target.pos) {
-        let vectorThatAimsToTheTarger = p5.Vector.sub(
+        let vectorThatAimsToTheTarget = p5.Vector.sub(
           this.target.pos,
           this.pos
         );
         // let invertedVector = p5.Vector.sub(this.pos, this.target.pos);
 
-        this.vel = vectorThatAimsToTheTarger.limit(1);
+        this.vel = vectorThatAimsToTheTarget.limit(1);
+
+        if (!this.isStatic) {
+          let FORCE_REDUCER = 0.00004;
+          this.body.force.y = this.vel.y * FORCE_REDUCER;
+          this.body.force.x = this.vel.x * FORCE_REDUCER;
+        }
       }
     } else if ((this.target || {}).state == "dead") {
       this.target = null;
@@ -215,7 +251,7 @@ class Particle {
   updateStateAccordingToStuff() {
     // this.state = "searching";
 
-    if (this.health < 0) {
+    if (this.health <= 0) {
       this.die();
     }
   }
