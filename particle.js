@@ -39,21 +39,19 @@ class Particle {
   fireBullet() {
     if (!this.target || this.state == "dead") return;
 
-    this.particleSystem.addBullet(this);
+    //HERE WE CAN EVALUATE WHAT TYPE OF BULLET, HOW OFTEN, RELOD, ETC
+    if (Math.random() > 0.8 && this.COUNTER % 2 == 0)
+      this.particleSystem.addBullet(this);
   }
 
   recieveDamage(part, what) {
-    console.log(part, this.health, part.strength, what);
+    // console.log(part.strength);
 
-    if (what == "bullet") {
-      console.log(part, this.health, part.strength);
-    }
-    // debugger;
-    if (!part) return;
+    // if (!part) return;
     this.health -= (part || {}).strength || 0;
 
     this.highlight();
-    setTimeout(() => this.unHighlight(), 100);
+    setTimeout(() => this.unHighlight(), 30);
   }
 
   createBody() {
@@ -209,7 +207,7 @@ class Particle {
     if (this.COUNTER % 2 == 0) this.calculateVelVectorAccordingToTarget();
 
     if (this.target && this.isStatic) {
-      if (this.COUNTER % 5 == 0) this.fireBullet();
+      this.fireBullet();
     }
   }
 

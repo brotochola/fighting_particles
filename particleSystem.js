@@ -100,7 +100,7 @@ class ParticleSystem {
 
       // let maxConnectionsPerParticle = 3;
 
-      console.log(p.bodyA.label, p.bodyB.label);
+      // console.log(p.bodyA.label, p.bodyB.label);
 
       if (p.bodyA.label == "bullet" && p.bodyB.label == "bullet") {
         p.bodyA.particle.remove();

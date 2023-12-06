@@ -44,7 +44,7 @@ class Bullet {
       friction: 0,
       slop: 0,
       frictionAir: 0,
-      isSensor: true,
+      isSensor: false,
       render: { visible: false },
       isStatic: false,
     };
@@ -69,7 +69,18 @@ class Bullet {
     this.particleSystem.pixiApp.stage.addChild(this.graphics);
   }
 
+  removeIfTheBulletIsLost() {
+    let vec = new p5.Vector(this.body.velocity.x, this.body.velocity.y);
+    let mag = vec.mag();
+    // console.log(mag);
+    if (Math.abs(mag) < 10 && Math.abs(mag) > 0) {
+      this.remove();
+    }
+  }
+
   update(COUNTER) {
+    this.removeIfTheBulletIsLost();
+
     this.COUNTER = COUNTER;
 
     // let FORCE_REDUCER = 0.00004;
