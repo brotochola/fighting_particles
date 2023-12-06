@@ -89,7 +89,7 @@ class Bullet {
     // this.body.force.x =
     //   this.vel.x * FORCE_REDUCER * (Math.random() * 0.1 + 0.9);
 
-    // console.log(this.vel);
+    this.evaluateIfVelocityChangedAndRemove();
 
     this.lastY = this.pos.y;
     this.lastX = this.pos.x;
@@ -111,5 +111,21 @@ class Bullet {
   render() {
     this.graphics.x = this.pos.x;
     this.graphics.y = this.pos.y;
+  }
+
+  evaluateIfVelocityChangedAndRemove() {
+    if (this.currentVel) this.lastVel = this.currentVel.copy();
+
+    this.currentVel = new p5.Vector(this.body.velocity.x, this.body.velocity.y);
+    if (this.lastVel && this.currentVel) {
+      let curMag = Math.abs(this.currentVel.mag());
+      let lastMag = Math.abs(this.lastVel.mag());
+
+      let diffVel = Math.abs(curMag - lastMag);
+
+      if (curMag > 0 && lastMag > 0 && diffVel > 5) {
+        this.remove();
+      }
+    }
   }
 }

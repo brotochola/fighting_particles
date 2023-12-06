@@ -45,13 +45,16 @@ class Particle {
   }
 
   recieveDamage(part, what) {
+    // console.log(part);
     // console.log(part.strength);
 
-    // if (!part) return;
+    if (!part) return;
     this.health -= (part || {}).strength || 0;
 
     this.highlight();
     setTimeout(() => this.unHighlight(), 30);
+
+    // if (part instanceof Bullet) setTimeout(() => this.die(), 100);
   }
 
   createBody() {
@@ -193,8 +196,23 @@ class Particle {
     this.updateStateAccordingToStuff();
 
     this.doStuffAccordingToState();
-
+    this.animateSprite();
     this.render();
+  }
+
+  animateSprite() {
+    let speed = 8;
+    let cantFrames = 6;
+    let width = 12;
+    let height = 21;
+    if (this.COUNTER % speed != 0) return;
+
+    this.image.texture.frame = new PIXI.Rectangle(
+      width * ((this.COUNTER / speed) % cantFrames),
+      0,
+      width,
+      height
+    );
   }
   doStuffAccordingToState() {
     // if (this.state == "searching") {
@@ -292,6 +310,9 @@ class Particle {
     this.graphics.x = this.pos.x;
     this.graphics.y = this.pos.y;
 
+    this.image.x = this.pos.x - 6;
+    this.image.y = this.pos.y - 11;
+
     // if (this.substance == "wood") this.setColorAccordingToTemperature();
 
     if (this.highlighted) {
@@ -331,10 +352,24 @@ class Particle {
     this.setTarget(closestEnemy);
   }
   createCircleInPixi() {
+    // this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);
+
+    //CIRCLE
     this.graphics = new PIXI.Graphics();
-    this.graphics.beginFill("0xFFFFFF");
+    this.graphics.beginFill("0xFFFFFF55");
     this.graphics.drawCircle(0, 0, this.diameter);
     this.graphics.endFill();
     this.particleSystem.pixiApp.stage.addChild(this.graphics);
+
+    //IMG
+    const frame1 = new PIXI.Rectangle(0, 0, 12, 21);
+
+    this.particleSystem.res["walk"].texture.frame = frame1;
+
+    this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);
+    this.image.scale.x = 2;
+    this.image.scale.y = 2;
+
+    this.particleSystem.pixiApp.stage.addChild(this.image);
   }
 }

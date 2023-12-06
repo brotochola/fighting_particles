@@ -69,7 +69,7 @@ class ParticleSystem {
       height: this.worldHeight,
     });
 
-    // this.loader.add("water", "water.png");
+    this.loader.add("walk", "img/m_walk.png");
     // this.loader.add("wood", "wood.png");
     this.loader.load((loader, resources) => {
       this.res = resources;
@@ -89,7 +89,7 @@ class ParticleSystem {
 
   collisionHandler(e) {
     for (let p of e.pairs) {
-      // console.log(p.bodyA);
+      // console.log(p.bodyA, p.bodyB);
 
       // console.log(p)
       // debugger
