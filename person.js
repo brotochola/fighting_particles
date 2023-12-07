@@ -139,11 +139,11 @@ class Person {
               speed: {
                 list: [
                   {
-                    value: 100,
+                    value: 200,
                     time: 0,
                   },
                   {
-                    value: 50,
+                    value: 100,
                     time: 1,
                   },
                 ],
@@ -204,10 +204,12 @@ class Person {
       }
     });
   }
-  emitBlood() {
+  emitBlood(angle) {
     // this.particleContainer.x = this.body.position.x;
     // this.particleContainer.y = this.body.position.y;
     // this.emitter.update(this.particleSystem.getDurationOfOneFrame() * 100000);
+    // this.emitter.initBehaviors[3].min = angle;
+    // this.emitter.initBehaviors[3].max = angle;
     this.emitter.emit = true;
   }
 
@@ -220,6 +222,7 @@ class Person {
   }
 
   recieveDamage(part, what) {
+    // if (this.team == 1) return;
     // console.log(part);
     // console.log(part.strength);
 
@@ -229,7 +232,12 @@ class Person {
     this.highlight();
     setTimeout(() => this.unHighlight(), 30);
 
-    this.emitBlood();
+    let incomingAngleOfHit = Math.atan2(
+      part.body.position.y,
+      part.body.position.x
+    );
+
+    this.emitBlood(incomingAngleOfHit);
 
     // if (part instanceof Bullet) setTimeout(() => this.die(), 100);
   }
