@@ -21,7 +21,7 @@ class Particle {
 
     this.createBody();
     // this.createCircleInPixi();
-    this.createSprite("idle");
+    this.createSprite("idle_" + this.team);
 
     this.nearParticles = [];
 
@@ -218,7 +218,7 @@ class Particle {
     let vel = new p5.Vector(this.body.velocity.x, this.body.velocity.y);
 
     if (Math.abs(vel.mag()) > 0.05) {
-      if (this.whichSpriteAmIShowing() == "idle") {
+      if (this.whichSpriteAmIShowing().startsWith("idle")) {
         this.createSprite("walk_" + this.team);
       }
 
@@ -238,7 +238,7 @@ class Particle {
       );
     } else {
       if (this.whichSpriteAmIShowing().startsWith("walk")) {
-        this.createSprite("idle");
+        this.createSprite("idle_" + this.team);
       }
     }
   }

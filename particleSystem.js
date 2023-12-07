@@ -71,7 +71,8 @@ class ParticleSystem {
 
     this.loader.add("walk_1", "img/m_walk.png");
     this.loader.add("walk_2", "img/m_walk_2.png");
-    this.loader.add("idle", "img/m_idle.png");
+    this.loader.add("idle_1", "img/m_idle.png");
+    this.loader.add("idle_2", "img/m_idle_2.png");
     // this.loader.add("wood", "wood.png");
     this.loader.load((loader, resources) => {
       this.res = resources;
