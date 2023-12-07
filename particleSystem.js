@@ -91,6 +91,7 @@ class ParticleSystem {
     this.loader.add("attack_2", "img/m_attack_2.png");
     // this.loader.add("dead_2", "img/dead_2.png");
     this.loader.add("bg", "img/bg.jpg");
+    this.loader.add("blood", "img/blood.png");
     // this.loader.add("wood", "wood.png");
     this.loader.load((loader, resources) => {
       this.res = resources;
@@ -556,7 +557,7 @@ class ParticleSystem {
     // let substance = "wood";
     /// IT CAN BE WOOD GAS ;)
 
-    const particle = new Particle({
+    const particle = new Person({
       x,
       y,
 

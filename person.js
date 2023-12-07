@@ -1,6 +1,6 @@
 // https://codepen.io/davepvm/pen/Hhstl
 // Particle class representing each molecule
-class Particle {
+class Person {
   constructor(opt) {
     const { x, y, particleSystem, team, isStatic } = opt;
     this.name = generateID();
@@ -9,19 +9,23 @@ class Particle {
     this.Matter = particleSystem.Matter;
     this.engine = particleSystem.engine;
     this.isStatic = isStatic;
+    this.world = particleSystem.world;
 
     this.diameter = 10;
     this.health = 1;
     this.strength = Math.random() * 0.005 + 0.005;
-
-    this.world = particleSystem.world;
+    this.lastTimeItFlipped = 0;
 
     this.pos = new p5.Vector(x, y);
     this.vel = new p5.Vector(0, 0);
+    this.amILookingLeft = false;
 
     this.createBody();
     // this.createCircleInPixi();
-    this.createShadow();
+
+    this.createContainers();
+
+    // this.createShadow();
     this.createSprite("idle_" + this.team);
 
     this.nearParticles = [];
@@ -41,7 +45,170 @@ class Particle {
     // this.onFire = this.substance == "woodGas"; //woodgas starts burning
     this.updateMyPositionInCell();
 
+    this.addParticleEmitter();
+
     this.setState("searching");
+  }
+
+  createContainers() {
+    this.container = new PIXI.Container();
+
+    this.particleContainer = new PIXI.ParticleContainer();
+    this.particleContainer.zIndex = 1;
+
+    this.container.addChild(this.particleContainer);
+    this.particleSystem.pixiApp.stage.addChild(this.container);
+  }
+  addParticleEmitter() {
+    // your imported namespace is
+    this.emitter = new PIXI.particles.Emitter(
+      // The PIXI.Container to put the emitter in
+      // if using blend modes, it's important to put this
+      // on top of a bitmap, and not use the root stage Container
+      this.particleContainer,
+      // Emitter configuration, edit this to change the look
+      // of the emitter
+      {
+        emit: true,
+        lifetime: {
+          min: 0.1,
+          max: 1,
+        },
+        autoUpdate: true,
+        frequency: 0.1,
+        spawnChance: 1,
+        particlesPerWave: 1,
+        emitterLifetime: 1,
+        maxParticles: 100,
+        pos: {
+          x: 0,
+          y: 10,
+        },
+        addAtBack: false,
+        behaviors: [
+          // {
+          //   type: "movePath",
+          //   config: {
+          //     path: "x",
+          //     speed: {
+          //       list: [
+          //         { value: -10, time: 0 },
+          //         { value: 100, time: 0.1 },
+          //       ],
+          //     },
+          //     minMult: 0.8,
+          //   },
+          // },
+          {
+            type: "scale",
+            config: {
+              scale: {
+                list: [
+                  {
+                    value: 1,
+                    time: 0,
+                  },
+                  {
+                    value: 0.2,
+                    time: 1,
+                  },
+                ],
+              },
+            },
+          },
+          {
+            type: "color",
+            config: {
+              color: {
+                list: [
+                  {
+                    value: "dd0000",
+                    time: 0,
+                  },
+                  {
+                    value: "ff000055",
+                    time: 1,
+                  },
+                ],
+              },
+            },
+          },
+          {
+            type: "moveSpeed",
+            config: {
+              speed: {
+                list: [
+                  {
+                    value: 100,
+                    time: 0,
+                  },
+                  {
+                    value: 50,
+                    time: 1,
+                  },
+                ],
+                isStepped: false,
+              },
+            },
+          },
+          {
+            type: "rotationStatic",
+            config: {
+              min: 0,
+              max: -180,
+            },
+          },
+          {
+            type: "textureSingle",
+            config: {
+              texture: PIXI.Texture.from("blood"),
+            },
+          },
+
+          // {
+          //   type: "spawnShape",
+          //   config: {
+          //     type: "circle",
+          //     data: {
+          //       x: 0,
+          //       y: 10,
+          //       radius: 1,
+          //     },
+          //   },
+          // },
+        ],
+      }
+    );
+  }
+
+  animateGravityToParticles() {
+    this.particleContainer.children.map((k) => {
+      k.position.y += 2;
+      if (k.position.y > this.spriteHeight * 2) {
+        // console.log(k);
+        // this.container.parent.addChild(k.texture);
+
+        let blood = new PIXI.Sprite(
+          this.particleSystem.res["blood"].texture.clone()
+        );
+        // this.container.x
+        // console.log(this.container.x + k.position.x);
+        blood.position.x = this.container.x + k.position.x;
+        blood.position.y = this.container.y + k.position.y;
+        blood.scale.x = 1;
+        blood.scale.y = 1;
+        blood.alpha = 0.6;
+        this.container.parent.addChild(blood);
+
+        this.particleContainer.removeChild(k);
+      }
+    });
+  }
+  emitBlood() {
+    // this.particleContainer.x = this.body.position.x;
+    // this.particleContainer.y = this.body.position.y;
+    // this.emitter.update(this.particleSystem.getDurationOfOneFrame() * 100000);
+    this.emitter.emit = true;
   }
 
   fireBullet() {
@@ -56,11 +223,13 @@ class Particle {
     // console.log(part);
     // console.log(part.strength);
 
-    if (!part) return;
+    if (!part || part.state == "dead") return;
     this.health -= (part || {}).strength || 0;
 
     this.highlight();
     setTimeout(() => this.unHighlight(), 30);
+
+    this.emitBlood();
 
     // if (part instanceof Bullet) setTimeout(() => this.die(), 100);
   }
@@ -200,10 +369,11 @@ class Particle {
 
     this.lastY = this.pos.y;
     this.lastX = this.pos.x;
+    //get the position in the matterjs world and have it here
 
     this.pos.x = this.body.position.x;
     this.pos.y = this.body.position.y;
-    this.image.zIndex = Math.floor(this.pos.y);
+    this.container.zIndex = Math.floor(this.pos.y);
 
     if (this.state != "dead") {
       this.updateMyPositionInCell();
@@ -215,6 +385,10 @@ class Particle {
     }
 
     this.animateSprite();
+    this.animateGravityToParticles();
+
+    // this.emitBlood();
+    this.emitter.emit = false;
 
     this.render();
   }
@@ -376,6 +550,7 @@ class Particle {
   }
 
   die() {
+    this.body.isStatic = true;
     this.setState("dead");
     // this.createSprite("die_1");
 
@@ -406,15 +581,29 @@ class Particle {
     this.highlighted = false;
   }
   makeMeLookLeft() {
-    // if (this.image.scale.x < 0) return;
+    // if (this.COUNTER - this.lastTimeItFlipped < this.spriteSpeed) return;
+
     this.image.scale.x = -1 * this.scale;
-    this.image.x = this.pos.x + 6;
+    this.image.x = 6;
+
+    if (!this.amILookingLeft) {
+      this.lastTimeItFlipped = this.COUNTER;
+    }
+
+    this.amILookingLeft = true;
   }
 
   makeMeLookRight() {
-    // if (this.image.scale.x > 0) return;
+    // if (this.COUNTER - this.lastTimeItFlipped < this.spriteSpeed) return;
+
     this.image.scale.x = 1 * this.scale;
-    this.image.x = this.pos.x - 9;
+    this.image.x = -9;
+
+    if (this.amILookingLeft) {
+      this.lastTimeItFlipped = this.COUNTER;
+    }
+
+    this.amILookingLeft = false;
   }
 
   calculateScaleAccordingToY() {
@@ -442,13 +631,14 @@ class Particle {
       ? this.scale * this.particleSystem.worldPerspective
       : 1;
 
-    if (this.graphics) {
-      this.graphics.x = this.pos.x;
-      this.graphics.y = this.pos.y * yFactor;
-    }
+    // if (this.graphics) {
+    //   this.graphics.x = this.pos.x;
+    //   this.graphics.y = this.pos.y * yFactor;
+    // }
 
-    this.image.y =
+    this.container.y =
       (this.pos.y - this.image.texture.baseTexture.height * 2) * yFactor;
+    this.container.x = this.pos.x;
     this.calculateScaleAccordingToY();
 
     if (this.vel.x < 0) this.makeMeLookLeft();
@@ -502,7 +692,7 @@ class Particle {
     this.graphics.beginFill("0x220000");
     this.graphics.drawCircle(0, 0, this.diameter);
     this.graphics.endFill();
-    this.particleSystem.pixiApp.stage.addChild(this.graphics);
+    this.container.addChild(this.graphics);
   }
   createShadow() {
     // this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);
@@ -513,7 +703,9 @@ class Particle {
     this.graphics.alpha = 0.16;
     this.graphics.drawEllipse(0, 0, this.diameter * 0.82, this.diameter / 4);
     this.graphics.endFill();
-    this.particleSystem.pixiApp.stage.addChild(this.graphics);
+    this.graphics.position.x = 10;
+    this.graphics.position.y = 40;
+    this.container.addChild(this.graphics);
   }
   createSprite(which, stopsAtEnd) {
     if (
@@ -540,6 +732,6 @@ class Particle {
     // this.image.scale.x = 2;
     // this.image.scale.y = 2;
 
-    this.particleSystem.pixiApp.stage.addChild(this.image);
+    this.container.addChildAt(this.image, 0);
   }
 }
