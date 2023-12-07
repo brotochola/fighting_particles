@@ -407,25 +407,49 @@ class Particle {
   }
   makeMeLookLeft() {
     // if (this.image.scale.x < 0) return;
-    this.image.scale.x = -1.5;
+    this.image.scale.x = -1 * this.scale;
     this.image.x = this.pos.x + 6;
   }
 
   makeMeLookRight() {
     // if (this.image.scale.x > 0) return;
-    this.image.scale.x = 1.5;
+    this.image.scale.x = 1 * this.scale;
     this.image.x = this.pos.x - 9;
+  }
+
+  calculateScaleAccordingToY() {
+    let dif =
+      this.particleSystem.maxScaleOfSprites -
+      this.particleSystem.minScaleOfSprites;
+
+    // DEFINE SCALE
+    if (this.particleSystem.doPerspective) {
+      this.scale =
+        (this.pos.y / this.particleSystem.worldHeight) * dif +
+        this.particleSystem.minScaleOfSprites;
+    } else {
+      this.scale = 2;
+    }
+    //SCALE.Y DOESN'T DEPEND ON WHICH SIDE THE PARTICLE IS WALKING TOWARDS
+
+    this.image.scale.y = this.scale;
   }
 
   render() {
     // Render the particle on the canvas
 
+    let yFactor = this.particleSystem.doPerspective
+      ? this.scale * this.particleSystem.worldPerspective
+      : 1;
+
     if (this.graphics) {
       this.graphics.x = this.pos.x;
-      this.graphics.y = this.pos.y;
+      this.graphics.y = this.pos.y * yFactor;
     }
 
-    this.image.y = this.pos.y - this.image.texture.baseTexture.height * 2;
+    this.image.y =
+      (this.pos.y - this.image.texture.baseTexture.height * 2) * yFactor;
+    this.calculateScaleAccordingToY();
 
     if (this.vel.x < 0) this.makeMeLookLeft();
     else this.makeMeLookRight();
@@ -513,8 +537,8 @@ class Particle {
     );
 
     this.image.texture.frame = frame1;
-    this.image.scale.x = 2;
-    this.image.scale.y = 2;
+    // this.image.scale.x = 2;
+    // this.image.scale.y = 2;
 
     this.particleSystem.pixiApp.stage.addChild(this.image);
   }

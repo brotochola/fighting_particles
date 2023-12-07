@@ -13,6 +13,13 @@ class ParticleSystem {
     };
     this.COUNTER = 0;
 
+    //PERSPECTIVE STUFF
+
+    this.minScaleOfSprites = 1;
+    this.maxScaleOfSprites = 4;
+    this.worldPerspective = 0.25;
+    this.doPerspective = false;
+
     this.CELL_SIZE = this.config.wood.diameter * 10;
 
     this.Matter = Matter;
