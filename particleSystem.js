@@ -57,8 +57,8 @@ class ParticleSystem {
 
   createPixiStage(cb) {
     this.renderer = PIXI.autoDetectRenderer(this.worldWidth, this.worldHeight, {
-      backgroundColor: "transparent",
-      antialias: true,
+      // backgroundColor: "green",
+      antialias: false,
       transparent: true,
       resolution: 1,
       autoresize: false,
@@ -69,7 +69,9 @@ class ParticleSystem {
       height: this.worldHeight,
     });
 
-    this.loader.add("walk", "img/m_walk.png");
+    this.loader.add("walk_1", "img/m_walk.png");
+    this.loader.add("walk_2", "img/m_walk_2.png");
+    this.loader.add("idle", "img/m_idle.png");
     // this.loader.add("wood", "wood.png");
     this.loader.load((loader, resources) => {
       this.res = resources;
@@ -85,6 +87,7 @@ class ParticleSystem {
     // this.canvas.onclick = (e) => this.handleClickOnCanvas(e);
     // this.canvas.onmousemove = (e) => this.handleMouseMoveOnCanvas(e);
     document.body.appendChild(this.canvas);
+    this.pixiApp.stage.sortableChildren = true;
   }
 
   collisionHandler(e) {

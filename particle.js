@@ -20,9 +20,12 @@ class Particle {
     this.vel = new p5.Vector(0, 0);
 
     this.createBody();
-    this.createCircleInPixi();
+    // this.createCircleInPixi();
+    this.createSprite("idle");
 
     this.nearParticles = [];
+
+    this.startingFrame = Math.floor(Math.random() * 7);
 
     // this.heatCapacityAccordingToSubstance();
     // this.massAccordingToSubstance();
@@ -98,6 +101,10 @@ class Particle {
     this.world.add(this.engine.world, [this.body]);
   }
 
+  removeImage() {
+    if (this.image) this.image.parent.removeChild(this.image);
+  }
+
   remove(opt) {
     // console.log("removing");
 
@@ -114,6 +121,7 @@ class Particle {
     this.particleSystem.pixiApp.stage.removeChild(this.graphics);
 
     this.world.remove(this.engine.world, this.body);
+    this.removeImage();
 
     this.particleSystem.particles = this.particleSystem.particles.filter(
       (k) => k.body.id != this.body.id
@@ -189,6 +197,7 @@ class Particle {
 
     this.pos.x = this.body.position.x;
     this.pos.y = this.body.position.y;
+    this.image.zIndex = Math.floor(this.pos.y);
 
     this.updateMyPositionInCell();
 
@@ -197,22 +206,41 @@ class Particle {
 
     this.doStuffAccordingToState();
     this.animateSprite();
+
     this.render();
   }
 
-  animateSprite() {
-    let speed = 8;
-    let cantFrames = 6;
-    let width = 12;
-    let height = 21;
-    if (this.COUNTER % speed != 0) return;
+  whichSpriteAmIShowing() {
+    return this.image.texture.baseTexture.textureCacheIds[0];
+  }
 
-    this.image.texture.frame = new PIXI.Rectangle(
-      width * ((this.COUNTER / speed) % cantFrames),
-      0,
-      width,
-      height
-    );
+  animateSprite() {
+    let vel = new p5.Vector(this.body.velocity.x, this.body.velocity.y);
+
+    if (Math.abs(vel.mag()) > 0.05) {
+      if (this.whichSpriteAmIShowing() == "idle") {
+        this.createSprite("walk_" + this.team);
+      }
+
+      let speed = 8;
+      let cantFrames = 6;
+      let width = 12;
+      let height = 21;
+      let frameCount = this.COUNTER - this.startingFrame;
+
+      if (frameCount % speed != 0) return;
+
+      this.image.texture.frame = new PIXI.Rectangle(
+        width * ((frameCount / speed) % cantFrames),
+        0,
+        width,
+        height
+      );
+    } else {
+      if (this.whichSpriteAmIShowing().startsWith("walk")) {
+        this.createSprite("idle");
+      }
+    }
   }
   doStuffAccordingToState() {
     // if (this.state == "searching") {
@@ -303,25 +331,40 @@ class Particle {
   unHighlight() {
     this.highlighted = false;
   }
+  makeMeLookLeft() {
+    this.image.scale.x = -1.5;
+    this.image.x = this.pos.x + 4;
+  }
+
+  makeMeLookRight() {
+    this.image.scale.x = 1.5;
+    this.image.x = this.pos.x - 11;
+  }
 
   render() {
     // Render the particle on the canvas
 
-    this.graphics.x = this.pos.x;
-    this.graphics.y = this.pos.y;
+    if (this.graphics) {
+      this.graphics.x = this.pos.x;
+      this.graphics.y = this.pos.y;
+    }
 
-    this.image.x = this.pos.x - 6;
-    this.image.y = this.pos.y - 11;
+    this.image.y = this.pos.y - 30;
+
+    if (this.vel.x < 0) this.makeMeLookLeft();
+    else this.makeMeLookRight();
 
     // if (this.substance == "wood") this.setColorAccordingToTemperature();
 
     if (this.highlighted) {
-      this.graphics.tint = "0xffffff";
+      this.image.tint = "0xffffff";
       // return;
     } else if (this.team == 1) {
-      this.graphics.tint = "0xff0000";
+      // this.graphics.tint = "0xff0000";
+      // this.image.tint = "0xff000011";
     } else if (this.team == 2) {
-      this.graphics.tint = "0x00ff00";
+      // this.graphics.tint = "0x00ff00";
+      // this.image.tint = "0x00440011";
     }
   }
 
@@ -356,17 +399,22 @@ class Particle {
 
     //CIRCLE
     this.graphics = new PIXI.Graphics();
-    this.graphics.beginFill("0xFFFFFF55");
+    this.graphics.beginFill("0x220000");
     this.graphics.drawCircle(0, 0, this.diameter);
     this.graphics.endFill();
     this.particleSystem.pixiApp.stage.addChild(this.graphics);
-
+  }
+  createSprite(which) {
+    this.removeImage();
     //IMG
     const frame1 = new PIXI.Rectangle(0, 0, 12, 21);
 
-    this.particleSystem.res["walk"].texture.frame = frame1;
+    // this.particleSystem.res["walk"].texture.frame = frame1; //esto tiene q ser una copia de la textura, no la mismisima
 
-    this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);
+    this.image = new PIXI.Sprite(
+      this.particleSystem.res[which].texture.clone()
+    );
+    this.image.texture.frame = frame1;
     this.image.scale.x = 2;
     this.image.scale.y = 2;
 
