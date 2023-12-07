@@ -21,6 +21,7 @@ class Particle {
 
     this.createBody();
     // this.createCircleInPixi();
+    this.createShadow();
     this.createSprite("idle_" + this.team);
 
     this.nearParticles = [];
@@ -102,7 +103,8 @@ class Particle {
   }
 
   removeImage() {
-    if (this.image) this.image.parent.removeChild(this.image);
+    if (this.image && this.image.parent)
+      this.image.parent.removeChild(this.image);
   }
 
   remove(opt) {
@@ -332,13 +334,15 @@ class Particle {
     this.highlighted = false;
   }
   makeMeLookLeft() {
+    // if (this.image.scale.x < 0) return;
     this.image.scale.x = -1.5;
-    this.image.x = this.pos.x + 4;
+    this.image.x = this.pos.x + 6;
   }
 
   makeMeLookRight() {
+    // if (this.image.scale.x > 0) return;
     this.image.scale.x = 1.5;
-    this.image.x = this.pos.x - 11;
+    this.image.x = this.pos.x - 9;
   }
 
   render() {
@@ -349,7 +353,7 @@ class Particle {
       this.graphics.y = this.pos.y;
     }
 
-    this.image.y = this.pos.y - 30;
+    this.image.y = this.pos.y - this.image.texture.baseTexture.height * 2;
 
     if (this.vel.x < 0) this.makeMeLookLeft();
     else this.makeMeLookRight();
@@ -401,6 +405,17 @@ class Particle {
     this.graphics = new PIXI.Graphics();
     this.graphics.beginFill("0x220000");
     this.graphics.drawCircle(0, 0, this.diameter);
+    this.graphics.endFill();
+    this.particleSystem.pixiApp.stage.addChild(this.graphics);
+  }
+  createShadow() {
+    // this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);
+
+    //CIRCLE
+    this.graphics = new PIXI.Graphics();
+    this.graphics.beginFill("0x000000");
+    this.graphics.alpha = 0.16;
+    this.graphics.drawEllipse(0, 0, this.diameter * 0.82, this.diameter / 4);
     this.graphics.endFill();
     this.particleSystem.pixiApp.stage.addChild(this.graphics);
   }

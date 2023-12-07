@@ -73,10 +73,12 @@ class ParticleSystem {
     this.loader.add("walk_2", "img/m_walk_2.png");
     this.loader.add("idle_1", "img/m_idle.png");
     this.loader.add("idle_2", "img/m_idle_2.png");
+    this.loader.add("bg", "img/bg.jpg");
     // this.loader.add("wood", "wood.png");
     this.loader.load((loader, resources) => {
       this.res = resources;
 
+      this.createBG();
       if (cb instanceof Function) cb();
     });
 
@@ -89,6 +91,13 @@ class ParticleSystem {
     // this.canvas.onmousemove = (e) => this.handleMouseMoveOnCanvas(e);
     document.body.appendChild(this.canvas);
     this.pixiApp.stage.sortableChildren = true;
+  }
+
+  createBG() {
+    this.bg = new PIXI.TilingSprite(this.res["bg"].texture.clone());
+    this.bg.width = this.worldWidth;
+    this.bg.height = this.worldHeight;
+    this.pixiApp.stage.addChild(this.bg);
   }
 
   collisionHandler(e) {

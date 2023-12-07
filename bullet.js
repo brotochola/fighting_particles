@@ -52,7 +52,7 @@ class Bullet {
     this.body = this.Matter.Bodies.circle(
       this.pos.x,
       this.pos.y,
-      2,
+      4,
       bodyOptions
     );
 
@@ -63,7 +63,7 @@ class Bullet {
 
   createCircleInPixi() {
     this.graphics = new PIXI.Graphics();
-    this.graphics.beginFill("0xFFFFFF");
+    this.graphics.beginFill("0x000000");
     this.graphics.drawCircle(0, 0, 2);
     this.graphics.endFill();
     this.particleSystem.pixiApp.stage.addChild(this.graphics);
