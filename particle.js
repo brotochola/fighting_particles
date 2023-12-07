@@ -248,15 +248,21 @@ class Particle {
       if (this.whichSpriteAmIShowing().startsWith("attack")) {
         this.createSprite("idle_" + this.team);
       }
-    } else if (Math.abs(vel.mag()) > 0.05) {
-      //IT'S IDLE AND STARTS TO WALK
+    }
 
+    ///ABOUT MOVEMENT:
+
+    if (Math.abs(vel.mag()) > 0.05) {
+      //IT'S IDLE AND STARTS TO WALK
       if (this.whichSpriteAmIShowing().startsWith("idle")) {
         this.createSprite("walk_" + this.team);
       }
-    } else if (this.whichSpriteAmIShowing().startsWith("walk")) {
-      //IT'S WALKING AND IT STOPS
-      this.createSprite("idle_" + this.team);
+    } else if (Math.abs(vel.mag()) < 0.05) {
+      //it's not moving
+      if (this.whichSpriteAmIShowing().startsWith("walk")) {
+        //and the sprite is still walking
+        this.createSprite("idle_" + this.team);
+      }
     }
   }
   animateSprite() {
@@ -322,9 +328,13 @@ class Particle {
     if (this.target && ((this.target || {}).health || 1) > 0) {
       // debugger;
       if (this.target.pos) {
+        let targetsVel = new p5.Vector(
+          this.target.body.velocity.x,
+          this.target.body.velocity.y
+        );
         let vectorThatAimsToTheTarget = p5.Vector.sub(
           this.target.pos,
-          this.pos
+          this.pos.add(targetsVel)
         );
         // let invertedVector = p5.Vector.sub(this.pos, this.target.pos);
 
@@ -361,7 +371,7 @@ class Particle {
   }
 
   throwAPunch() {
-    console.log("#", this.name, "punch");
+    // console.log("#", this.name, "punch");
     this.setState("attacking");
   }
 
