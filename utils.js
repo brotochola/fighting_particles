@@ -23,6 +23,36 @@ function getRandomBrownishColor(minA, maxA) {
   //   return "rgba(" + r + "," + g + "," + b + "," + a + ")";
 }
 
+const getRandomColor = () => Math.floor(Math.random() * 16777215).toString(16);
+
+const generateID = () => {
+  let vowels = "aeiou";
+  let numbers = "0123456789";
+  let name = Math.random().toString(36).substring(2, 9);
+  let newName = "";
+  for (let i = 0; i < name.length; i++) {
+    try {
+      let letter = name[i];
+      let isItConsonant = vowels.indexOf(letter) == -1;
+      let isPrevConsonant = vowels.indexOf(name[i - 1]) == -1;
+      if (isItConsonant && isPrevConsonant)
+        newName += vowels[Math.floor(Math.random() * vowels.length)];
+
+      if (numbers.indexOf(letter) == -1) newName += letter;
+    } catch (e) {}
+  }
+  newName = newName.substring(
+    Math.floor(Math.random() * 4),
+    Math.floor(Math.random() * 5 + 5)
+  );
+  if (newName.length < 4)
+    newName += vowels[Math.floor(Math.random() * vowels.length)];
+
+  return capitalize(newName);
+};
+function capitalize(word) {
+  return word[0].toUpperCase() + word.slice(1).toLowerCase();
+}
 function makeRGBA(o) {
   let alpha = (o || {}).a || 1;
 

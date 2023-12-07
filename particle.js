@@ -3,7 +3,7 @@
 class Particle {
   constructor(opt) {
     const { x, y, particleSystem, team, isStatic } = opt;
-
+    this.name = generateID();
     this.team = team;
     this.particleSystem = particleSystem;
     this.Matter = particleSystem.Matter;
@@ -26,6 +26,10 @@ class Particle {
 
     this.nearParticles = [];
 
+    this.spriteWidth = 12;
+    this.spriteHeight = 21;
+    this.spriteSpeed = 8;
+
     this.startingFrame = Math.floor(Math.random() * 7);
 
     // this.heatCapacityAccordingToSubstance();
@@ -37,7 +41,7 @@ class Particle {
     // this.onFire = this.substance == "woodGas"; //woodgas starts burning
     this.updateMyPositionInCell();
 
-    this.state = "searching";
+    this.setState("searching");
   }
 
   fireBullet() {
@@ -201,49 +205,100 @@ class Particle {
     this.pos.y = this.body.position.y;
     this.image.zIndex = Math.floor(this.pos.y);
 
-    this.updateMyPositionInCell();
+    if (this.state != "dead") {
+      this.updateMyPositionInCell();
+      this.nearParticles = this.getNearParticles();
+      this.updateStateAccordingToStuff();
 
-    this.nearParticles = this.getNearParticles();
-    this.updateStateAccordingToStuff();
+      this.doStuffAccordingToState();
+      this.changeSpriteAccordingToStateAndVelocity();
+    }
 
-    this.doStuffAccordingToState();
     this.animateSprite();
 
     this.render();
   }
 
-  whichSpriteAmIShowing() {
-    return this.image.texture.baseTexture.textureCacheIds[0];
+  getFullwidthOfCurrentSprite() {
+    return (
+      (this.particleSystem.res[this.whichSpriteAmIShowing()] || {}).data || {}
+    ).width;
   }
 
-  animateSprite() {
+  whichSpriteAmIShowing() {
+    return (
+      ((((this.image || {}).texture || {}).baseTexture || {}).textureCacheIds ||
+        [])[0] || ""
+    );
+  }
+  changeSpriteAccordingToStateAndVelocity() {
     let vel = new p5.Vector(this.body.velocity.x, this.body.velocity.y);
 
-    if (Math.abs(vel.mag()) > 0.05) {
+    if (this.state == "dead") {
+      //EMPIEZA A MORIR
+      this.createSprite("die_" + this.team, true);
+      //Y MUERE
+      // setTimeout(
+      //   () => this.createSprite("dead_1"),
+      //   this.particleSystem.getDurationOfOneFrame() * 7
+      // );
+    } else if (this.state == "attacking") {
+      this.createSprite("attack_" + this.team);
+    } else if (this.state == "searching") {
+      if (this.whichSpriteAmIShowing().startsWith("attack")) {
+        this.createSprite("idle_" + this.team);
+      }
+    } else if (Math.abs(vel.mag()) > 0.05) {
+      //IT'S IDLE AND STARTS TO WALK
+
       if (this.whichSpriteAmIShowing().startsWith("idle")) {
         this.createSprite("walk_" + this.team);
       }
-
-      let speed = 8;
-      let cantFrames = 6;
-      let width = 12;
-      let height = 21;
-      let frameCount = this.COUNTER - this.startingFrame;
-
-      if (frameCount % speed != 0) return;
-
-      this.image.texture.frame = new PIXI.Rectangle(
-        width * ((frameCount / speed) % cantFrames),
-        0,
-        width,
-        height
-      );
-    } else {
-      if (this.whichSpriteAmIShowing().startsWith("walk")) {
-        this.createSprite("idle_" + this.team);
-      }
+    } else if (this.whichSpriteAmIShowing().startsWith("walk")) {
+      //IT'S WALKING AND IT STOPS
+      this.createSprite("idle_" + this.team);
     }
   }
+  animateSprite() {
+    let cantFrames = this.getFullwidthOfCurrentSprite() / this.spriteWidth;
+
+    let frameCount = this.COUNTER + this.startingFrame;
+
+    if (frameCount % this.spriteSpeed != 0) return;
+
+    let x;
+    if (!this.shouldSpriteAnimationStopAtEnd) {
+      x = this.spriteWidth * ((frameCount / this.spriteSpeed) % cantFrames);
+    } else {
+      let framesPassed = this.COUNTER - this.animationStartedAt;
+      let whichFrame = Math.floor(framesPassed / this.spriteSpeed);
+      if (whichFrame >= cantFrames) {
+        this.iAmTotallyDead();
+        return;
+      }
+      x = this.spriteWidth * whichFrame;
+    }
+
+    this.image.texture.frame = new PIXI.Rectangle(
+      x,
+      0,
+      this.spriteWidth,
+      this.spriteHeight
+    );
+  }
+
+  iAmTotallyDead() {
+    this.world.remove(this.engine.world, this.body);
+
+    this.particleSystem.particles = this.particleSystem.particles.filter(
+      (k) => k.body.id != this.body.id
+    );
+
+    this.particleSystem.pixiApp.stage.removeChild(this.graphics);
+
+    this.removeMeAsTarget();
+  }
+
   doStuffAccordingToState() {
     // if (this.state == "searching") {
 
@@ -305,9 +360,16 @@ class Particle {
     this.state = state;
   }
 
+  throwAPunch() {
+    console.log("#", this.name, "punch");
+    this.setState("attacking");
+  }
+
   die() {
     this.setState("dead");
-    this.remove();
+    // this.createSprite("die_1");
+
+    // setTimeout(() => this.remove(), 1000);
   }
 
   getNearParticles() {
@@ -419,16 +481,27 @@ class Particle {
     this.graphics.endFill();
     this.particleSystem.pixiApp.stage.addChild(this.graphics);
   }
-  createSprite(which) {
+  createSprite(which, stopsAtEnd) {
+    if (
+      this.whichSpriteAmIShowing().startsWith(which.substr(0, which.length - 2))
+    ) {
+      //IF THIS PARTICLE ALRADY HAD THIS SPRITE, DONT DO ANYTHING
+      return;
+    }
+
+    this.shouldSpriteAnimationStopAtEnd = stopsAtEnd;
+    this.animationStartedAt = this.COUNTER;
+
     this.removeImage();
     //IMG
     const frame1 = new PIXI.Rectangle(0, 0, 12, 21);
 
     // this.particleSystem.res["walk"].texture.frame = frame1; //esto tiene q ser una copia de la textura, no la mismisima
-
+    // console.log("###", which);
     this.image = new PIXI.Sprite(
       this.particleSystem.res[which].texture.clone()
     );
+
     this.image.texture.frame = frame1;
     this.image.scale.x = 2;
     this.image.scale.y = 2;

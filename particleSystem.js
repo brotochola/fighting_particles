@@ -55,6 +55,10 @@ class ParticleSystem {
     });
   }
 
+  getDurationOfOneFrame() {
+    return 1000 / PIXI.ticker.shared.FPS;
+  }
+
   createPixiStage(cb) {
     this.renderer = PIXI.autoDetectRenderer(this.worldWidth, this.worldHeight, {
       // backgroundColor: "green",
@@ -73,6 +77,12 @@ class ParticleSystem {
     this.loader.add("walk_2", "img/m_walk_2.png");
     this.loader.add("idle_1", "img/m_idle.png");
     this.loader.add("idle_2", "img/m_idle_2.png");
+    this.loader.add("die_1", "img/m_dying_1.png");
+    // this.loader.add("dead_1", "img/dead_1.png");
+    this.loader.add("die_2", "img/m_dying_2.png");
+    this.loader.add("attack_1", "img/m_attack.png");
+    this.loader.add("attack_2", "img/m_attack_2.png");
+    // this.loader.add("dead_2", "img/dead_2.png");
     this.loader.add("bg", "img/bg.jpg");
     // this.loader.add("wood", "wood.png");
     this.loader.load((loader, resources) => {
@@ -144,7 +154,10 @@ class ParticleSystem {
         (p.bodyA.particle || {}).team != (p.bodyB.particle || {}).team
       ) {
         p.bodyA.particle.recieveDamage(p.bodyB.particle);
+
         p.bodyB.particle.recieveDamage(p.bodyA.particle);
+        p.bodyB.particle.throwAPunch();
+        p.bodyA.particle.throwAPunch();
       }
     }
   }
