@@ -620,6 +620,13 @@ class Person {
     this.amILookingLeft = false;
   }
 
+  getMyAbsolutePosition() {
+    return {
+      y: this.body.position.y + this.particleSystem.mainContainer.y,
+      x: this.body.position.x + this.particleSystem.mainContainer.x,
+    };
+  }
+
   calculateScaleAccordingToY() {
     let dif =
       this.particleSystem.maxScaleOfSprites -
@@ -628,7 +635,8 @@ class Person {
     // DEFINE SCALE
     if (this.particleSystem.doPerspective) {
       this.scale =
-        (this.pos.y / this.particleSystem.worldHeight) * dif +
+        (this.getMyAbsolutePosition().y / this.particleSystem.worldHeight) *
+          dif +
         this.particleSystem.minScaleOfSprites;
     } else {
       this.scale = 2;
