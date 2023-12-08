@@ -28,7 +28,7 @@ class ParticleSystem {
     this.world = Matter.World;
 
     this.worldHeight = height || window.innerHeight - 100;
-    this.worldWidth = width || this.worldWidth;
+    this.worldWidth = width || window.innerWidth;
 
     // this.canvas = document.getElementById(canvasId);
     // this.context = this.canvas.getContext("2d");
@@ -80,6 +80,8 @@ class ParticleSystem {
       height: this.worldHeight,
     });
 
+    globalThis.__PIXI_APP__ = this.pixiApp;
+
     this.loader.add("walk_1", "img/m_walk.png");
     this.loader.add("walk_2", "img/m_walk_2.png");
     this.loader.add("idle_1", "img/m_idle.png");
@@ -108,14 +110,23 @@ class ParticleSystem {
     // this.canvas.onclick = (e) => this.handleClickOnCanvas(e);
     // this.canvas.onmousemove = (e) => this.handleMouseMoveOnCanvas(e);
     document.body.appendChild(this.canvas);
+    this.mainContainer = new PIXI.Container();
+    this.pixiApp.stage.addChild(this.mainContainer);
     this.pixiApp.stage.sortableChildren = true;
+    this.mainContainer.sortableChildren = true;
   }
 
   createBG() {
     this.bg = new PIXI.TilingSprite(this.res["bg"].texture.clone());
     this.bg.width = this.worldWidth;
     this.bg.height = this.worldHeight;
-    this.pixiApp.stage.addChild(this.bg);
+    this.mainContainer.addChild(this.bg);
+  }
+
+  changeHeightForAllBoxes(howMuch) {
+    this.particles.forEach((k) => {
+      Matter.Body.scale(k.body, 1, howMuch);
+    });
   }
 
   collisionHandler(e) {

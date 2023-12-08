@@ -57,7 +57,7 @@ class Person {
     this.particleContainer.zIndex = 1;
 
     this.container.addChild(this.particleContainer);
-    this.particleSystem.pixiApp.stage.addChild(this.container);
+    this.particleSystem.mainContainer.addChild(this.container);
   }
   addParticleEmitter() {
     // your imported namespace is
@@ -239,6 +239,12 @@ class Person {
 
     this.emitBlood(incomingAngleOfHit);
 
+    let difX = part.body.position.x - this.body.position.x;
+    let difY = part.body.position.y - this.body.position.y;
+
+    this.body.force.y += difY * 10000;
+    this.body.force.x += difX * 10000;
+
     // if (part instanceof Bullet) setTimeout(() => this.die(), 100);
   }
 
@@ -301,7 +307,7 @@ class Person {
     //   this.world.remove(this.engine.world, constr);
     // }
 
-    this.particleSystem.pixiApp.stage.removeChild(this.graphics);
+    this.particleSystem.mainContainer.removeChild(this.graphics);
 
     this.world.remove(this.engine.world, this.body);
     this.removeImage();
@@ -482,7 +488,7 @@ class Person {
       (k) => k.body.id != this.body.id
     );
 
-    this.particleSystem.pixiApp.stage.removeChild(this.graphics);
+    this.particleSystem.mainContainer.removeChild(this.graphics);
 
     this.removeMeAsTarget();
   }
@@ -524,8 +530,8 @@ class Person {
 
         if (!this.isStatic) {
           let FORCE_REDUCER = 0.00004;
-          this.body.force.y = this.vel.y * FORCE_REDUCER;
-          this.body.force.x = this.vel.x * FORCE_REDUCER;
+          this.body.force.y += this.vel.y * FORCE_REDUCER;
+          this.body.force.x += this.vel.x * FORCE_REDUCER;
         }
       }
     } else if ((this.target || {}).state == "dead") {
