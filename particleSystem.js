@@ -4,13 +4,7 @@
 class ParticleSystem {
   constructor(canvasId, width, height, Matter) {
     this.pixiApp;
-    this.config = {
-      wood: {
-        diameter: 4,
-        maxNumberOfConnectionsPerBody: 20,
-        maxDistanceToAttach: 80,
-      },
-    };
+
     this.COUNTER = 0;
 
     //PERSPECTIVE STUFF
@@ -19,8 +13,10 @@ class ParticleSystem {
     this.maxScaleOfSprites = 4;
     this.worldPerspective = 0.25;
     this.doPerspective = false;
+    this.diameter = 4;
 
-    this.CELL_SIZE = this.config.wood.diameter * 10;
+    this.CELL_SIZE = 40;
+    this.buttonPanelHeight = 100;
 
     this.Matter = Matter;
     // Matter.use(MatterAttractors);
@@ -67,19 +63,24 @@ class ParticleSystem {
   }
 
   createPixiStage(cb) {
-    this.renderer = PIXI.autoDetectRenderer(this.worldWidth, this.worldHeight, {
-      // backgroundColor: "green",
-      antialias: false,
-      transparent: true,
-      resolution: 1,
-      autoresize: false,
-    });
+    this.renderer = PIXI.autoDetectRenderer(
+      window.innerWidth,
+      window.innerHeight - this.buttonPanelHeight,
+      {
+        // backgroundColor: "green",
+        antialias: false,
+        transparent: true,
+        resolution: 1,
+        autoresize: false,
+      }
+    );
     this.loader = PIXI.Loader.shared;
     this.pixiApp = new PIXI.Application({
-      width: this.worldWidth,
-      height: this.worldHeight,
+      width: window.innerWidth,
+      height: window.innerHeight - this.buttonPanelHeight,
     });
 
+    //DEBUG
     globalThis.__PIXI_APP__ = this.pixiApp;
 
     this.loader.add("walk_1", "img/m_walk.png");
@@ -300,7 +301,7 @@ class ParticleSystem {
     let closeP = this.getParticlesAndTheirDistance(x, y);
     if (!closeP[0]) return;
 
-    const maxDistance = this.config["wood"].diameter * 2;
+    const maxDistance = this.diameter * 2;
 
     if (
       dist(x, y, closeP[0].body.position.x, closeP[0].body.position.y) <
@@ -338,7 +339,7 @@ class ParticleSystem {
 
     if (
       dist(x, y, closest.body.position.x, closest.body.position.y) <
-      this.config["wood"].diameter * 3
+      this.diameter * 3
     ) {
       closest.body.particle.remove();
     }
@@ -360,25 +361,17 @@ class ParticleSystem {
     return isColliding;
   }
 
-  createStick(w, h) {
-    let arr = [];
-    let diam = this.config.wood.diameter;
-    let gap = diam - 2;
-    for (
-      let x = 100;
-      x < 100 + w * 2 * diam;
-      x += this.config.wood.diameter + gap
-    ) {
-      for (
-        let y = 100;
-        y < 100 + h * 2 * diam;
-        y += this.config.wood.diameter + gap
-      ) {
-        arr.push(this.addParticle(x, y));
-      }
-    } //for
-    this.addAutomaticConnections(arr);
-  }
+  // createStick(w, h) {
+  //   let arr = [];
+  //   let diam = this.diameter;
+  //   let gap = diam - 2;
+  //   for (let x = 100; x < 100 + w * 2 * diam; x += this.diameter + gap) {
+  //     for (let y = 100; y < 100 + h * 2 * diam; y += this.diameter + gap) {
+  //       arr.push(this.addParticle(x, y));
+  //     }
+  //   } //for
+  //   this.addAutomaticConnections(arr);
+  // }
 
   unHighlightAllParticles() {
     for (let p of this.particles) {
@@ -400,6 +393,37 @@ class ParticleSystem {
     }
     return this.grid;
   };
+  doScreenCameraMove() {
+    let margin = 50;
+    // console.log(
+    //   this.screenX,
+    //   this.screenY,
+    //   window.innerHeight - this.buttonPanelHeight - margin
+    // );
+
+    if (this.screenX > window.innerWidth - margin) {
+      this.mainContainer.x -= 10;
+    } else if (this.screenX < margin) {
+      this.mainContainer.x += 10;
+    }
+
+    if (this.screenY > window.innerHeight - this.buttonPanelHeight - margin) {
+      this.mainContainer.y -= 10;
+    } else if (this.screenY < margin) {
+      this.mainContainer.y += 10;
+    }
+
+    if (this.mainContainer.y > 0) this.mainContainer.y = 0;
+    if (this.mainContainer.x > 0) this.mainContainer.x = 0;
+
+    ///LIMITS:
+    let rightEndOfScreen = -this.worldWidth + window.innerWidth;
+    if (this.mainContainer.x < rightEndOfScreen)
+      this.mainContainer.x = rightEndOfScreen;
+
+    let bottomEnd = -this.worldHeight + window.innerHeight;
+    if (this.mainContainer.y < bottomEnd) this.mainContainer.y = bottomEnd;
+  }
 
   addClickListenerToCanvas() {
     let canvas = this.canvas;
@@ -423,10 +447,16 @@ class ParticleSystem {
     };
     canvas.onmousemove = (e) => {
       let box = canvas.getBoundingClientRect();
-      let x = e.x - box.x;
-      let y = e.y - box.y;
+
+      this.screenX = e.x - box.x;
+      this.screenY = e.y - box.y;
+
+      let x = this.screenX - this.mainContainer.x;
+      let y = this.screenY - this.mainContainer.y;
+
       this.mouseX = x;
       this.mouseY = y;
+
       if (!window.isDown && !window.keyIsDown) return;
 
       if (window.isDown == 2) {
@@ -479,31 +509,36 @@ class ParticleSystem {
     };
   }
 
-  addEventListenerToMouse() {
-    //THIS IS THE BURNING FUNCTION!
-    // Add event listener to handle particle interaction on click
-    this.canvas.addEventListener("mousemove", (event) => {
-      const rect = this.canvas.getBoundingClientRect();
-      const mouseX = event.clientX - rect.left;
-      const mouseY = event.clientY - rect.top;
-      const energy = 10000; // Energy to transfer on click
+  // addEventListenerToMouse() {
+  //   //THIS IS THE BURNING FUNCTION!
+  //   // Add event listener to handle particle interaction on click
+  //   this.canvas.addEventListener("mousemove", (event) => {
+  //     const rect = this.canvas.getBoundingClientRect();
+  //     const mouseX = event.clientX - rect.left;
 
-      // Check for particles near mouse pointer and set them on fire
-      for (const particle of this.particles) {
-        const distance = Math.sqrt(
-          Math.pow(mouseX - particle.x, 2) + Math.pow(mouseY - particle.y, 2)
-        );
-        if (distance <= 5) {
-          // particle.onFire = true;
-          particle.applyHeat(energy);
-          // console.log(particle)
-        }
-        // else {
-        //     particle.onFire = false;
-        // }
-      }
-    });
-  }
+  //     const mouseY = event.clientY - rect.top
+
+  //     const x = mouseX - this.mainContainer.x;
+  //     const y = mouseY - this.mainContainer.y;
+
+  //     const energy = 10000; // Energy to transfer on click
+
+  //     // // Check for particles near mouse pointer and set them on fire
+  //     // for (const particle of this.particles) {
+  //     //   const distance = Math.sqrt(
+  //     //     Math.pow(mouseX - particle.x, 2) + Math.pow(mouseY - particle.y, 2)
+  //     //   );
+  //     //   if (distance <= 5) {
+  //     //     // particle.onFire = true;
+  //     //     particle.applyHeat(energy);
+  //     //     // console.log(particle)
+  //     //   }
+  //     //   // else {
+  //     //   //     particle.onFire = false;
+  //     //   // }
+  //     // }
+  //   });
+  // }
   addFloor() {
     var ground = Bodies.rectangle(0, this.worldHeight + 90, 3000, 200, {
       restitution: 0,
@@ -605,19 +640,7 @@ class ParticleSystem {
     this.deltaTime = this.currentFrameTime - this.prevFrameTime;
     // Update all particles in the system
     this.COUNTER++;
-
-    // console.log(this.COUNTER, particleSystem.totalEnergyContained());
-
-    // setTimeout(() => {
-    //   this.fireContext.clearRect(
-    //     0,
-    //     0,
-    //     this.fireCanvas.width,
-    //     this.fireCanvas.height
-    //   );
-    // }, this.deltaTime * 1.1);
-
-    // this.clearLiquidCanvas();
+    this.doScreenCameraMove();
 
     for (const particle of this.particles) {
       particle.update(this.COUNTER);
