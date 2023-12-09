@@ -10,7 +10,7 @@ class ParticleSystem {
     //PERSPECTIVE STUFF
 
     this.minScaleOfSprites = 1;
-    this.maxScaleOfSprites = 4;
+    this.maxScaleOfSprites = 8;
     this.worldPerspective = 0.25;
     this.doPerspective = false;
     this.diameter = 4;
@@ -256,27 +256,30 @@ class ParticleSystem {
       },
     });
 
-    let mouse = this.Matter.Mouse.create(this.canvas);
-    let mouseConstraint = this.Matter.MouseConstraint.create(this.engine, {
-      mouse: mouse,
-      constraint: {
-        // length: 100,
-        stiffness: 0.5,
-        damping: 0.5,
-        render: {
-          anchors: true,
-          visible: false,
-        },
-      },
-    });
+    // let mouse = {
+    //   ...this.Matter.Mouse.create(this.canvas),
+    // };
+
+    // let mouseConstraint = this.Matter.MouseConstraint.create(this.engine, {
+    //   mouse: mouse,
+    //   constraint: {
+    //     // length: 100,
+    //     stiffness: 0.5,
+    //     damping: 0.5,
+    //     render: {
+    //       anchors: true,
+    //       visible: false,
+    //     },
+    //   },
+    // });
+
+    // // keep the mouse in sync with rendering
+    // this.render.mouse = mouse;
+    // this.world.add(this.engine.world, mouseConstraint || {});
 
     this.engine.world.gravity.y = 0;
 
-    this.world.add(this.engine.world, mouseConstraint);
     // World.add(engine.world, constr);
-
-    // keep the mouse in sync with rendering
-    this.render.mouse = mouse;
 
     // run the renderer
     this.Matter.Render.run(this.render);
@@ -431,8 +434,8 @@ class ParticleSystem {
     canvas.onmousedown = (e) => {
       window.isDown = e.which;
       let box = canvas.getBoundingClientRect();
-      let x = e.x - box.x;
-      let y = e.y - box.y;
+      let x = e.x - box.x - this.mainContainer.x;
+      let y = e.y - box.y - this.mainContainer.y;
       if (e.which == 1) this.indicateWhichParticleItIs(x, y);
       else if (e.which == 3) {
         if (this.checkIfAPointCollidesWithTheGrounds(x, y)) {
@@ -477,6 +480,14 @@ class ParticleSystem {
         // console.log(1);
         //W
         this.addParticle(x, y, true);
+      } else if (window.keyIsDown == 77) {
+        //M
+        for (let i = 0; i < 10; i++)
+          this.addParticle(
+            x + Math.random() * 20,
+            y + Math.random() * 20,
+            false
+          );
       } else if (window.keyIsDown == 72) {
         //H (heat)
         // let closeParticles = this.getParticlesAndTheirDistance(x, y, null);
@@ -614,7 +625,7 @@ class ParticleSystem {
     });
     particle.particles = this.particles;
     this.particles.push(particle);
-
+    window.tempParticle = particle;
     return particle;
   }
 

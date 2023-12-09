@@ -27,7 +27,7 @@ class Bullet {
   }
 
   remove() {
-    this.particleSystem.pixiApp.stage.removeChild(this.graphics);
+    this.particleSystem.mainContainer.removeChild(this.graphics);
 
     this.world.remove(this.engine.world, this.body);
 
@@ -66,7 +66,7 @@ class Bullet {
     this.graphics.beginFill("0x000000");
     this.graphics.drawCircle(0, 0, 2);
     this.graphics.endFill();
-    this.particleSystem.pixiApp.stage.addChild(this.graphics);
+    this.particleSystem.mainContainer.addChild(this.graphics);
   }
 
   removeIfTheBulletIsLost() {

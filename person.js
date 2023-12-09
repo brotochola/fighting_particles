@@ -69,7 +69,6 @@ class Person {
       // Emitter configuration, edit this to change the look
       // of the emitter
       {
-        emit: true,
         lifetime: {
           min: 0.1,
           max: 1,
@@ -210,7 +209,7 @@ class Person {
     // this.emitter.update(this.particleSystem.getDurationOfOneFrame() * 100000);
     // this.emitter.initBehaviors[3].min = angle;
     // this.emitter.initBehaviors[3].max = angle;
-    this.emitter.emit = true;
+    // this.emitter.emit = true;
   }
 
   fireBullet() {
@@ -248,7 +247,7 @@ class Person {
     // if (part instanceof Bullet) setTimeout(() => this.die(), 100);
   }
 
-  createBody() {
+  createBody(radius) {
     let bodyOptions = {
       restitution: 0.1,
       mass: 0.01,
@@ -279,7 +278,7 @@ class Person {
     this.body = this.Matter.Bodies.circle(
       this.pos.x,
       this.pos.y,
-      this.diameter,
+      radius || this.diameter,
       bodyOptions
     );
 
@@ -622,9 +621,22 @@ class Person {
 
   getMyAbsolutePosition() {
     return {
-      y: this.body.position.y + this.particleSystem.mainContainer.y,
-      x: this.body.position.x + this.particleSystem.mainContainer.x,
+      x: this.pos.x + this.particleSystem.mainContainer.x,
+      y: this.pos.y + this.particleSystem.mainContainer.y,
     };
+  }
+
+  getRatioOfX() {
+    let viewportWidth = window.innerWidth;
+
+    return this.getMyAbsolutePosition().x / viewportWidth;
+  }
+
+  getRatioOfY() {
+    let viewPortHeight =
+      window.innerHeight - this.particleSystem.buttonPanelHeight;
+
+    return this.getMyAbsolutePosition().y / viewPortHeight;
   }
 
   calculateScaleAccordingToY() {
@@ -634,34 +646,55 @@ class Person {
 
     // DEFINE SCALE
     if (this.particleSystem.doPerspective) {
-      this.scale =
-        (this.getMyAbsolutePosition().y / this.particleSystem.worldHeight) *
-          dif +
-        this.particleSystem.minScaleOfSprites;
+      this.scale = Math.pow(dif, this.ratioOfY);
     } else {
       this.scale = 2;
     }
     //SCALE.Y DOESN'T DEPEND ON WHICH SIDE THE PARTICLE IS WALKING TOWARDS
 
-    this.image.scale.y = this.scale;
+    this.container.scale.y = this.scale;
   }
-
-  render() {
-    // Render the particle on the canvas
-
+  calculateContainersY() {
     let yFactor = this.particleSystem.doPerspective
       ? this.scale * this.particleSystem.worldPerspective
       : 1;
+
+    let y = this.pos.y - this.image.texture.baseTexture.height * 2;
+    let ret;
+    let cameraY = -this.container.parent.y;
+    ret = (y - cameraY) * yFactor + cameraY;
+    return ret;
+  }
+  doNotShowIfOutOfScreen() {
+    this.ratioOfY = this.getRatioOfY();
+    this.ratioOfX = this.getRatioOfX();
+    if (
+      this.ratioOfY < -0.1 ||
+      this.ratioOfY > 1.1 ||
+      this.ratioOfX > 1.1 ||
+      this.ratioOfX < -0.1
+    ) {
+      this.visible = false;
+    } else {
+      this.visible = true;
+    }
+    return this.visible;
+  }
+  render() {
+    // Render the particle on the canvas
 
     // if (this.graphics) {
     //   this.graphics.x = this.pos.x;
     //   this.graphics.y = this.pos.y * yFactor;
     // }
-
-    this.container.y =
-      (this.pos.y - this.image.texture.baseTexture.height * 2) * yFactor;
-    this.container.x = this.pos.x;
+    this.doNotShowIfOutOfScreen();
+    if (!this.visible) return;
     this.calculateScaleAccordingToY();
+
+    this.container.y = this.calculateContainersY();
+
+    this.container.x = this.pos.x;
+    //COMPENSATE THE POSITION OF THE LITTLE GUY
 
     if (this.vel.x < 0) this.makeMeLookLeft();
     else this.makeMeLookRight();
@@ -755,5 +788,12 @@ class Person {
     // this.image.scale.y = 2;
 
     this.container.addChildAt(this.image, 0);
+  }
+
+  changeSizeOfPhysicsCircle(radius) {
+    if (this.body) {
+      this.world.remove(this.engine.world, this.body);
+    }
+    this.createBody(radius);
   }
 }
