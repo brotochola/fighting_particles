@@ -62,6 +62,11 @@ class ParticleSystem {
     });
   }
 
+  togglePerspectiveMode() {
+    this.doPerspective = !this.doPerspective;
+    this.bg.visible = !this.bg.visible;
+  }
+
   getDurationOfOneFrame() {
     return 1000 / PIXI.ticker.shared.FPS;
   }
@@ -408,6 +413,8 @@ class ParticleSystem {
     //   window.innerHeight - this.buttonPanelHeight - margin
     // );
 
+    let leftLimit = this.doPerspective ? window.innerWidth / 2 : 0;
+
     if (this.screenX > window.innerWidth - margin) {
       this.mainContainer.x -= 10;
     } else if (this.screenX < margin) {
@@ -420,15 +427,15 @@ class ParticleSystem {
       this.mainContainer.y += 10;
     }
 
-    if (this.mainContainer.y > 0) this.mainContainer.y = 0;
-    if (this.mainContainer.x > 0) this.mainContainer.x = 0;
+    if (this.mainContainer.x > leftLimit) this.mainContainer.x = leftLimit;
+    if (this.mainContainer.y > leftLimit) this.mainContainer.y = leftLimit;
 
     ///LIMITS:
-    let rightEndOfScreen = -this.worldWidth + window.innerWidth;
+    let rightEndOfScreen = -this.worldWidth + window.innerWidth - leftLimit;
     if (this.mainContainer.x < rightEndOfScreen)
       this.mainContainer.x = rightEndOfScreen;
 
-    let bottomEnd = -this.worldHeight + window.innerHeight;
+    let bottomEnd = -this.worldHeight + window.innerHeight - leftLimit;
     if (this.mainContainer.y < bottomEnd) this.mainContainer.y = bottomEnd;
   }
 

@@ -643,14 +643,22 @@ class Person {
 
     // DEFINE SCALE
     if (this.particleSystem.doPerspective) {
-      // this.scale = Math.pow(dif, this.ratioOfY);
-      this.scale = dif * this.ratioOfY + this.particleSystem.minScaleOfSprites;
+      this.scale = Math.pow(dif, this.ratioOfY);
+      // this.scale = dif * this.ratioOfY + this.particleSystem.minScaleOfSprites;
     } else {
       this.scale = 2;
     }
     //SCALE.Y DOESN'T DEPEND ON WHICH SIDE THE PARTICLE IS WALKING TOWARDS
 
     this.container.scale.y = this.scale;
+  }
+
+  calculateContainersX() {
+    let amount = window.innerWidth * 0.25;
+    let factor = this.scale * amount;
+    return this.particleSystem.doPerspective
+      ? this.pos.x + (this.ratioOfX - 0.5) * factor
+      : this.pos.x;
   }
   calculateContainersY() {
     let y = this.pos.y - this.image.texture.baseTexture.height * 2;
@@ -705,7 +713,7 @@ class Person {
 
     this.calculateScaleAccordingToY();
 
-    this.container.x = this.pos.x;
+    this.container.x = this.calculateContainersX();
     //COMPENSATE THE POSITION OF THE LITTLE GUY
 
     if (this.vel.x < 0) this.makeMeLookLeft();
