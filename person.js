@@ -380,15 +380,15 @@ class Person {
   update(COUNTER) {
     this.COUNTER = COUNTER;
 
-    this.lastY = this.pos.y;
-    this.lastX = this.pos.x;
-    //get the position in the matterjs world and have it here
-
-    this.pos.x = this.body.position.x;
-    this.pos.y = this.body.position.y;
-    this.container.zIndex = Math.floor(this.pos.y);
-
     if (this.state != "dead") {
+      this.lastY = this.pos.y;
+      this.lastX = this.pos.x;
+      //get the position in the matterjs world and have it here
+
+      this.pos.x = this.body.position.x;
+      this.pos.y = this.body.position.y;
+      this.container.zIndex = Math.floor(this.pos.y);
+
       this.updateMyPositionInCell();
       this.nearParticles = this.getNearParticles();
       this.updateStateAccordingToStuff();
@@ -466,7 +466,7 @@ class Person {
       let framesPassed = this.COUNTER - this.animationStartedAt;
       let whichFrame = Math.floor(framesPassed / this.spriteSpeed);
       if (whichFrame >= cantFrames) {
-        this.iAmTotallyDead();
+        this.amITotallyDead();
         return;
       }
       x = this.spriteWidth * whichFrame;
@@ -480,7 +480,7 @@ class Person {
     );
   }
 
-  iAmTotallyDead() {
+  amITotallyDead() {
     this.world.remove(this.engine.world, this.body);
 
     this.particleSystem.particles = this.particleSystem.particles.filter(
@@ -633,10 +633,7 @@ class Person {
   }
 
   getRatioOfY() {
-    let viewPortHeight =
-      window.innerHeight - this.particleSystem.buttonPanelHeight;
-
-    return this.getMyAbsolutePosition().y / viewPortHeight;
+    return this.getMyAbsolutePosition().y / this.particleSystem.viewPortHeight;
   }
 
   calculateScaleAccordingToY() {
@@ -646,7 +643,8 @@ class Person {
 
     // DEFINE SCALE
     if (this.particleSystem.doPerspective) {
-      this.scale = Math.pow(dif, this.ratioOfY);
+      // this.scale = Math.pow(dif, this.ratioOfY);
+      this.scale = dif * this.ratioOfY + this.particleSystem.minScaleOfSprites;
     } else {
       this.scale = 2;
     }
@@ -655,19 +653,29 @@ class Person {
     this.container.scale.y = this.scale;
   }
   calculateContainersY() {
-    let yFactor = this.particleSystem.doPerspective
-      ? this.scale * this.particleSystem.worldPerspective
-      : 1;
-
     let y = this.pos.y - this.image.texture.baseTexture.height * 2;
-    let ret;
+    if (!this.particleSystem.doPerspective) return y;
+
+    let yFactor = this.scale * this.particleSystem.worldPerspective;
+
+    // let ret;
     let cameraY = -this.container.parent.y;
-    ret = (y - cameraY) * yFactor + cameraY;
-    return ret;
+    let whatToReturnIfWeDoPerspective = (y - cameraY) * yFactor + cameraY;
+    // let whatToReturnIfWeDoPerspective = 0.1 * this.scale * y;
+
+    return whatToReturnIfWeDoPerspective;
+  }
+
+  getDistanceToCameraInY() {
+    return this.particleSystem.viewPortHeight - this.getMyAbsolutePosition().y;
+  }
+
+  distanceToCamera() {
+    return Math.sqrt(
+      this.particleSystem.cameraHeight ** 2 + this.getDistanceToCameraInY() ** 2
+    );
   }
   doNotShowIfOutOfScreen() {
-    this.ratioOfY = this.getRatioOfY();
-    this.ratioOfX = this.getRatioOfX();
     if (
       this.ratioOfY < -0.1 ||
       this.ratioOfY > 1.1 ||
@@ -687,11 +695,15 @@ class Person {
     //   this.graphics.x = this.pos.x;
     //   this.graphics.y = this.pos.y * yFactor;
     // }
+    this.ratioOfY = this.getRatioOfY();
+    this.ratioOfX = this.getRatioOfX();
+
     this.doNotShowIfOutOfScreen();
     if (!this.visible) return;
-    this.calculateScaleAccordingToY();
 
     this.container.y = this.calculateContainersY();
+
+    this.calculateScaleAccordingToY();
 
     this.container.x = this.pos.x;
     //COMPENSATE THE POSITION OF THE LITTLE GUY

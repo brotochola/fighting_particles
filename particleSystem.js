@@ -15,8 +15,12 @@ class ParticleSystem {
     this.doPerspective = false;
     this.diameter = 4;
 
+    this.cameraHeight = window.innerHeight / 2;
+
     this.CELL_SIZE = 40;
     this.buttonPanelHeight = 100;
+
+    this.viewPortHeight = window.innerHeight - this.buttonPanelHeight;
 
     this.Matter = Matter;
     // Matter.use(MatterAttractors);
