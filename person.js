@@ -627,9 +627,7 @@ class Person {
   }
 
   getRatioOfX() {
-    let viewportWidth = window.innerWidth;
-
-    return this.getMyAbsolutePosition().x / viewportWidth;
+    return this.getMyAbsolutePosition().x / this.particleSystem.viewportWidth;
   }
 
   getRatioOfY() {
@@ -654,7 +652,7 @@ class Person {
   }
 
   calculateContainersX() {
-    let amount = window.innerWidth * 0.25;
+    let amount = this.particleSystem.viewportWidth * 0.25;
     let factor = this.scale * amount;
     return this.particleSystem.doPerspective
       ? this.pos.x + (this.ratioOfX - 0.5) * factor

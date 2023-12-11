@@ -21,14 +21,15 @@ class ParticleSystem {
     this.buttonPanelHeight = 100;
 
     this.viewPortHeight = window.innerHeight - this.buttonPanelHeight;
+    this.viewportWidth = window.innerWidth;
 
     this.Matter = Matter;
     // Matter.use(MatterAttractors);
     this.engine = Matter.Engine.create();
     this.world = Matter.World;
 
-    this.worldHeight = height || window.innerHeight - 100;
-    this.worldWidth = width || window.innerWidth;
+    this.worldHeight = height;
+    this.worldWidth = width;
 
     // this.canvas = document.getElementById(canvasId);
     // this.context = this.canvas.getContext("2d");
@@ -65,6 +66,12 @@ class ParticleSystem {
   togglePerspectiveMode() {
     this.doPerspective = !this.doPerspective;
     this.bg.visible = !this.bg.visible;
+    let htmlBG = document.querySelector("#bg");
+    if (htmlBG.style.display == "none") {
+      htmlBG.style.display = "block";
+    } else {
+      htmlBG.style.display = "none";
+    }
   }
 
   getDurationOfOneFrame() {
@@ -73,11 +80,12 @@ class ParticleSystem {
 
   createPixiStage(cb) {
     this.renderer = PIXI.autoDetectRenderer(
-      window.innerWidth,
+      this.viewportWidth,
       window.innerHeight - this.buttonPanelHeight,
       {
-        // backgroundColor: "green",
+        // backgroundColor: "0x1099bb",
         antialias: false,
+        backgroundAlpha: 0,
         transparent: true,
         resolution: 1,
         autoresize: false,
@@ -85,7 +93,9 @@ class ParticleSystem {
     );
     this.loader = PIXI.Loader.shared;
     this.pixiApp = new PIXI.Application({
-      width: window.innerWidth,
+      backgroundAlpha: 0,
+      transparent: true,
+      width: this.viewportWidth,
       height: window.innerHeight - this.buttonPanelHeight,
     });
 
@@ -413,9 +423,9 @@ class ParticleSystem {
     //   window.innerHeight - this.buttonPanelHeight - margin
     // );
 
-    let leftLimit = this.doPerspective ? window.innerWidth / 2 : 0;
+    let leftLimit = this.doPerspective ? this.viewportWidth / 2 : 0;
 
-    if (this.screenX > window.innerWidth - margin) {
+    if (this.screenX > this.viewportWidth - margin) {
       this.mainContainer.x -= 10;
     } else if (this.screenX < margin) {
       this.mainContainer.x += 10;
@@ -431,12 +441,45 @@ class ParticleSystem {
     if (this.mainContainer.y > leftLimit) this.mainContainer.y = leftLimit;
 
     ///LIMITS:
-    let rightEndOfScreen = -this.worldWidth + window.innerWidth - leftLimit;
+    let rightEndOfScreen = -this.worldWidth + this.viewportWidth - leftLimit;
     if (this.mainContainer.x < rightEndOfScreen)
       this.mainContainer.x = rightEndOfScreen;
 
     let bottomEnd = -this.worldHeight + window.innerHeight - leftLimit;
     if (this.mainContainer.y < bottomEnd) this.mainContainer.y = bottomEnd;
+
+    this.movePerspectiveCSSBackground();
+  }
+
+  getRatioOfBGX() {
+    return -this.mainContainer.x / (this.worldWidth - this.viewportWidth);
+  }
+
+  getRatioOfBGY() {
+    return -this.mainContainer.y / (this.worldHeight - this.viewPortHeight);
+  }
+
+  movePerspectiveCSSBackground() {
+    let rotationX = 40;
+
+    let ratioOfXForBG = this.getRatioOfBGX();
+    let ratioOfYForBG = this.getRatioOfBGY();
+
+    let xOffset = (ratioOfXForBG * -58).toFixed(3);
+    let yOffset = (-37 * ratioOfYForBG).toFixed(3);
+
+    console.log(yOffset);
+    let stringToPass =
+      "rotateX(" +
+      rotationX +
+      "deg) translate3d(calc(-100vw + " +
+      xOffset +
+      "%), " +
+      yOffset +
+      "%, 105vw)";
+
+    // console.log(stringToPass);
+    document.querySelector("#bg").style.transform = stringToPass;
   }
 
   addClickListenerToCanvas() {
