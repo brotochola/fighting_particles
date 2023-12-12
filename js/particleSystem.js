@@ -13,7 +13,6 @@ class ParticleSystem {
     this.maxScaleOfSprites = 8;
     this.worldPerspective = 0.25;
     this.doPerspective = false;
-    this.diameter = 4;
 
     this.cameraHeight = window.innerHeight / 2;
 
@@ -323,7 +322,7 @@ class ParticleSystem {
     let closeP = this.getParticlesAndTheirDistance(x, y);
     if (!closeP[0]) return;
 
-    const maxDistance = this.diameter * 2;
+    const maxDistance = 20;
 
     if (
       dist(x, y, closeP[0].body.position.x, closeP[0].body.position.y) <
@@ -468,7 +467,7 @@ class ParticleSystem {
     let xOffset = (ratioOfXForBG * -58).toFixed(3);
     let yOffset = (-37 * ratioOfYForBG).toFixed(3);
 
-    console.log(yOffset);
+    // console.log(yOffset);
     let stringToPass =
       "rotateX(" +
       rotationX +
@@ -671,8 +670,6 @@ class ParticleSystem {
     const particle = new Person({
       x,
       y,
-
-      diameter: 20,
       particleSystem: this,
       team: window.addingParticlesOfTeam,
       isStatic,
@@ -907,4 +904,20 @@ class ParticleSystem {
   //     this.constraintsVisible ? "constraints visible" : "constraints hidden"
   //   );
   // }
+
+  async loadLevel(num) {
+    let level = await fetch("xfl/LIBRARY/level" + num + ".xml");
+    let res = await level.text();
+    let itemsOfLevel = getMovieClipsFromFlashSymbolXML(parseXmlToJSON(res));
+    console.log(itemsOfLevel);
+    this.restartLevel(itemsOfLevel);
+  }
+  restartLevel(data) {
+    this.particles.forEach((k) => k.remove());
+    data.forEach((k) => {
+      if (k.type == "chaboncito") {
+        this.addParticle(Math.floor(k.x), Math.floor(k.y), false);
+      }
+    });
+  }
 }

@@ -123,3 +123,70 @@ function rgba2hex2(rgba) {
   newColor = "0x" + newColor.substr(0, newColor.length - 2);
   return newColor;
 }
+
+function parseXmlToJSON(xmlString) {
+  // Create an XML DOMParser
+  const parser = new DOMParser();
+
+  // Parse the XML string
+  const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+
+  // Function to convert XML node to JSON
+  function xmlNodeToJson(node) {
+    const obj = {};
+
+    // If the node has child nodes, recursively convert them
+    if (node.childNodes.length > 0) {
+      for (let i = 0; i < node.childNodes.length; i++) {
+        const child = node.childNodes[i];
+
+        // Ignore empty text nodes
+        if (child.nodeType === 3 && !child.nodeValue.trim()) {
+          continue;
+        }
+
+        // Check if the child is an element or a text node
+        if (child.nodeType === 1) {
+          // Element node
+          if (obj[child.nodeName]) {
+            if (Array.isArray(obj[child.nodeName])) {
+              obj[child.nodeName].push(xmlNodeToJson(child));
+            } else {
+              obj[child.nodeName] = [obj[child.nodeName], xmlNodeToJson(child)];
+            }
+          } else {
+            obj[child.nodeName] = xmlNodeToJson(child);
+          }
+        } else if (child.nodeType === 3) {
+          // Text node
+          obj["#text"] = child.nodeValue.trim();
+        }
+      }
+    }
+
+    // If the node has attributes, add them to the object
+    if (node.attributes && node.attributes.length > 0) {
+      obj["@attributes"] = {};
+      for (let i = 0; i < node.attributes.length; i++) {
+        const attribute = node.attributes[i];
+        obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+      }
+    }
+
+    return obj;
+  }
+
+  // Convert the root XML node to JSON
+  return xmlNodeToJson(xmlDoc.documentElement);
+}
+
+function getMovieClipsFromFlashSymbolXML(obj) {
+  let arrOfMCs =
+    obj.timeline.DOMTimeline.layers.DOMLayer.frames.DOMFrame.elements
+      .DOMSymbolInstance;
+
+  return arrOfMCs.map((k) => {
+    let pos = k.matrix.Matrix["@attributes"];
+    return { x: pos.tx, y: pos.ty, type: k["@attributes"].libraryItemName };
+  });
+}

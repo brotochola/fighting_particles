@@ -2,12 +2,13 @@
 <html>
 
 <head>
-    <script src="timerHack.js"> </script>
-    <script src="pixi.min.js"> </script>
+    <!-- <script src="js/genericObject.js"> </script> -->
+    <script src="js/timerHack.js"> </script>
+    <script src="js/pixi.min.js"> </script>
 
-    <script src="pixi-particles.js"> </script>
+    <script src="js/pixi-particles.js"> </script>
 
-    <script src="particle-emitter.js"> </script>
+    <script src="js/particle-emitter.js"> </script>
 
 
     <style>
@@ -110,15 +111,15 @@
             display: none;
         }
     </style>
-    <script src="p5.min.js"></script>
-    <script src="matter.js"></script>
-    <script src="utils.js"></script>
-    <script src="person.js"></script>
-    <script src="bullet.js"> </script>
-    <script src="cell.js"> </script>
+    <script src="js/p5.min.js"></script>
+    <script src="js/matter.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/person.js"></script>
+    <script src="js/bullet.js"> </script>
+    <script src="js/cell.js"> </script>
 
 
-    <script src="particleSystem.js"></script>
+    <script src="js/particleSystem.js"></script>
 
 </head>
 
@@ -127,7 +128,7 @@
         <div id="bg" style="display:none"></div>
     </div>
 
-    <script src="fight.js"></script>
+    <script src="js/fight.js"></script>
 
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
         <filter id="water-goo">
@@ -157,12 +158,14 @@
 
         <button onclick=" particleSystem.togglePerspectiveMode()">perspective</button>
         <button onclick=" window.location.reload()">remove all bodies</button>
+        <button onclick=" particleSystem.loadLevel(1)">load level 1</button>
+        <button onclick=" particleSystem.loadLevel(2)">load level 2</button>
 
 
     </div>
 
 
-    <script src="alert.js"></script>
+    <script src="js/alert.js"></script>
 </body>
 
 </html>

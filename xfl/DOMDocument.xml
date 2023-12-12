@@ -1,0 +1,39 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="1920" height="1080" currentTimeline="1" xflVersion="2.980" creatorInfo="Adobe Animate" platform="Windows" versionInfo="Saved by Animate Windows 21.0 build 35450" majorVersion="21" buildNumber="35450" viewAngle3D="122.353661987282" vanishingPoint3DX="960" vanishingPoint3DY="540" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" filetypeGUID="3CE50BB6-55CF-47A6-B591-01286DDDC64C" fileGUID="B15F70A61ED86E4FA49C498F1F6D4412">
+     <media>
+          <DOMBitmapItem name="Bitmap 1" itemID="65773795-00000210" sourceExternalFilepath="../xfl/LIBRARY/Bitmap 1.png" sourceLastImported="1702311829" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 1.png" bitmapDataHRef="M 1 1702311829.dat" frameRight="900" frameBottom="920"/>
+          <DOMBitmapItem name="casita" itemID="657739ca-0000021d" sourceExternalFilepath="Bitmap 2.png" sourceLastImported="1702312394" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="casita.png" bitmapDataHRef="M 2 1702312391.dat" frameRight="2980" frameBottom="3120"/>
+     </media>
+     <symbols>
+          <Include href="casita_mp.xml" loadImmediate="false" itemID="657739e5-0000021f" lastModified="1702312421"/>
+          <Include href="chaboncito.xml" loadImmediate="false" itemID="65773c77-0000022d" lastModified="1702313079"/>
+          <Include href="level1.xml" loadImmediate="false" itemID="65776f8e-00000279" lastModified="1702326158"/>
+          <Include href="level2.xml" loadImmediate="false" itemID="65776f63-00000273" lastModified="1702326284"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="Scene 1" layerDepthEnabled="true">
+               <layers>
+                    <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="level2" selected="true">
+                                             <matrix>
+                                                  <Matrix tx="56" ty="78"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="1732.05" y="706.15"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <scripts>
+          <GlobalScripts language="Javascript"/>
+     </scripts>
+     <PrinterSettings/>
+     <publishHistory/>
+</DOMDocument>

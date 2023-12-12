@@ -2,6 +2,7 @@
 // Particle class representing each molecule
 class Person {
   constructor(opt) {
+    // super(opt);
     const { x, y, particleSystem, team, isStatic } = opt;
     this.name = generateID();
     this.team = team;
