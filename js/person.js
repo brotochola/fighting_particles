@@ -12,6 +12,11 @@ class Person {
     this.isStatic = isStatic;
     this.world = particleSystem.world;
 
+    ////////////////////// PANEL //////////////////////
+    ///////////////////////////////////////////////////
+
+    ////////fin panel//////
+
     this.diameter = 10;
     this.health = 1;
     this.strength = Math.random() * 0.005 + 0.005;
