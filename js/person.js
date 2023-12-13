@@ -1,46 +1,31 @@
 // https://codepen.io/davepvm/pen/Hhstl
 // Particle class representing each molecule
-class Person {
+class Person extends GenericObject {
   constructor(opt) {
-    // super(opt);
+    super(opt);
     const { x, y, particleSystem, team, isStatic } = opt;
+
+    //PARAMS OF THIS PERSON:
     this.name = generateID();
     this.team = team;
-    this.particleSystem = particleSystem;
-    this.Matter = particleSystem.Matter;
-    this.engine = particleSystem.engine;
-    this.isStatic = isStatic;
-    this.world = particleSystem.world;
-
-    ////////////////////// PANEL //////////////////////
-    ///////////////////////////////////////////////////
-
-    ////////fin panel//////
-
     this.diameter = 10;
     this.health = 1;
     this.strength = Math.random() * 0.005 + 0.005;
-    this.lastTimeItFlipped = 0;
-
-    this.pos = new p5.Vector(x, y);
-    this.vel = new p5.Vector(0, 0);
-    this.amILookingLeft = false;
-
-    this.createBody();
-    // this.createCircleInPixi();
-
-    this.createContainers();
-
-    // this.createShadow();
-    this.createSprite("idle_" + this.team);
-
-    this.nearParticles = [];
-
     this.spriteWidth = 12;
     this.spriteHeight = 21;
     this.spriteSpeed = 8;
-
     this.startingFrame = Math.floor(Math.random() * 7);
+    /////////////////////////////
+
+    //initialize variables:
+    this.nearParticles = [];
+    this.vel = new p5.Vector(0, 0);
+    this.lastTimeItFlipped = 0;
+    this.amILookingLeft = false;
+
+    this.createBody(this.diameter, this.diameter, "circle");
+    this.createContainers();
+    this.createSprite("idle_" + this.team);
 
     // this.heatCapacityAccordingToSubstance();
     // this.massAccordingToSubstance();
@@ -253,138 +238,49 @@ class Person {
     // if (part instanceof Bullet) setTimeout(() => this.die(), 100);
   }
 
-  createBody(radius) {
-    let bodyOptions = {
-      restitution: 0.1,
-      mass: 0.01,
-      friction: 1,
-      slop: 0,
-      frictionAir: 0.5,
-      label: "particle",
-      // isSensor: true,
-      render: { visible: false },
-      isStatic: false,
-      // density: 99999999999999
-      // mass: 0
-      plugin: {
-        // attractors: [
-        //   (bodyA, bodyB) => {
-        //     let factor = this.getAttractionFactorAccordingToTemperature();
-        //     let distX = bodyA.position.x - bodyB.position.x;
-        //     let distY = bodyA.position.y - bodyB.position.y;
-        //     return {
-        //       x: (bodyA.position.x - bodyB.position.x) * 1e-6 * factor,
-        //       y: (bodyA.position.y - bodyB.position.y) * 1e-6 * factor,
-        //     };
-        //   },
-        // ],
-      },
-    };
+  // createBody(radius) {
+  //   let bodyOptions = {
+  //     restitution: 0.1,
+  //     mass: 0.01,
+  //     friction: 1,
+  //     slop: 0,
+  //     frictionAir: 0.5,
+  //     label: "particle",
+  //     // isSensor: true,
+  //     render: { visible: false },
+  //     isStatic: false,
+  //     // density: 99999999999999
+  //     // mass: 0
+  //     plugin: {
+  //       // attractors: [
+  //       //   (bodyA, bodyB) => {
+  //       //     let factor = this.getAttractionFactorAccordingToTemperature();
+  //       //     let distX = bodyA.position.x - bodyB.position.x;
+  //       //     let distY = bodyA.position.y - bodyB.position.y;
+  //       //     return {
+  //       //       x: (bodyA.position.x - bodyB.position.x) * 1e-6 * factor,
+  //       //       y: (bodyA.position.y - bodyB.position.y) * 1e-6 * factor,
+  //       //     };
+  //       //   },
+  //       // ],
+  //     },
+  //   };
 
-    this.body = this.Matter.Bodies.circle(
-      this.pos.x,
-      this.pos.y,
-      radius || this.diameter,
-      bodyOptions
-    );
+  //   this.body = this.Matter.Bodies.circle(
+  //     this.pos.x,
+  //     this.pos.y,
+  //     radius || this.diameter,
+  //     bodyOptions
+  //   );
 
-    this.body.constraints = []; //i need to keep track which constraints each body has
-    this.body.particle = this;
+  //   this.body.constraints = []; //i need to keep track which constraints each body has
+  //   this.body.particle = this;
 
-    this.world.add(this.engine.world, [this.body]);
-  }
-
-  removeImage() {
-    if (this.image && this.image.parent)
-      this.image.parent.removeChild(this.image);
-  }
-
-  remove(opt) {
-    // console.log("removing");
-
-    try {
-      this.cell.removeMe(this);
-    } catch (e) {
-      console.warn("no cell");
-    }
-
-    // for (let constr of this.body.constraints) {
-    //   this.world.remove(this.engine.world, constr);
-    // }
-
-    this.particleSystem.mainContainer.removeChild(this.graphics);
-
-    this.world.remove(this.engine.world, this.body);
-    this.removeImage();
-
-    this.particleSystem.particles = this.particleSystem.particles.filter(
-      (k) => k.body.id != this.body.id
-    );
-
-    this.removeMeAsTarget();
-
-    // if ((opt || {}).leaveAshes) {
-    // }
-  }
-
-  removeMeAsTarget() {
-    let particlesWithMeAsTarget = this.particleSystem.particles.filter(
-      (k) => k.target == this
-    );
-    if (particlesWithMeAsTarget.length > 0) {
-      particlesWithMeAsTarget.map((k) => k.setTarget(null));
-    }
-  }
-  updateMyPositionInCell() {
-    // let ret;
-
-    this.cellX = Math.floor(this.pos.x / this.particleSystem.CELL_SIZE);
-    this.cellY = -Math.floor(-this.pos.y / this.particleSystem.CELL_SIZE);
-    if (isNaN(this.cellY)) {
-      console.warn(this);
-      debugger;
-    }
-    let newCell = (this.particleSystem.grid[this.cellY] || [])[this.cellX];
-
-    if (this.cell && newCell && this.cell == newCell) {
-      //you're already here
-      return;
-    }
-
-    if (this.cell) this.cell.removeMe(this);
-
-    try {
-      this.cell = newCell;
-      this.cell.addMe(this);
-    } catch (e) {
-      console.error("this particle is not in any cell", this.cellX, this.cellY);
-      this.remove();
-      // debugger;
-    }
-
-    // return ret;
-  }
-
-  getParticlesFromCell() {
-    if (!this.cell) return;
-    return this.cell.particlesHere;
-  }
-  getParticlesFromCloseCells() {
-    //from this cell and neighbour cells
-    if (!this.cell) return [];
-    let arr = [];
-    arr.push(...this.getParticlesFromCell());
-
-    for (let cell of this.cell.getNeighbours()) {
-      for (let p of cell.particlesHere) {
-        arr.push(p);
-      }
-    }
-    return arr;
-  }
+  //   this.world.add(this.engine.world, [this.body]);
+  // }
 
   update(COUNTER) {
-    this.COUNTER = COUNTER;
+    this.genericUpdate(COUNTER);
 
     if (this.state != "dead") {
       this.lastY = this.pos.y;
@@ -412,18 +308,6 @@ class Person {
     this.render();
   }
 
-  getFullwidthOfCurrentSprite() {
-    return (
-      (this.particleSystem.res[this.whichSpriteAmIShowing()] || {}).data || {}
-    ).width;
-  }
-
-  whichSpriteAmIShowing() {
-    return (
-      ((((this.image || {}).texture || {}).baseTexture || {}).textureCacheIds ||
-        [])[0] || ""
-    );
-  }
   changeSpriteAccordingToStateAndVelocity() {
     let vel = new p5.Vector(this.body.velocity.x, this.body.velocity.y);
 
@@ -550,7 +434,6 @@ class Person {
 
     //  console.log(this.vel);
   }
-  getMaxSpeed = () => 10;
 
   updateStateAccordingToStuff() {
     // this.state = "searching";
@@ -593,12 +476,6 @@ class Person {
     return arr;
   }
 
-  highlight() {
-    this.highlighted = true;
-  }
-  unHighlight() {
-    this.highlighted = false;
-  }
   makeMeLookLeft() {
     // if (this.COUNTER - this.lastTimeItFlipped < this.spriteSpeed) return;
 
@@ -625,59 +502,6 @@ class Person {
     this.amILookingLeft = false;
   }
 
-  getMyAbsolutePosition() {
-    return {
-      x: this.pos.x + this.particleSystem.mainContainer.x,
-      y: this.pos.y + this.particleSystem.mainContainer.y,
-    };
-  }
-
-  getRatioOfX() {
-    return this.getMyAbsolutePosition().x / this.particleSystem.viewportWidth;
-  }
-
-  getRatioOfY() {
-    return this.getMyAbsolutePosition().y / this.particleSystem.viewPortHeight;
-  }
-
-  calculateScaleAccordingToY() {
-    let dif =
-      this.particleSystem.maxScaleOfSprites -
-      this.particleSystem.minScaleOfSprites;
-
-    // DEFINE SCALE
-    if (this.particleSystem.doPerspective) {
-      this.scale = Math.pow(dif, this.ratioOfY);
-      // this.scale = dif * this.ratioOfY + this.particleSystem.minScaleOfSprites;
-    } else {
-      this.scale = 2;
-    }
-    //SCALE.Y DOESN'T DEPEND ON WHICH SIDE THE PARTICLE IS WALKING TOWARDS
-
-    this.container.scale.y = this.scale;
-  }
-
-  calculateContainersX() {
-    let amount = this.particleSystem.viewportWidth * 0.25;
-    let factor = this.scale * amount;
-    return this.particleSystem.doPerspective
-      ? this.pos.x + (this.ratioOfX - 0.5) * factor
-      : this.pos.x;
-  }
-  calculateContainersY() {
-    let y = this.pos.y - this.image.texture.baseTexture.height * 2;
-    if (!this.particleSystem.doPerspective) return y;
-
-    let yFactor = this.scale * this.particleSystem.worldPerspective;
-
-    // let ret;
-    let cameraY = -this.container.parent.y;
-    let whatToReturnIfWeDoPerspective = (y - cameraY) * yFactor + cameraY;
-    // let whatToReturnIfWeDoPerspective = 0.1 * this.scale * y;
-
-    return whatToReturnIfWeDoPerspective;
-  }
-
   getDistanceToCameraInY() {
     return this.particleSystem.viewPortHeight - this.getMyAbsolutePosition().y;
   }
@@ -687,54 +511,12 @@ class Person {
       this.particleSystem.cameraHeight ** 2 + this.getDistanceToCameraInY() ** 2
     );
   }
-  doNotShowIfOutOfScreen() {
-    if (
-      this.ratioOfY < -0.1 ||
-      this.ratioOfY > 1.1 ||
-      this.ratioOfX > 1.1 ||
-      this.ratioOfX < -0.1
-    ) {
-      this.visible = false;
-    } else {
-      this.visible = true;
-    }
-    return this.visible;
-  }
+
   render() {
-    // Render the particle on the canvas
-
-    // if (this.graphics) {
-    //   this.graphics.x = this.pos.x;
-    //   this.graphics.y = this.pos.y * yFactor;
-    // }
-    this.ratioOfY = this.getRatioOfY();
-    this.ratioOfX = this.getRatioOfX();
-
-    this.doNotShowIfOutOfScreen();
-    if (!this.visible) return;
-
-    this.container.y = this.calculateContainersY();
-
-    this.calculateScaleAccordingToY();
-
-    this.container.x = this.calculateContainersX();
-    //COMPENSATE THE POSITION OF THE LITTLE GUY
+    this.genericRender();
 
     if (this.vel.x < 0) this.makeMeLookLeft();
     else this.makeMeLookRight();
-
-    // if (this.substance == "wood") this.setColorAccordingToTemperature();
-
-    if (this.highlighted) {
-      this.image.tint = "0xffffff";
-      // return;
-    } else if (this.team == 1) {
-      // this.graphics.tint = "0xff0000";
-      // this.image.tint = "0xff000011";
-    } else if (this.team == 2) {
-      // this.graphics.tint = "0x00ff00";
-      // this.image.tint = "0x00440011";
-    }
   }
 
   setTarget(target) {
