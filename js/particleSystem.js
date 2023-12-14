@@ -62,6 +62,8 @@ class ParticleSystem {
     Matter.Events.on(this.engine, "collisionActive", (e) => {
       this.collisionHandler(e);
     });
+
+    // this.createSmallerCanvas();
   }
 
   togglePerspectiveMode() {
@@ -103,19 +105,24 @@ class ParticleSystem {
     //DEBUG
     globalThis.__PIXI_APP__ = this.pixiApp;
 
-    this.loader.add("walk_1", "img/m_walk.png");
-    this.loader.add("walk_2", "img/m_walk_2.png");
-    this.loader.add("idle_1", "img/m_idle.png");
-    this.loader.add("idle_2", "img/m_idle_2.png");
-    this.loader.add("die_1", "img/m_dying_1.png");
+    this.loader.add("walk_fan", "img/m_walk.png");
+    this.loader.add("walk_bouncer", "img/m_walk_2.png");
+    this.loader.add("idle_fan", "img/m_idle.png");
+    this.loader.add("idle_bouncer", "img/m_idle_2.png");
+
+    this.loader.add("die_fan", "img/m_dying_1.png");
     // this.loader.add("dead_1", "img/dead_1.png");
-    this.loader.add("die_2", "img/m_dying_2.png");
-    this.loader.add("attack_1", "img/m_attack.png");
-    this.loader.add("attack_2", "img/m_attack_2.png");
+    this.loader.add("die_bouncer", "img/m_dying_2.png");
+    this.loader.add("attack_fan", "img/m_attack.png");
+    this.loader.add("attack_bouncer", "img/m_attack_2.png");
     // this.loader.add("dead_2", "img/dead_2.png");
     this.loader.add("bg", "img/bg.jpg");
     this.loader.add("blood", "img/blood.png");
-    // this.loader.add("wood", "wood.png");
+
+    //POR AHORA USAMOS AL ZOMBIE COMO IDOLO:
+    this.loader.add("walk_idol", "img/z_walk.png");
+    this.loader.add("idle_idol", "img/z_walk.png");
+
     this.loader.load((loader, resources) => {
       this.res = resources;
 
@@ -193,11 +200,19 @@ class ParticleSystem {
         p.bodyB.label == "particle" &&
         (p.bodyA.particle || {}).team != (p.bodyB.particle || {}).team
       ) {
-        p.bodyA.particle.recieveDamage(p.bodyB.particle);
+        if (p.bodyB.particle instanceof Bouncer) {
+          if (p.bodyA.particle instanceof Fan) {
+            p.bodyB.particle.throwAPunch();
+            p.bodyA.particle.recieveDamage(p.bodyB.particle);
+          }
+        }
 
-        p.bodyB.particle.recieveDamage(p.bodyA.particle);
-        p.bodyB.particle.throwAPunch();
-        p.bodyA.particle.throwAPunch();
+        if (p.bodyA.particle instanceof Bouncer) {
+          if (p.bodyB.particle instanceof Fan) {
+            p.bodyA.particle.throwAPunch();
+            p.bodyB.particle.recieveDamage(p.bodyA.particle);
+          }
+        }
       }
     }
   }
@@ -558,6 +573,10 @@ class ParticleSystem {
         //B
 
         this.addBouncer(x, y, false);
+      } else if (window.keyIsDown == 73) {
+        //i
+
+        this.addIdol(x, y, false);
       } else if (window.keyIsDown == 72) {
         //H (heat)
         // let closeParticles = this.getParticlesAndTheirDistance(x, y, null);
@@ -688,8 +707,24 @@ class ParticleSystem {
       x,
       y,
       particleSystem: this,
-      team: 2,
+      team: "bouncer",
       isStatic,
+    });
+    particle.particles = this.particles;
+    this.particles.push(particle);
+    window.lastParticle = particle;
+    return particle;
+  }
+  addIdol(x, y) {
+    // let substance = "wood";
+    /// IT CAN BE WOOD GAS ;)
+
+    const particle = new Idol({
+      x,
+      y,
+      particleSystem: this,
+      team: "idol",
+      isStatic: false,
     });
     particle.particles = this.particles;
     this.particles.push(particle);
@@ -705,7 +740,7 @@ class ParticleSystem {
       x,
       y,
       particleSystem: this,
-      team: 1,
+      team: "fan",
       isStatic,
     });
     particle.particles = this.particles;
@@ -744,6 +779,30 @@ class ParticleSystem {
     for (const bullet of this.bullets) {
       bullet.update(this.COUNTER);
     }
+
+    // this.drawInSmallerCanvas();
+  }
+  createSmallerCanvas() {
+    let SCALE = 4;
+    this.smallerCanvas = document.createElement("canvas");
+    this.smallerCanvas.id = "smallerCanvas";
+    if (this.canvas && this.smallerCanvas) {
+      this.smallerCanvas.width = this.canvas.width / SCALE;
+      this.smallerCanvas.height = this.canvas.height / SCALE;
+      document.body.appendChild(this.smallerCanvas);
+    }
+  }
+  drawInSmallerCanvas() {
+    var sourceImageData = this.canvas.toDataURL("image/png");
+    var destCanvasContext = this.smallerCanvas.getContext("2d");
+
+    destCanvasContext.drawImage(
+      this.canvas,
+      0,
+      0,
+      this.smallerCanvas.width,
+      this.smallerCanvas.height
+    );
   }
 
   // calculateAverageTemperature(subst) {

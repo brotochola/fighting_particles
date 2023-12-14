@@ -377,34 +377,20 @@ class Person extends GenericObject {
     this.removeMeAsTarget();
   }
 
-  doStuffAccordingToState() {
-    if (
-      this.state == "searching" ||
-      this.state == "chasing" ||
-      this.state == "idle"
-    ) {
-      if (this.COUNTER % 4 == 0) this.findClosestTarget();
-    }
-
-    if (this.state == "searching" || (this.state == "chasing" && this.target)) {
-      if (this.COUNTER % 3 == 0) {
-        this.calculateVelVectorAccordingToTarget();
-      }
-
-      if (this.isStatic) {
-        this.fireBullet();
-      }
-
-      if (!this.target) this.setState("idle");
-    }
-  }
-
   calculateVelVectorAccordingToTarget() {
     //I REFRESH THIS EVERY 3 FRAMES
 
     if (!("x" in this.vel) || !("x" in this.pos)) return;
 
-    if (this.target && ((this.target || {}).health || 1) > 0) {
+    if ((this.target || {}).dead) {
+      this.target = null;
+      this.vel.x = 0;
+      this.vel.y = 0;
+      this.setState("searching");
+      return;
+    }
+
+    if (this.target) {
       // debugger;
       if (this.target.pos) {
         let targetsVel = new p5.Vector(
@@ -429,11 +415,6 @@ class Person extends GenericObject {
         this.vel = vectorThatAimsToTheTarget.limit(1);
         this.moveAndSubstractStamina();
       }
-    } else if ((this.target || {}).dead) {
-      this.target = null;
-      this.vel.x = 0;
-      this.vel.y = 0;
-      this.setState("searching");
     }
 
     //  this.vel.limit(this.genes.maxSpeed);

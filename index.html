@@ -35,13 +35,15 @@
 
         #pixiCanvas {
             position: absolute;
-            display: block;
+            display: block !important;
             z-index: 99;
+
             /* pointer-events: none;
             touch-action: none; */
         }
 
         canvas {
+            image-rendering: pixelated;
             position: absolute;
 
             background-color: transparent;
@@ -62,7 +64,7 @@
 
         }
 
-        canvas:not(#pixiCanvas) {
+        canvas {
             display: none;
         }
 
@@ -110,6 +112,16 @@
             transform: rotateX(47deg) translate3d(-1168px, -62%, 100vw);
             display: none;
         }
+
+        #smallerCanvas {
+            display: block !important;
+            position: fixed;
+            left: 0px;
+            z-index: 9999999999999999999999999;
+            top: 0px;
+            background-color: green;
+            border: 1px solid black
+        }
     </style>
     <script src="js/p5.min.js"></script>
     <script src="js/matter.js"></script>
@@ -119,6 +131,7 @@
     <script src="js/cell.js"> </script>
     <script src="js/fan.js"> </script>
     <script src="js/bouncer.js"> </script>
+    <script src="js/idol.js"> </script>
 
 
     <script src="js/particleSystem.js"></script>
