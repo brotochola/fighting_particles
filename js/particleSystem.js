@@ -3,6 +3,7 @@
 
 class ParticleSystem {
   constructor(canvasId, width, height, Matter) {
+    window.keyIsDown = [];
     this.pixiApp;
 
     this.COUNTER = 0;
@@ -203,23 +204,22 @@ class ParticleSystem {
 
   addShortCuts() {
     window.onkeydown = (e) => {
-      window.keyIsDown = e.keyCode;
+      if (!Array.isArray(window.keyIsDown)) window.keyIsDown = [];
+      if (!window.keyIsDown.includes(e.keyCode))
+        window.keyIsDown.push(e.keyCode);
     };
     window.onkeyup = (e) => {
-      window.keyIsDown = null;
+      window.keyIsDown = window.keyIsDown.filter((k) => k != e.keyCode);
       console.log("letra", e.keyCode);
       this.unHighlightAllParticles();
       if (e.keyCode == 32) {
         //space bar
         this.togglePause();
-      } else if (e.keyCode == 71) {
-        //G
-        this.toggleGravity();
-      } else if (e.keyCode == 84) {
-        //G
-        // this.addTargetToAllParticles(e);
       }
     };
+  }
+  getAllParticlesOfClass(classname) {
+    return this.particles.filter((k) => k instanceof classname);
   }
 
   // addTargetToAllParticles(e) {
@@ -389,7 +389,7 @@ class ParticleSystem {
   //   let gap = diam - 2;
   //   for (let x = 100; x < 100 + w * 2 * diam; x += this.diameter + gap) {
   //     for (let y = 100; y < 100 + h * 2 * diam; y += this.diameter + gap) {
-  //       arr.push(this.addParticle(x, y));
+  //       arr.push(this.addFan(x, y));
   //     }
   //   } //for
   //   this.addAutomaticConnections(arr);
@@ -416,6 +416,7 @@ class ParticleSystem {
     return this.grid;
   };
   doScreenCameraMove() {
+    if (this.mouseLeft) return;
     let margin = 50;
     // console.log(
     //   this.screenX,
@@ -425,15 +426,21 @@ class ParticleSystem {
 
     let leftLimit = this.doPerspective ? this.viewportWidth / 2 : 0;
 
-    if (this.screenX > this.viewportWidth - margin) {
+    if (
+      this.screenX > this.viewportWidth - margin ||
+      window.keyIsDown.includes(68)
+    ) {
       this.mainContainer.x -= 10;
-    } else if (this.screenX < margin) {
+    } else if (this.screenX < margin || window.keyIsDown.includes(65)) {
       this.mainContainer.x += 10;
     }
 
-    if (this.screenY > window.innerHeight - this.buttonPanelHeight - margin) {
+    if (
+      this.screenY > window.innerHeight - this.buttonPanelHeight - margin ||
+      window.keyIsDown.includes(83)
+    ) {
       this.mainContainer.y -= 10;
-    } else if (this.screenY < margin) {
+    } else if (this.screenY < margin || window.keyIsDown.includes(87)) {
       this.mainContainer.y += 10;
     }
 
@@ -484,7 +491,14 @@ class ParticleSystem {
 
   addClickListenerToCanvas() {
     let canvas = this.canvas;
-    canvas.onmouseleave = (e) => (window.isDown = false);
+
+    canvas.onmouseleave = (e) => {
+      window.isDown = false;
+      this.mouseLeft = true;
+    };
+    canvas.onmouseenter = (e) => {
+      this.mouseLeft = false;
+    };
     canvas.onmousedown = (e) => {
       window.isDown = e.which;
       let box = canvas.getBoundingClientRect();
@@ -493,9 +507,9 @@ class ParticleSystem {
       if (e.which == 1) this.indicateWhichParticleItIs(x, y);
       else if (e.which == 3) {
         if (this.checkIfAPointCollidesWithTheGrounds(x, y)) {
-          this.addParticle(x, y);
+          this.addFan(x, y);
         } else {
-          this.addParticle(x, y);
+          this.addFan(x, y);
         }
       }
     };
@@ -514,7 +528,7 @@ class ParticleSystem {
       this.mouseX = x;
       this.mouseY = y;
 
-      if (!window.isDown && !window.keyIsDown) return;
+      if (!window.isDown && window.keyIsDown.length == 0) return;
 
       if (window.isDown == 2) {
         //REMOVE PARTICLES
@@ -526,22 +540,24 @@ class ParticleSystem {
         //ADD PARTICLES WHILE DRAGGING
 
         //GOO MODE DOESN'T WORK WHILE DRAGGING!
-        this.addParticle(x, y);
+        this.addFan(x, y);
       }
 
       //KEYS
-      if (window.keyIsDown == 87) {
-        // console.log(1);
-        //W
-        this.addParticle(x, y, true);
+      if (window.keyIsDown == 71) {
+        //G
+        this.addFan(x, y, true);
+      } else if (window.keyIsDown == 70) {
+        //F
+        this.addFan(x, y, false);
       } else if (window.keyIsDown == 77) {
         //M
         for (let i = 0; i < 10; i++)
-          this.addParticle(
-            x + Math.random() * 20,
-            y + Math.random() * 20,
-            false
-          );
+          this.addFan(x + Math.random() * 20, y + Math.random() * 20, false);
+      } else if (window.keyIsDown == 66) {
+        //B
+
+        this.addBouncer(x, y, false);
       } else if (window.keyIsDown == 72) {
         //H (heat)
         // let closeParticles = this.getParticlesAndTheirDistance(x, y, null);
@@ -664,20 +680,37 @@ class ParticleSystem {
     this.world.add(this.engine.world, [ground, leftWall, rightWall, roof]);
   }
 
-  addParticle(x, y, isStatic) {
+  addBouncer(x, y, isStatic) {
     // let substance = "wood";
     /// IT CAN BE WOOD GAS ;)
 
-    const particle = new Person({
+    const particle = new Bouncer({
       x,
       y,
       particleSystem: this,
-      team: window.addingParticlesOfTeam,
+      team: 2,
       isStatic,
     });
     particle.particles = this.particles;
     this.particles.push(particle);
-    window.tempParticle = particle;
+    window.lastParticle = particle;
+    return particle;
+  }
+
+  addFan(x, y, isStatic) {
+    // let substance = "wood";
+    /// IT CAN BE WOOD GAS ;)
+
+    const particle = new Fan({
+      x,
+      y,
+      particleSystem: this,
+      team: 1,
+      isStatic,
+    });
+    particle.particles = this.particles;
+    this.particles.push(particle);
+    window.lastParticle = particle;
     return particle;
   }
 
@@ -762,7 +795,7 @@ class ParticleSystem {
   //         let random2 = Math.random() * 0.1 + 0.95;
   //         const x = i * random1 + 300;
   //         const y = 200 + j * random2;
-  //         this.addParticle(x, y, "wood");
+  //         this.addFan(x, y, "wood");
   //       }
   //     }
   //     for (let p of this.particles) {
@@ -917,7 +950,7 @@ class ParticleSystem {
     this.particles.forEach((k) => k.remove());
     data.forEach((k) => {
       if (k.type == "chaboncito") {
-        this.addParticle(Math.floor(k.x), Math.floor(k.y), false);
+        this.addFan(Math.floor(k.x), Math.floor(k.y), false);
       }
     });
   }

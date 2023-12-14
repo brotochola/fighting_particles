@@ -7,6 +7,15 @@ class Person extends GenericObject {
 
     //PARAMS OF THIS PERSON:
 
+    this.possibleStates = [
+      "idle",
+      "searching",
+      "chasing",
+      "attacking",
+      "escaping",
+      "dead",
+    ];
+
     this.initStartingAttributes();
     this.team = team;
     this.diameter = 10;
@@ -14,6 +23,7 @@ class Person extends GenericObject {
     this.spriteHeight = 21;
     this.spriteSpeed = Math.floor(10 * this.speed);
     this.startingFrame = Math.floor(Math.random() * 7);
+
     /////////////////////////////
 
     //initialize variables:
@@ -32,12 +42,16 @@ class Person extends GenericObject {
     this.setState("searching");
   }
   initStartingAttributes() {
+    this.dead = false;
     this.name = generateID();
     this.strength = Math.random() * 0.005 + 0.005;
 
     this.health = 1;
     this.speed = Math.random() * 0.5 + 0.5;
     this.intelligence = Math.random(); //opposite of corage
+    this.corage = 1 - this.intelligence;
+
+    this.sightDistance = Math.random() * 200 + 400;
 
     this.stamina = 1;
     this.fear = 0;
@@ -207,7 +221,7 @@ class Person extends GenericObject {
   }
 
   fireBullet() {
-    if (!this.target || this.state == "dead") return;
+    if (!this.target || this.dead) return;
 
     //HERE WE CAN EVALUATE WHAT TYPE OF BULLET, HOW OFTEN, RELOD, ETC
     if (Math.random() > 0.8 && this.COUNTER % 2 == 0)
@@ -219,11 +233,16 @@ class Person extends GenericObject {
     // console.log(part);
     // console.log(part.strength);
 
-    if (!part || part.state == "dead") return;
-    this.health -= (part || {}).strength || 0;
+    if (!part || part.dead) return;
+    let howMuchHealthThisIsTakingFromMe = (part || {}).strength || 0;
+    this.health -= howMuchHealthThisIsTakingFromMe;
+    //FEAR GOES UP ACCORDING TO INTELLIGENCE. MORE INTELLIGENT, MORE FEAR
+    this.fear += this.intelligence * howMuchHealthThisIsTakingFromMe;
+    //ANGER GOES UP ACCORDING TO CORAGE. MORE CORAGE, YOU GET ANGRIER
+    this.anger += this.corage * howMuchHealthThisIsTakingFromMe;
 
     this.highlight();
-    setTimeout(() => this.unHighlight(), 30);
+    setTimeout(() => this.unHighlight(), this.particleSystem.deltaTime);
 
     let incomingAngleOfHit = Math.atan2(
       part.body.position.y,
@@ -285,22 +304,22 @@ class Person extends GenericObject {
   update(COUNTER) {
     this.genericUpdate(COUNTER);
 
-    if (this.state != "dead") {
-      this.lastY = this.pos.y;
-      this.lastX = this.pos.x;
-      //get the position in the matterjs world and have it here
+    // if (this.state != "dead") {
+    this.lastY = this.pos.y;
+    this.lastX = this.pos.x;
+    //get the position in the matterjs world and have it here
 
-      this.pos.x = this.body.position.x;
-      this.pos.y = this.body.position.y;
-      this.container.zIndex = Math.floor(this.pos.y);
+    this.pos.x = this.body.position.x;
+    this.pos.y = this.body.position.y;
+    this.container.zIndex = Math.floor(this.pos.y);
 
-      this.updateMyPositionInCell();
-      this.nearParticles = this.getNearParticles();
-      this.updateStateAccordingToStuff();
+    this.updateMyPositionInCell();
+    this.nearParticles = this.getParticlesFromCloseCells();
+    this.updateStateAccordingToStuff();
 
-      this.doStuffAccordingToState();
-      this.changeSpriteAccordingToStateAndVelocity();
-    }
+    this.doStuffAccordingToState();
+    this.changeSpriteAccordingToStateAndVelocity();
+    // }
 
     this.animateSprite();
     this.animateGravityToParticles();
@@ -314,7 +333,7 @@ class Person extends GenericObject {
   changeSpriteAccordingToStateAndVelocity() {
     let vel = new p5.Vector(this.body.velocity.x, this.body.velocity.y);
 
-    if (this.state == "dead") {
+    if (this.state == "dead" || this.dead) {
       //EMPIEZA A MORIR
       this.createSprite("die_" + this.team, true);
       //Y MUERE
@@ -346,12 +365,12 @@ class Person extends GenericObject {
     }
   }
 
-  amITotallyDead() {
+  ImTotallyDead() {
     this.world.remove(this.engine.world, this.body);
 
-    this.particleSystem.particles = this.particleSystem.particles.filter(
-      (k) => k.body.id != this.body.id
-    );
+    // this.particleSystem.particles = this.particleSystem.particles.filter(
+    //   (k) => k.body.id != this.body.id
+    // );
 
     this.particleSystem.mainContainer.removeChild(this.graphics);
 
@@ -359,17 +378,24 @@ class Person extends GenericObject {
   }
 
   doStuffAccordingToState() {
-    // if (this.state == "searching") {
+    if (
+      this.state == "searching" ||
+      this.state == "chasing" ||
+      this.state == "idle"
+    ) {
+      if (this.COUNTER % 4 == 0) this.findClosestTarget();
+    }
 
-    // } else if (this.state == "chasing") {
+    if (this.state == "searching" || (this.state == "chasing" && this.target)) {
+      if (this.COUNTER % 3 == 0) {
+        this.calculateVelVectorAccordingToTarget();
+      }
 
-    // }
+      if (this.isStatic) {
+        this.fireBullet();
+      }
 
-    if (this.COUNTER % 4 == 0) this.findTarget();
-    if (this.COUNTER % 2 == 0) this.calculateVelVectorAccordingToTarget();
-
-    if (this.target && this.isStatic) {
-      this.fireBullet();
+      if (!this.target) this.setState("idle");
     }
   }
 
@@ -385,16 +411,25 @@ class Person extends GenericObject {
           this.target.body.velocity.x,
           this.target.body.velocity.y
         );
-        let vectorThatAimsToTheTarget = p5.Vector.sub(
-          this.target.pos,
-          this.pos.add(targetsVel)
-        );
+
+        let vectorThatAimsToTheTarget;
+        if (this.state != "escaping") {
+          vectorThatAimsToTheTarget = p5.Vector.sub(
+            this.target.pos,
+            this.pos.add(targetsVel)
+          );
+        } else {
+          vectorThatAimsToTheTarget = p5.Vector.sub(
+            this.pos.add(targetsVel),
+            this.target.pos
+          );
+        }
         // let invertedVector = p5.Vector.sub(this.pos, this.target.pos);
 
         this.vel = vectorThatAimsToTheTarget.limit(1);
         this.moveAndSubstractStamina();
       }
-    } else if ((this.target || {}).state == "dead") {
+    } else if ((this.target || {}).dead) {
       this.target = null;
       this.vel.x = 0;
       this.vel.y = 0;
@@ -413,7 +448,7 @@ class Person extends GenericObject {
           this.vel.y * this.particleSystem.FORCE_REDUCER * this.speed;
         this.body.force.x +=
           this.vel.x * this.particleSystem.FORCE_REDUCER * this.speed;
-        this.stamina -= minStam;
+        this.stamina -= minStam * 0.1;
       } else {
         this.stamina += minStam;
       }
@@ -425,6 +460,10 @@ class Person extends GenericObject {
 
     if (this.health <= 0) {
       this.die();
+    } else if (this.health < 0.1 || this.fear > 0.75) {
+      this.setState("escaping");
+    }
+    if (!this.target) {
     }
   }
 
@@ -434,7 +473,10 @@ class Person extends GenericObject {
   }
 
   die() {
+    this.unHighlight();
+    this.dead = true;
     this.body.isStatic = true;
+    this.health = 0;
     this.setState("dead");
     // this.createSprite("die_1");
 
@@ -479,11 +521,9 @@ class Person extends GenericObject {
     this.state = "chasing";
   }
 
-  findTarget() {
-    let maxDistance = this.diameter * 400;
-
+  findClosestTarget() {
     let arr = this.particleSystem.particles
-      .filter((k) => k.team != this.team)
+      .filter((k) => k.team != this.team && !k.dead)
       .map((k) => {
         let x = this.cellX - k.cellX;
         let y = this.cellY - k.cellY;
@@ -493,7 +533,7 @@ class Person extends GenericObject {
         };
       });
     let newArr = arr.sort((a, b) => (a.dist > b.dist ? 1 : -1));
-    newArr = newArr.filter((k) => k.dist < maxDistance);
+    newArr = newArr.filter((k) => k.dist < this.sightDistance);
     if (newArr.length == 0) return;
 
     let closestEnemy = newArr[0].part;

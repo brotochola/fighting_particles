@@ -167,14 +167,9 @@ class GenericObject {
     this.container.x = this.calculateContainersX();
 
     if (this.highlighted) {
-      this.image.tint = "0xffffff";
-      // return;
-    } else if (this.team == 1) {
-      // this.graphics.tint = "0xff0000";
-      // this.image.tint = "0xff000011";
-    } else if (this.team == 2) {
-      // this.graphics.tint = "0x00ff00";
-      // this.image.tint = "0x00440011";
+      if (this.image.tint != 0xff0000) this.image.tint = 0xff0000;
+    } else {
+      if (this.image.tint != 0xffffff) this.image.tint = 0xffffff;
     }
   }
 
@@ -272,22 +267,22 @@ class GenericObject {
     return arr;
   }
 
-  getNearParticles() {
-    let arr = [];
-    let closeParts = this.getParticlesFromCloseCells();
-    if (!Array.isArray(closeParts)) debugger;
+  // getNearParticles() {
+  //   let arr = [];
+  //   let closeParts = this.getParticlesFromCloseCells();
+  //   if (!Array.isArray(closeParts)) debugger;
 
-    for (let p of closeParts) {
-      let difX = Math.abs(this.pos.x - p.x);
-      let difY = Math.abs(this.pos.y - p.y);
-      // let difY
-      if (difX < this.diameter * 6 && difY < this.diameter * 6) {
-        if (p != this) arr.push(p);
-      }
-      // if(p.body.x)
-    }
-    return arr;
-  }
+  //   for (let p of closeParts) {
+  //     let difX = Math.abs(this.pos.x - p.x);
+  //     let difY = Math.abs(this.pos.y - p.y);
+  //     // let difY
+  //     if (difX < this.diameter * 6 && difY < this.diameter * 6) {
+  //       if (p != this) arr.push(p);
+  //     }
+  //     // if(p.body.x)
+  //   }
+  //   return arr;
+  // }
 
   // getDistanceToCameraInY() {
   //   return this.particleSystem.viewPortHeight - this.getMyAbsolutePosition().y;
@@ -348,7 +343,7 @@ class GenericObject {
       let framesPassed = this.COUNTER - this.animationStartedAt;
       let whichFrame = Math.floor(framesPassed / this.spriteSpeed);
       if (whichFrame >= cantFrames) {
-        this.amITotallyDead();
+        this.ImTotallyDead();
         return;
       }
       x = this.spriteWidth * whichFrame;
