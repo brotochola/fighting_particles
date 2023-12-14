@@ -1,7 +1,8 @@
 //taylor swift
 class Idol extends Person {
   constructor(opt) {
-    super(opt);
+    super({ ...opt, diameter: 8 });
+
     this.setRandomTarget();
   }
   setRandomTarget() {

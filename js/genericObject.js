@@ -3,7 +3,7 @@
 class GenericObject {
   constructor(opt) {
     // this.pepe();
-    const { x, y, particleSystem, team, isStatic } = opt;
+    const { x, y, particleSystem, team, isStatic, diameter } = opt;
 
     this.particleSystem = particleSystem;
     this.Matter = particleSystem.Matter;

@@ -1,6 +1,6 @@
 class Fan extends Person {
   constructor(opt) {
-    super(opt);
+    super({ ...opt, diameter: 7 });
 
     //OPT DEBERIA TENER VALORES MINIMOS Y MAXIMOS PARA GENERAR FANS DE DIFERENTES TIPOS
   }

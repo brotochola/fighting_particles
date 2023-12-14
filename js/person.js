@@ -3,8 +3,8 @@
 class Person extends GenericObject {
   constructor(opt) {
     super(opt);
-    const { x, y, particleSystem, team, isStatic } = opt;
-
+    const { x, y, particleSystem, team, isStatic, diameter } = opt;
+    this.diameter = diameter;
     //PARAMS OF THIS PERSON:
 
     this.possibleStates = [
@@ -18,7 +18,7 @@ class Person extends GenericObject {
 
     this.initStartingAttributes();
     this.team = team;
-    this.diameter = 10;
+
     this.spriteWidth = 12;
     this.spriteHeight = 21;
     this.spriteSpeed = Math.floor(10 * this.speed);
@@ -44,7 +44,7 @@ class Person extends GenericObject {
   initStartingAttributes() {
     this.dead = false;
     this.name = generateID();
-    this.strength = Math.random() * 0.005 + 0.005;
+    this.strength = Math.random() * 0.05 + 0.05;
 
     this.health = 1;
     this.speed = Math.random() * 0.5 + 0.5;
@@ -426,9 +426,9 @@ class Person extends GenericObject {
     if (!this.isStatic) {
       if (this.stamina >= minStam) {
         this.body.force.y +=
-          this.vel.y * this.particleSystem.FORCE_REDUCER * this.speed;
+          this.vel.y * this.particleSystem.SPEED_REDUCER * this.speed;
         this.body.force.x +=
-          this.vel.x * this.particleSystem.FORCE_REDUCER * this.speed;
+          this.vel.x * this.particleSystem.SPEED_REDUCER * this.speed;
         this.stamina -= minStam * 0.1;
       } else {
         this.stamina += minStam;

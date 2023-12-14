@@ -1,7 +1,7 @@
 //PATOVA
 class Bouncer extends Person {
   constructor(opt) {
-    super(opt);
+    super({ ...opt, diameter: 9 });
     this.setPointWhereIShuoldHold();
   }
   setPointWhereIShuoldHold() {
