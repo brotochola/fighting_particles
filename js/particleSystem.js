@@ -15,7 +15,8 @@ class ParticleSystem {
     this.doPerspective = false;
 
     this.cameraHeight = window.innerHeight / 2;
-
+    this.FORCE_REDUCER = 0.00004;
+    this.MINIMUM_STAMINA_TO_MOVE = 0.01;
     this.CELL_SIZE = 40;
     this.buttonPanelHeight = 100;
 

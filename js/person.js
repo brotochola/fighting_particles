@@ -6,14 +6,13 @@ class Person extends GenericObject {
     const { x, y, particleSystem, team, isStatic } = opt;
 
     //PARAMS OF THIS PERSON:
-    this.name = generateID();
+
+    this.initStartingAttributes();
     this.team = team;
     this.diameter = 10;
-    this.health = 1;
-    this.strength = Math.random() * 0.005 + 0.005;
     this.spriteWidth = 12;
     this.spriteHeight = 21;
-    this.spriteSpeed = 8;
+    this.spriteSpeed = Math.floor(10 * this.speed);
     this.startingFrame = Math.floor(Math.random() * 7);
     /////////////////////////////
 
@@ -23,24 +22,28 @@ class Person extends GenericObject {
     this.lastTimeItFlipped = 0;
     this.amILookingLeft = false;
 
+    //create stuff
     this.createBody(this.diameter, this.diameter, "circle");
     this.createContainers();
     this.createSprite("idle_" + this.team);
 
-    // this.heatCapacityAccordingToSubstance();
-    // this.massAccordingToSubstance();
-    // this.calculateEneryContained(energyContained);
-    // this.thermalConductivityAccordingToSubstance();
-    // this.burningTemperatureAccordingToSubstance();
-
-    // this.onFire = this.substance == "woodGas"; //woodgas starts burning
     this.updateMyPositionInCell();
-
-    this.addParticleEmitter();
-
+    // this.addParticleEmitter();
     this.setState("searching");
   }
+  initStartingAttributes() {
+    this.name = generateID();
+    this.strength = Math.random() * 0.005 + 0.005;
 
+    this.health = 1;
+    this.speed = Math.random() * 0.5 + 0.5;
+    this.intelligence = Math.random(); //opposite of corage
+
+    this.stamina = 1;
+    this.fear = 0;
+    this.anger = 0;
+    this.happiness = 1;
+  }
   createContainers() {
     this.container = new PIXI.Container();
 
@@ -303,7 +306,7 @@ class Person extends GenericObject {
     this.animateGravityToParticles();
 
     // this.emitBlood();
-    this.emitter.emit = false;
+    if (this.emitter) this.emitter.emit = false;
 
     this.render();
   }
@@ -341,33 +344,6 @@ class Person extends GenericObject {
         this.createSprite("idle_" + this.team);
       }
     }
-  }
-  animateSprite() {
-    let cantFrames = this.getFullwidthOfCurrentSprite() / this.spriteWidth;
-
-    let frameCount = this.COUNTER + this.startingFrame;
-
-    if (frameCount % this.spriteSpeed != 0) return;
-
-    let x;
-    if (!this.shouldSpriteAnimationStopAtEnd) {
-      x = this.spriteWidth * ((frameCount / this.spriteSpeed) % cantFrames);
-    } else {
-      let framesPassed = this.COUNTER - this.animationStartedAt;
-      let whichFrame = Math.floor(framesPassed / this.spriteSpeed);
-      if (whichFrame >= cantFrames) {
-        this.amITotallyDead();
-        return;
-      }
-      x = this.spriteWidth * whichFrame;
-    }
-
-    this.image.texture.frame = new PIXI.Rectangle(
-      x,
-      0,
-      this.spriteWidth,
-      this.spriteHeight
-    );
   }
 
   amITotallyDead() {
@@ -416,12 +392,7 @@ class Person extends GenericObject {
         // let invertedVector = p5.Vector.sub(this.pos, this.target.pos);
 
         this.vel = vectorThatAimsToTheTarget.limit(1);
-
-        if (!this.isStatic) {
-          let FORCE_REDUCER = 0.00004;
-          this.body.force.y += this.vel.y * FORCE_REDUCER;
-          this.body.force.x += this.vel.x * FORCE_REDUCER;
-        }
+        this.moveAndSubstractStamina();
       }
     } else if ((this.target || {}).state == "dead") {
       this.target = null;
@@ -434,6 +405,20 @@ class Person extends GenericObject {
 
     //  console.log(this.vel);
   }
+  moveAndSubstractStamina() {
+    let minStam = this.particleSystem.MINIMUM_STAMINA_TO_MOVE;
+    if (!this.isStatic) {
+      if (this.stamina >= minStam) {
+        this.body.force.y +=
+          this.vel.y * this.particleSystem.FORCE_REDUCER * this.speed;
+        this.body.force.x +=
+          this.vel.x * this.particleSystem.FORCE_REDUCER * this.speed;
+        this.stamina -= minStam;
+      } else {
+        this.stamina += minStam;
+      }
+    }
+  }
 
   updateStateAccordingToStuff() {
     // this.state = "searching";
@@ -441,9 +426,6 @@ class Person extends GenericObject {
     if (this.health <= 0) {
       this.die();
     }
-  }
-  setState(state) {
-    this.state = state;
   }
 
   throwAPunch() {
@@ -457,23 +439,6 @@ class Person extends GenericObject {
     // this.createSprite("die_1");
 
     // setTimeout(() => this.remove(), 1000);
-  }
-
-  getNearParticles() {
-    let arr = [];
-    let closeParts = this.getParticlesFromCloseCells();
-    if (!Array.isArray(closeParts)) debugger;
-
-    for (let p of closeParts) {
-      let difX = Math.abs(this.pos.x - p.x);
-      let difY = Math.abs(this.pos.y - p.y);
-      // let difY
-      if (difX < this.diameter * 6 && difY < this.diameter * 6) {
-        if (p != this) arr.push(p);
-      }
-      // if(p.body.x)
-    }
-    return arr;
   }
 
   makeMeLookLeft() {
@@ -500,16 +465,6 @@ class Person extends GenericObject {
     }
 
     this.amILookingLeft = false;
-  }
-
-  getDistanceToCameraInY() {
-    return this.particleSystem.viewPortHeight - this.getMyAbsolutePosition().y;
-  }
-
-  distanceToCamera() {
-    return Math.sqrt(
-      this.particleSystem.cameraHeight ** 2 + this.getDistanceToCameraInY() ** 2
-    );
   }
 
   render() {
@@ -567,39 +522,5 @@ class Person extends GenericObject {
     this.graphics.position.x = 10;
     this.graphics.position.y = 40;
     this.container.addChild(this.graphics);
-  }
-  createSprite(which, stopsAtEnd) {
-    if (
-      this.whichSpriteAmIShowing().startsWith(which.substr(0, which.length - 2))
-    ) {
-      //IF THIS PARTICLE ALRADY HAD THIS SPRITE, DONT DO ANYTHING
-      return;
-    }
-
-    this.shouldSpriteAnimationStopAtEnd = stopsAtEnd;
-    this.animationStartedAt = this.COUNTER;
-
-    this.removeImage();
-    //IMG
-    const frame1 = new PIXI.Rectangle(0, 0, 12, 21);
-
-    // this.particleSystem.res["walk"].texture.frame = frame1; //esto tiene q ser una copia de la textura, no la mismisima
-    // console.log("###", which);
-    this.image = new PIXI.Sprite(
-      this.particleSystem.res[which].texture.clone()
-    );
-
-    this.image.texture.frame = frame1;
-    // this.image.scale.x = 2;
-    // this.image.scale.y = 2;
-
-    this.container.addChildAt(this.image, 0);
-  }
-
-  changeSizeOfPhysicsCircle(radius) {
-    if (this.body) {
-      this.world.remove(this.engine.world, this.body);
-    }
-    this.createBody(radius);
   }
 }
