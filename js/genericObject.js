@@ -152,12 +152,12 @@ class GenericObject {
     return whatToReturnIfWeDoPerspective;
   }
 
-  genericUpdate(COUNTER) {
+  update(COUNTER) {
     this.COUNTER = COUNTER;
     this.ratioOfY = this.getRatioOfY();
     this.ratioOfX = this.getRatioOfX();
   }
-  genericRender() {
+  render() {
     if (!this.doNotShowIfOutOfScreen()) return;
 
     this.container.y = this.calculateContainersY();

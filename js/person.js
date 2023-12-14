@@ -302,7 +302,7 @@ class Person extends GenericObject {
   // }
 
   update(COUNTER) {
-    this.genericUpdate(COUNTER);
+    super.update(COUNTER);
 
     // if (this.state != "dead") {
     this.lastY = this.pos.y;
@@ -510,7 +510,7 @@ class Person extends GenericObject {
   }
 
   render() {
-    this.genericRender();
+    super.render();
 
     if (this.vel.x < 0) this.makeMeLookLeft();
     else this.makeMeLookRight();
