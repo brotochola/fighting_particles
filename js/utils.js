@@ -187,6 +187,25 @@ function getMovieClipsFromFlashSymbolXML(obj) {
 
   return arrOfMCs.map((k) => {
     let pos = k.matrix.Matrix["@attributes"];
-    return { x: pos.tx, y: pos.ty, type: k["@attributes"].libraryItemName };
+    return {
+      x: pos.tx,
+      y: pos.ty,
+      type: k["@attributes"].libraryItemName,
+      rotation: getAngle(pos.a, pos.b, pos.c, pos.d),
+    };
   });
+}
+
+function rad2deg(rad) {
+  return rad * 57.2958;
+}
+
+function getAngle(a, b, c, d) {
+  // Ensure the matrix has two rows and two columns
+
+  // Calculate the angle in radians using atan2
+  const radians = Math.atan2(b, a);
+
+  // Convert radians to degrees
+  return radians;
 }

@@ -33,16 +33,16 @@ class GenericObject {
     );
   }
 
-  createBody(width, height, type) {
+  createBody(width, height, type, label, angle = 0) {
     let bodyOptions = {
       restitution: 0.1,
       mass: 0.01,
       friction: 1,
       slop: 0,
       frictionAir: 0.5,
-      label: "particle",
+      label: label || "particle",
       // isSensor: true,
-      render: { visible: false },
+      render: { visible: true },
       isStatic: false,
       // density: 99999999999999
       // mass: 0
@@ -60,6 +60,7 @@ class GenericObject {
         // ],
       },
     };
+
     // debugger;
 
     if (type == "circle") {
@@ -78,6 +79,8 @@ class GenericObject {
         bodyOptions
       );
     }
+
+    this.body.angle = angle;
 
     this.body.constraints = []; //i need to keep track which constraints each body has
     this.body.particle = this;
@@ -194,8 +197,7 @@ class GenericObject {
     this.cellX = Math.floor(this.pos.x / this.particleSystem.CELL_SIZE);
     this.cellY = -Math.floor(-this.pos.y / this.particleSystem.CELL_SIZE);
     if (isNaN(this.cellY)) {
-      console.warn(this);
-      debugger;
+      return;
     }
     let newCell = (this.particleSystem.grid[this.cellY] || [])[this.cellX];
 
@@ -264,35 +266,21 @@ class GenericObject {
         arr.push(p);
       }
     }
-    return arr;
+    return arr
+      .map((k) => {
+        return {
+          dist: cheaperDist(this.pos.x, this.pos.y, k.pos.x, k.pos.y),
+          part: k,
+        };
+      })
+      .sort((a, b) => (a.dist > b.dist ? 1 : -1))
+      .filter((k) => k.dist > 0);
+  }
+  makeMeFlash() {
+    this.highlight();
+    setTimeout(() => this.unHighlight(), this.particleSystem.deltaTime);
   }
 
-  // getNearParticles() {
-  //   let arr = [];
-  //   let closeParts = this.getParticlesFromCloseCells();
-  //   if (!Array.isArray(closeParts)) debugger;
-
-  //   for (let p of closeParts) {
-  //     let difX = Math.abs(this.pos.x - p.x);
-  //     let difY = Math.abs(this.pos.y - p.y);
-  //     // let difY
-  //     if (difX < this.diameter * 6 && difY < this.diameter * 6) {
-  //       if (p != this) arr.push(p);
-  //     }
-  //     // if(p.body.x)
-  //   }
-  //   return arr;
-  // }
-
-  // getDistanceToCameraInY() {
-  //   return this.particleSystem.viewPortHeight - this.getMyAbsolutePosition().y;
-  // }
-
-  // distanceToCamera() {
-  //   return Math.sqrt(
-  //     this.particleSystem.cameraHeight ** 2 + this.getDistanceToCameraInY() ** 2
-  //   );
-  // }
   createSprite(which, stopsAtEnd) {
     if (
       this.whichSpriteAmIShowing().startsWith(which.substr(0, which.length - 2))
@@ -306,7 +294,12 @@ class GenericObject {
 
     this.removeImage();
     //IMG
-    const frame1 = new PIXI.Rectangle(0, 0, 12, 21);
+    const frame1 = new PIXI.Rectangle(
+      0,
+      0,
+      this.spriteWidth,
+      this.spriteHeight
+    );
 
     // this.particleSystem.res["walk"].texture.frame = frame1; //esto tiene q ser una copia de la textura, no la mismisima
     // console.log("###", which);
@@ -329,6 +322,18 @@ class GenericObject {
   setState(state) {
     this.state = state;
   }
+
+  createContainers() {
+    this.container = new PIXI.Container();
+
+    this.container.pivot.set(this.spriteWidth / 2, this.spriteHeight / 2);
+
+    // this.particleContainer.zIndex = 1;
+
+    // this.container.addChild(this.particleContainer);
+    this.particleSystem.mainContainer.addChild(this.container);
+  }
+
   animateSprite() {
     let cantFrames = this.getFullwidthOfCurrentSprite() / this.spriteWidth;
 

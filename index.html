@@ -35,7 +35,7 @@
 
         #pixiCanvas {
             position: absolute;
-            display: block !important;
+            display: block;
             z-index: 99;
 
             /* pointer-events: none;
@@ -131,7 +131,9 @@
     <script src="js/cell.js"> </script>
     <script src="js/fan.js"> </script>
     <script src="js/bouncer.js"> </script>
+    <script src="js/pole.js"> </script>
     <script src="js/idol.js"> </script>
+    <script src="js/fence.js"> </script>
 
 
     <script src="js/particleSystem.js"></script>
@@ -163,6 +165,7 @@
 
     <div id="buttons">
 
+        <button onclick=" particleSystem.toggleDebugMode()">debug mode</button>
 
 
         <button onclick=" particleSystem.togglePerspectiveMode()">perspective</button>

@@ -33,7 +33,7 @@ class Person extends GenericObject {
     this.amILookingLeft = false;
 
     //create stuff
-    this.createBody(this.diameter, this.diameter, "circle");
+    this.createBody(this.diameter, this.diameter, "circle", "person");
     this.createContainers();
     this.createSprite("idle_" + this.team);
 
@@ -227,37 +227,8 @@ class Person extends GenericObject {
     if (Math.random() > 0.8 && this.COUNTER % 2 == 0)
       this.particleSystem.addBullet(this);
   }
-
-  recieveDamage(part, what) {
-    // if (this.team == 1) return;
-    // console.log(part);
-    // console.log(part.strength);
-
-    if (!part || part.dead) return;
-    let howMuchHealthThisIsTakingFromMe = (part || {}).strength || 0;
-    this.health -= howMuchHealthThisIsTakingFromMe;
-    //FEAR GOES UP ACCORDING TO INTELLIGENCE. MORE INTELLIGENT, MORE FEAR
-    this.fear += this.intelligence * howMuchHealthThisIsTakingFromMe;
-    //ANGER GOES UP ACCORDING TO CORAGE. MORE CORAGE, YOU GET ANGRIER
-    this.anger += this.corage * howMuchHealthThisIsTakingFromMe;
-
-    this.highlight();
-    setTimeout(() => this.unHighlight(), this.particleSystem.deltaTime);
-
-    let incomingAngleOfHit = Math.atan2(
-      part.body.position.y,
-      part.body.position.x
-    );
-
-    this.emitBlood(incomingAngleOfHit);
-
-    let difX = part.body.position.x - this.body.position.x;
-    let difY = part.body.position.y - this.body.position.y;
-
-    this.body.force.y += difY * 10000;
-    this.body.force.x += difX * 10000;
-
-    // if (part instanceof Bullet) setTimeout(() => this.die(), 100);
+  interactWithAnotherPerson() {
+    //GENERIC METHOD. LEAVE EMPTY AND WRITE IT IN EACH CLASS
   }
 
   // createBody(radius) {
@@ -427,9 +398,11 @@ class Person extends GenericObject {
       if (this.stamina >= minStam) {
         this.body.force.y +=
           this.vel.y * this.particleSystem.SPEED_REDUCER * this.speed;
+
         this.body.force.x +=
           this.vel.x * this.particleSystem.SPEED_REDUCER * this.speed;
-        this.stamina -= minStam * 0.1;
+
+        this.stamina -= minStam * 0.01;
       } else {
         this.stamina += minStam;
       }

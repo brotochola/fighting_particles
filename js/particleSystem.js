@@ -7,6 +7,7 @@ class ParticleSystem {
     this.pixiApp;
 
     this.COUNTER = 0;
+    this.debugMode = false;
 
     //PERSPECTIVE STUFF
 
@@ -16,8 +17,8 @@ class ParticleSystem {
     this.doPerspective = false;
 
     this.cameraHeight = window.innerHeight / 2;
-    this.FORCE_REDUCER = 0.00004;
-    this.SPEED_REDUCER = 0.00004;
+    this.FORCE_REDUCER = 0.0001;
+    this.SPEED_REDUCER = 0.0002;
     this.MINIMUM_STAMINA_TO_MOVE = 0.01;
     this.CELL_SIZE = 40;
     this.buttonPanelHeight = 100;
@@ -38,6 +39,7 @@ class ParticleSystem {
     // this.canvas.width = width;
     // this.canvas.height = height;
     this.particles = []; // array to hold all particles
+    this.fences = [];
     this.bullets = [];
     this.createPixiStage();
 
@@ -60,9 +62,9 @@ class ParticleSystem {
 
     this.addShortCuts();
 
-    Matter.Events.on(this.engine, "collisionActive", (e) => {
-      this.collisionHandler(e);
-    });
+    // Matter.Events.on(this.engine, "collisionActive", (e) => {
+    //   this.collisionHandler(e);
+    // });
 
     // this.createSmallerCanvas();
   }
@@ -119,10 +121,12 @@ class ParticleSystem {
     // this.loader.add("dead_2", "img/dead_2.png");
     this.loader.add("bg", "img/bg.jpg");
     this.loader.add("blood", "img/blood.png");
+    this.loader.add("fence", "img/fence.png");
 
     //POR AHORA USAMOS AL ZOMBIE COMO IDOLO:
     this.loader.add("walk_idol", "img/z_walk.png");
     this.loader.add("idle_idol", "img/z_walk.png");
+    this.loader.add("pole", "img/pole.png");
 
     this.loader.load((loader, resources) => {
       this.res = resources;
@@ -169,7 +173,7 @@ class ParticleSystem {
       // if (p.bodyA.id != "ground") p.bodyA.isSensor = true
       // if (p.bodyB.id != "ground") p.bodyB.isSensor = true
 
-      // let maxConnectionsPerParticle = 3;
+      // let maxConnectionsPerParticle = |;
 
       // console.log(p.bodyA.label, p.bodyB.label);
 
@@ -178,14 +182,14 @@ class ParticleSystem {
         p.bodyB.particle.remove();
       }
 
-      if (p.bodyA.label == "bullet" && p.bodyB.label == "particle") {
+      if (p.bodyA.label == "bullet" && p.bodyB.label == "person") {
         p.bodyB.particle.recieveDamage(p.bodyA.particle, "bullet");
-        setTimeout(() => p.bodyA.particle.remove(), 50);
+        setTimeout(() => p.bodyA.particle.remove(), this.deltaTime);
       }
 
-      if (p.bodyB.label == "bullet" && p.bodyA.label == "particle") {
+      if (p.bodyB.label == "bullet" && p.bodyA.label == "person") {
         p.bodyA.particle.recieveDamage(p.bodyB.particle, "bullet");
-        setTimeout(() => p.bodyB.particle.remove(), 50);
+        setTimeout(() => p.bodyB.particle.remove(), this.deltaTime);
       }
 
       if (p.bodyA.label == "ground" && p.bodyB.label == "bullet") {
@@ -196,24 +200,9 @@ class ParticleSystem {
         p.bodyA.particle.remove();
       }
 
-      if (
-        p.bodyA.label == "particle" &&
-        p.bodyB.label == "particle" &&
-        (p.bodyA.particle || {}).team != (p.bodyB.particle || {}).team
-      ) {
-        if (p.bodyB.particle instanceof Bouncer) {
-          if (p.bodyA.particle instanceof Fan) {
-            p.bodyB.particle.throwAPunch();
-            p.bodyA.particle.recieveDamage(p.bodyB.particle);
-          }
-        }
-
-        if (p.bodyA.particle instanceof Bouncer) {
-          if (p.bodyB.particle instanceof Fan) {
-            p.bodyA.particle.throwAPunch();
-            p.bodyB.particle.recieveDamage(p.bodyA.particle);
-          }
-        }
+      if (p.bodyA.label == "person" && p.bodyB.label == "person") {
+        p.bodyB.particle.interactWithAnotherPerson(p.bodyA.particle);
+        p.bodyA.particle.interactWithAnotherPerson(p.bodyB.particle);
       }
     }
   }
@@ -732,7 +721,11 @@ class ParticleSystem {
     window.lastParticle = particle;
     return particle;
   }
-
+  addFence(fence) {
+    const f = new Fence({ ...fence, particleSystem: this });
+    this.fences.push(f);
+    window.lastFence = f;
+  }
   addFan(x, y, isStatic) {
     // let substance = "wood";
     /// IT CAN BE WOOD GAS ;)
@@ -779,6 +772,9 @@ class ParticleSystem {
     }
     for (const bullet of this.bullets) {
       bullet.update(this.COUNTER);
+    }
+    for (const fence of this.fences) {
+      fence.update(this.COUNTER);
     }
 
     // this.drawInSmallerCanvas();
@@ -1002,16 +998,33 @@ class ParticleSystem {
   async loadLevel(num) {
     let level = await fetch("xfl/LIBRARY/level" + num + ".xml");
     let res = await level.text();
-    let itemsOfLevel = getMovieClipsFromFlashSymbolXML(parseXmlToJSON(res));
-    console.log(itemsOfLevel);
+    let xml = parseXmlToJSON(res);
+    console.log(xml);
+    let itemsOfLevel = getMovieClipsFromFlashSymbolXML(xml);
+    // console.log(itemsOfLevel);
     this.restartLevel(itemsOfLevel);
   }
   restartLevel(data) {
     this.particles.forEach((k) => k.remove());
+    this.bullets.forEach((k) => k.remove());
+    this.fences.forEach((k) => k.remove());
     data.forEach((k) => {
       if (k.type == "chaboncito") {
         this.addFan(Math.floor(k.x), Math.floor(k.y), false);
+      } else if (k.type == "fence") {
+        this.addFence(k);
       }
     });
+  }
+
+  toggleDebugMode() {
+    this.debugMode = !this.debugMode;
+    if (this.debugMode) {
+      this.canvas.style.display = "none";
+      document.querySelector("canvas:not(#pixiCanvas)").style.display = "block";
+    } else {
+      this.canvas.style.display = "block";
+      document.querySelector("canvas:not(#pixiCanvas)").style.display = "none";
+    }
   }
 }
