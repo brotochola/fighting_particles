@@ -187,11 +187,12 @@ function getMovieClipsFromFlashSymbolXML(obj) {
 
   return arrOfMCs.map((k) => {
     let pos = k.matrix.Matrix["@attributes"];
+    let angle = getAngleAndPositions(pos.a, pos.b, pos.c, pos.d);
     return {
       x: pos.tx,
       y: pos.ty,
       type: k["@attributes"].libraryItemName,
-      rotation: getAngle(pos.a, pos.b, pos.c, pos.d),
+      rotation: angle,
     };
   });
 }
@@ -200,12 +201,11 @@ function rad2deg(rad) {
   return rad * 57.2958;
 }
 
-function getAngle(a, b, c, d) {
-  // Ensure the matrix has two rows and two columns
-
+function getAngleAndPositions(a, b, c, d) {
   // Calculate the angle in radians using atan2
-  const radians = Math.atan2(b, a);
+  let radians = Math.atan2(b, a);
+  if (isNaN(radians)) radians = 0;
 
-  // Convert radians to degrees
+  // Return an object with angle (in radians), new x, and new y
   return radians;
 }

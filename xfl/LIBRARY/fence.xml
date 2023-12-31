@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fence" itemID="6591c68a-00000368" lastModified="1704060055">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="fence" itemID="6591c68a-00000368" lastModified="1704061286">
   <timeline>
     <DOMTimeline name="fence" layerDepthEnabled="true">
       <layers>
@@ -8,7 +8,7 @@
               <elements>
                 <DOMBitmapInstance libraryItemName="Bitmap 3">
                   <matrix>
-                    <Matrix d="0.142852783203125" ty="-3"/>
+                    <Matrix a="0.399993896484375" d="0.142852783203125" ty="-3"/>
                   </matrix>
                   <transformationPoint>
                     <Point y="3.5"/>

@@ -8,7 +8,7 @@ class Fence extends GenericObject {
     const { x, y, particleSystem, rotation } = opt;
     this.startingAngle = Number(rotation) || 0;
 
-    this.spriteWidth = 500;
+    this.spriteWidth = 200;
     this.spriteHeight = 5;
 
     /////////////////////////////
@@ -36,8 +36,8 @@ class Fence extends GenericObject {
   createCompo(x, y) {
     let diam = 10;
 
-    for (let i = x; i < x + this.spriteWidth; i += diam) {
-      for (let j = y; j < y + this.spriteHeight; j += diam) {
+    for (let i = 0; i < this.spriteWidth; i += diam) {
+      for (let j = 0; j < this.spriteHeight; j += diam) {
         const p = new Pole({ x: i, y: j, particleSystem: this.particleSystem });
         this.poles.push(p);
       }
@@ -56,6 +56,7 @@ class Fence extends GenericObject {
     // this.compoundBodies.push(newBody);
     // newBody.angle = this.startingAngle;
     this.Matter.Body.rotate(newBody, this.startingAngle);
+    this.Matter.Body.translate(newBody, { x, y }, 0);
     this.body = newBody;
 
     this.world.add(this.engine.world, [newBody]);
