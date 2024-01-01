@@ -339,7 +339,7 @@ class Person extends GenericObject {
   ImTotallyDead() {
     this.world.remove(this.engine.world, this.body);
 
-    // this.particleSystem.particles = this.particleSystem.particles.filter(
+    // this.particleSystem.people = this.particleSystem.people.filter(
     //   (k) => k.body.id != this.body.id
     // );
 
@@ -476,7 +476,7 @@ class Person extends GenericObject {
   }
 
   findClosestTarget() {
-    let arr = this.particleSystem.particles
+    let arr = this.particleSystem.people
       .filter((k) => k.team != this.team && !k.dead)
       .map((k) => {
         let x = this.cellX - k.cellX;

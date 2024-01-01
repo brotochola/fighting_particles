@@ -6,7 +6,7 @@ class Fan extends Person {
     //OPT DEBERIA TENER VALORES MINIMOS Y MAXIMOS PARA GENERAR FANS DE DIFERENTES TIPOS
   }
   findIdol() {
-    let idols = this.particleSystem.particles.filter((k) => k instanceof Idol);
+    let idols = this.particleSystem.people.filter((k) => k instanceof Idol);
     // console.log(idols);
     if (idols.length > 0) {
       this.setTarget(idols[0]);

@@ -12,7 +12,7 @@ class GenericObject {
     this.world = particleSystem.world;
 
     //INIT STUFF:
-    this.pos = new p5.Vector(x, y);
+    this.pos = new p5.Vector(parseInt(x), parseInt(y));
     this.visible = true;
     this.scale = 2;
     this.image = null;
@@ -33,7 +33,7 @@ class GenericObject {
     );
   }
 
-  createBody(width, height, type, label, angle = 0) {
+  createBody(width, height, type, label, angle = 0, isStatic = false) {
     let bodyOptions = {
       restitution: 0.1,
       mass: 0.01,
@@ -43,7 +43,7 @@ class GenericObject {
       label: label || "particle",
       // isSensor: true,
       render: { visible: true },
-      isStatic: false,
+      isStatic,
       // density: 99999999999999
       // mass: 0
       plugin: {
@@ -184,7 +184,7 @@ class GenericObject {
   }
 
   removeMeAsTarget() {
-    let particlesWithMeAsTarget = this.particleSystem.particles.filter(
+    let particlesWithMeAsTarget = this.particleSystem.people.filter(
       (k) => k.target == this
     );
     if (particlesWithMeAsTarget.length > 0) {
@@ -242,7 +242,7 @@ class GenericObject {
     this.world.remove(this.engine.world, this.body);
     this.removeImage();
 
-    this.particleSystem.particles = this.particleSystem.particles.filter(
+    this.particleSystem.people = this.particleSystem.people.filter(
       (k) => k.body.id != this.body.id
     );
 

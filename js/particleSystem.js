@@ -38,8 +38,9 @@ class ParticleSystem {
     // this.context = this.canvas.getContext("2d");
     // this.canvas.width = width;
     // this.canvas.height = height;
-    this.particles = []; // array to hold all particles
-    this.fences = [];
+    this.people = []; // array to hold all particles
+    // this.fences = [];
+    this.poles = [];
     this.bullets = [];
     this.createPixiStage();
 
@@ -121,7 +122,7 @@ class ParticleSystem {
     // this.loader.add("dead_2", "img/dead_2.png");
     this.loader.add("bg", "img/bg.jpg");
     this.loader.add("blood", "img/blood.png");
-    this.loader.add("fence", "img/fence.png");
+    // this.loader.add("fence", "img/fence.png");
 
     //POR AHORA USAMOS AL ZOMBIE COMO IDOLO:
     this.loader.add("walk_idol", "img/z_walk.png");
@@ -157,7 +158,7 @@ class ParticleSystem {
   }
 
   changeHeightForAllBoxes(howMuch) {
-    this.particles.forEach((k) => {
+    this.people.forEach((k) => {
       Matter.Body.scale(k.body, 1, howMuch);
     });
   }
@@ -224,11 +225,11 @@ class ParticleSystem {
     };
   }
   getAllParticlesOfClass(classname) {
-    return this.particles.filter((k) => k instanceof classname);
+    return this.people.filter((k) => k instanceof classname);
   }
 
   // addTargetToAllParticles(e) {
-  //   this.particles.forEach((particle) => {
+  //   this.people.forEach((particle) => {
   //     particle.target = {
   //       type: "randomTarget",
   //       pos: new p5.Vector(this.mouseX, this.mouseY),
@@ -346,9 +347,9 @@ class ParticleSystem {
     let arr = [];
     let chosenParticles;
     if (substance) {
-      chosenParticles = this.particles.filter((k) => k.substance == substance);
+      chosenParticles = this.people.filter((k) => k.substance == substance);
     } else {
-      chosenParticles = this.particles;
+      chosenParticles = this.people;
     }
     for (let i = 0; i < chosenParticles.length; i++) {
       let b = chosenParticles[i].body;
@@ -401,7 +402,7 @@ class ParticleSystem {
   // }
 
   unHighlightAllParticles() {
-    for (let p of this.particles) {
+    for (let p of this.people) {
       p.unHighlight();
     }
   }
@@ -555,6 +556,9 @@ class ParticleSystem {
       } else if (window.keyIsDown == 70) {
         //F
         this.addFan(x, y, false);
+      } else if (window.keyIsDown == 80) {
+        //P
+        this.addPole({ x, y, particleSystem: this });
       } else if (window.keyIsDown == 77) {
         //M
         for (let i = 0; i < 10; i++)
@@ -614,7 +618,7 @@ class ParticleSystem {
   //     const energy = 10000; // Energy to transfer on click
 
   //     // // Check for particles near mouse pointer and set them on fire
-  //     // for (const particle of this.particles) {
+  //     // for (const particle of this.people) {
   //     //   const distance = Math.sqrt(
   //     //     Math.pow(mouseX - particle.x, 2) + Math.pow(mouseY - particle.y, 2)
   //     //   );
@@ -700,8 +704,8 @@ class ParticleSystem {
       team: "bouncer",
       isStatic,
     });
-    particle.particles = this.particles;
-    this.particles.push(particle);
+    particle.particles = this.people;
+    this.people.push(particle);
     window.lastParticle = particle;
     return particle;
   }
@@ -716,15 +720,16 @@ class ParticleSystem {
       team: "idol",
       isStatic: false,
     });
-    particle.particles = this.particles;
-    this.particles.push(particle);
+    particle.particles = this.people;
+    this.people.push(particle);
     window.lastParticle = particle;
     return particle;
   }
-  addFence(fence) {
-    const f = new Fence({ ...fence, particleSystem: this });
-    this.fences.push(f);
-    window.lastFence = f;
+
+  addPole(poleData) {
+    const p = new Pole({ ...poleData, particleSystem: this });
+    this.poles.push(p);
+    window.lastPole = p;
   }
   addFan(x, y, isStatic) {
     // let substance = "wood";
@@ -737,8 +742,8 @@ class ParticleSystem {
       team: "fan",
       isStatic,
     });
-    particle.particles = this.particles;
-    this.particles.push(particle);
+    particle.particles = this.people;
+    this.people.push(particle);
     window.lastParticle = particle;
     return particle;
   }
@@ -767,15 +772,18 @@ class ParticleSystem {
     this.COUNTER++;
     this.doScreenCameraMove();
 
-    for (const particle of this.particles) {
-      particle.update(this.COUNTER);
-    }
-    for (const bullet of this.bullets) {
-      bullet.update(this.COUNTER);
-    }
-    for (const fence of this.fences) {
-      fence.update(this.COUNTER);
-    }
+    // for (const particle of this.people) {
+    //   particle.update(this.COUNTER);
+    // }
+    // for (const bullet of this.bullets) {
+    //   bullet.update(this.COUNTER);
+    // }
+    // for (const fence of this.fences) {
+    //   fence.update(this.COUNTER);
+    // }
+    this.getAllObjects().forEach((k) => {
+      k.update(this.COUNTER);
+    });
 
     // this.drawInSmallerCanvas();
   }
@@ -806,9 +814,9 @@ class ParticleSystem {
   //   // Calculate the average temperature of all particles
   //   let chosenPArticles;
   //   if (subst) {
-  //     chosenPArticles = this.particles.filter((k) => k.substance == subst);
+  //     chosenPArticles = this.people.filter((k) => k.substance == subst);
   //   } else {
-  //     chosenPArticles = this.particles;
+  //     chosenPArticles = this.people;
   //   }
   //   let totalTemperature = 0;
   //   for (const particle of chosenPArticles) {
@@ -822,7 +830,7 @@ class ParticleSystem {
   //     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
   //     // Render all particles in the system
-  //     for (const particle of this.particles) {
+  //     for (const particle of this.people) {
   //       particle.render(this.context);
   //     }
 
@@ -854,8 +862,8 @@ class ParticleSystem {
   //         this.addFan(x, y, "wood");
   //       }
   //     }
-  //     for (let p of this.particles) {
-  //       for (let p2 of this.particles) {
+  //     for (let p of this.people) {
+  //       for (let p2 of this.people) {
   //         if (p == p2) continue;
   //         const distance = Math.sqrt(
   //           Math.pow(p.x - p2.x, 2) + Math.pow(p.y - p2.y, 2)
@@ -882,7 +890,7 @@ class ParticleSystem {
 
   //   let howManyConnectionsWeMadeNow = 0;
 
-  //   arr = arr ? arr : this.particles.filter((k) => k.substance == "wood");
+  //   arr = arr ? arr : this.people.filter((k) => k.substance == "wood");
   //   for (let i = 0; i < arr.length; i++) {
   //     //EACH BODY
 
@@ -1004,15 +1012,17 @@ class ParticleSystem {
     // console.log(itemsOfLevel);
     this.restartLevel(itemsOfLevel);
   }
+  getAllObjects() {
+    return [...this.people, ...this.bullets, ...this.poles];
+  }
   restartLevel(data) {
-    this.particles.forEach((k) => k.remove());
-    this.bullets.forEach((k) => k.remove());
-    this.fences.forEach((k) => k.remove());
+    this.getAllObjects().forEach((k) => k.remove());
+
     data.forEach((k) => {
       if (k.type == "chaboncito") {
         this.addFan(Math.floor(k.x), Math.floor(k.y), false);
-      } else if (k.type == "fence") {
-        this.addFence(k);
+      } else if (k.type == "pole") {
+        this.addPole(k);
       }
     });
   }

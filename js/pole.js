@@ -2,8 +2,9 @@ class Pole extends GenericObject {
   constructor(opt) {
     console.log("pole", opt);
     super(opt);
-    const { x, y, particleSystem } = opt;
+    const { x, y, particleSystem, fence } = opt;
 
+    this.fence = fence;
     this.spriteWidth = 5;
     this.spriteHeight = 5;
 
@@ -12,13 +13,21 @@ class Pole extends GenericObject {
     //initialize variables:
 
     //create stuff
-    this.createBody(this.spriteWidth, this.spriteWidth, "circle", "pole");
+    this.createBody(
+      this.spriteWidth,
+      this.spriteWidth,
+      "circle",
+      "pole",
+      0,
+      true
+    );
 
     this.createContainers();
 
     this.createSprite();
 
     this.updateMyPositionInCell();
+    this.show();
 
     // this.body.angle = this.startingAngle;
     // this.addParticleEmitter();
@@ -30,8 +39,9 @@ class Pole extends GenericObject {
 
     this.container.addChildAt(this.image, 0);
   }
+  update() {}
 
-  update(COUNTER) {
+  show(COUNTER) {
     super.update(COUNTER);
 
     // if (this.state != "dead") {
@@ -44,10 +54,11 @@ class Pole extends GenericObject {
     this.container.zIndex = Math.floor(this.pos.y);
 
     this.updateMyPositionInCell();
-  }
-
-  render() {
     super.render();
   }
-  remove() {}
+
+  //   render() {
+  //     super.render();
+  //   }
+  //   remove() {}
 }
