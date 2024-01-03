@@ -5,8 +5,8 @@ class Pole extends GenericObject {
     const { x, y, particleSystem, fence } = opt;
 
     this.fence = fence;
-    this.spriteWidth = 5;
-    this.spriteHeight = 5;
+    this.spriteWidth = 10;
+    this.spriteHeight = 10;
 
     /////////////////////////////
 
@@ -27,7 +27,7 @@ class Pole extends GenericObject {
     this.createSprite();
 
     this.updateMyPositionInCell();
-    this.show();
+    // this.update();
 
     // this.body.angle = this.startingAngle;
     // this.addParticleEmitter();
@@ -39,9 +39,8 @@ class Pole extends GenericObject {
 
     this.container.addChildAt(this.image, 0);
   }
-  update() {}
 
-  show(COUNTER) {
+  update(COUNTER) {
     super.update(COUNTER);
 
     // if (this.state != "dead") {
@@ -57,8 +56,8 @@ class Pole extends GenericObject {
     super.render();
   }
 
-  //   render() {
-  //     super.render();
-  //   }
+  // render() {
+  //   super.render();
+  // }
   //   remove() {}
 }

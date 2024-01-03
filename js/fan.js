@@ -23,7 +23,7 @@ class Fan extends Person {
     }
 
     if (this.state == "searching" || (this.state == "chasing" && this.target)) {
-      if (this.COUNTER % 3 == 0) {
+      if (this.COUNTER % 7 == this.startingFrame) {
         this.calculateVelVectorAccordingToTarget();
       }
 

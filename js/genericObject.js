@@ -10,6 +10,7 @@ class GenericObject {
     this.engine = particleSystem.engine;
     this.isStatic = isStatic;
     this.world = particleSystem.world;
+    this.DISPLACEMENT_X = 0.4;
 
     //INIT STUFF:
     this.pos = new p5.Vector(parseInt(x), parseInt(y));
@@ -135,14 +136,22 @@ class GenericObject {
   }
 
   calculateContainersX() {
-    let amount = this.particleSystem.viewportWidth * 0.25;
+    if (!this.particleSystem.doPerspective) return this.pos.x;
+    let amount = this.particleSystem.viewportWidth * this.DISPLACEMENT_X;
     let factor = this.scale * amount;
-    return this.particleSystem.doPerspective
-      ? this.pos.x + (this.ratioOfX - 0.5) * factor
-      : this.pos.x;
+    return this.pos.x + (this.ratioOfX - 0.5) * factor;
+  }
+  getHeight() {
+    let ret;
+    try {
+      ret = this.image.texture.baseTexture.height;
+    } catch (e) {
+      ret = this.graphics.height;
+    }
+    return ret;
   }
   calculateContainersY() {
-    let y = this.pos.y - this.image.texture.baseTexture.height * 2;
+    let y = this.pos.y - this.getHeight() * 2;
     if (!this.particleSystem.doPerspective) return y;
 
     let yFactor = this.scale * this.particleSystem.worldPerspective;
@@ -168,12 +177,13 @@ class GenericObject {
     this.calculateScaleAccordingToY();
 
     this.container.x = this.calculateContainersX();
-
-    if (this.highlighted) {
-      if (this.image.tint != 0xff0000) this.image.tint = 0xff0000;
-    } else {
-      if (this.image.tint != 0xffffff) this.image.tint = 0xffffff;
-    }
+    try {
+      if (this.highlighted) {
+        if (this.image.tint != 0xff0000) this.image.tint = 0xff0000;
+      } else {
+        if (this.image.tint != 0xffffff) this.image.tint = 0xffffff;
+      }
+    } catch (e) {}
   }
 
   highlight() {

@@ -126,7 +126,7 @@ class ParticleSystem {
 
     //POR AHORA USAMOS AL ZOMBIE COMO IDOLO:
     this.loader.add("walk_idol", "img/z_walk.png");
-    this.loader.add("idle_idol", "img/z_walk.png");
+    this.loader.add("idle_idol", "img/z_idle.png");
     this.loader.add("pole", "img/pole.png");
 
     this.loader.load((loader, resources) => {
@@ -274,7 +274,7 @@ class ParticleSystem {
         width: this.worldWidth,
         // showVertexNumbers: true,
         constraintIterations: 4,
-        positionIterations: 20,
+        positionIterations: 0,
         height: this.worldHeight,
         wireframes: false, // <-- important
         // showAngleIndicator: true,
@@ -337,9 +337,11 @@ class ParticleSystem {
     ) {
       let p = closeP[0].body;
       window.tempParticle = p.particle;
-      //DEBUG
-      // p.particle.temperature += 200;
+
+      this.people.forEach((person) => person.unHighlight());
+
       console.log(p.particle);
+      p.particle.highlighted = !p.particle.highlighted;
     }
   }
 
@@ -416,7 +418,7 @@ class ParticleSystem {
     ) {
       this.grid[i] = [];
       for (let j = -2; j < this.worldWidth / this.CELL_SIZE + 2; j++) {
-        this.grid[i][j] = new Cell(i, j, this.CELL_SIZE, this.grid);
+        this.grid[i][j] = new Cell(i, j, this.CELL_SIZE, this.grid, this);
       }
     }
     return this.grid;
@@ -478,8 +480,8 @@ class ParticleSystem {
     let ratioOfXForBG = this.getRatioOfBGX();
     let ratioOfYForBG = this.getRatioOfBGY();
 
-    let xOffset = (ratioOfXForBG * -58).toFixed(3);
-    let yOffset = (-37 * ratioOfYForBG).toFixed(3);
+    let xOffset = (ratioOfXForBG * -30).toFixed(3);
+    let yOffset = (-30 * ratioOfYForBG).toFixed(3);
 
     // console.log(yOffset);
     let stringToPass =
@@ -784,6 +786,12 @@ class ParticleSystem {
     this.getAllObjects().forEach((k) => {
       k.update(this.COUNTER);
     });
+
+    // this.grid.forEach((k) => {
+    //   k.forEach((v) => {
+    //     v.render(this.COUNTER);
+    //   });
+    // });
 
     // this.drawInSmallerCanvas();
   }

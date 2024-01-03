@@ -209,3 +209,7 @@ function getAngleAndPositions(a, b, c, d) {
   // Return an object with angle (in radians), new x, and new y
   return radians;
 }
+
+function randomInt(max) {
+  return Math.floor(Math.random() * (max + 1));
+}
