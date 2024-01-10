@@ -488,10 +488,8 @@ class Person extends GenericObject {
     let arr = this.particleSystem.people
       .filter((k) => k.team == team && !k.dead)
       .map((k) => {
-        let x = this.cellX - k.cellX;
-        let y = this.cellY - k.cellY;
         return {
-          dist: this.particleSystem.CELL_SIZE * (Math.abs(x) + Math.abs(y)),
+          dist: cheaperDist(this.pos.x, this.pos.y, k.pos.x, k.pos.y),
           part: k,
         };
       });
@@ -500,6 +498,7 @@ class Person extends GenericObject {
     if (newArr.length == 0) return;
 
     let closestEnemy = newArr[0].part;
+    this.distanceToTarget = newArr[0].dist;
 
     this.setTarget(closestEnemy);
   }

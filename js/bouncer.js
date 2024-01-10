@@ -17,7 +17,7 @@ class Bouncer extends Person {
 
   update(COUNTER) {
     super.update(COUNTER);
-    this.checkWhichFansAreClose();
+    if (COUNTER % 10 == 0) this.checkWhichFansAreClose();
   }
 
   checkWhichFansAreClose() {
@@ -27,7 +27,6 @@ class Bouncer extends Person {
       let dist = closestFans[0].dist;
       let fan = closestFans[0].part;
       if (dist < this.diameter * 2) {
-        // console.log("me estan tocando", this.closestFan.part);
         this.makeMeFlash();
         fan.makeMeFlash();
 
@@ -56,7 +55,7 @@ class Bouncer extends Person {
 
   doStuffAccordingToState() {
     if (this.state == "searching" || (this.state == "chasing" && this.target)) {
-      if (this.COUNTER % 3 == 0) {
+      if (this.COUNTER % 5 == 0) {
         this.calculateVelVectorAccordingToTarget();
       }
 
