@@ -78,7 +78,7 @@ class Bouncer extends Person {
 
   //   // this.fear += this.intelligence * howMuchHealthThisIsTakingFromMe; //FEAR GOES UP ACCORDING TO INTELLIGENCE. MORE INTELLIGENT, MORE FEAR
 
-  //   // this.anger += this.corage * howMuchHealthThisIsTakingFromMe; //ANGER GOES UP ACCORDING TO CORAGE. MORE CORAGE, YOU GET ANGRIER
+  //   // this.anger += this.courage * howMuchHealthThisIsTakingFromMe; //ANGER GOES UP ACCORDING TO courage. MORE courage, YOU GET ANGRIER
 
   //   let incomingAngleOfHit = Math.atan2(
   //     part.body.position.y,

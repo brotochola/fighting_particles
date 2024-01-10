@@ -48,8 +48,8 @@ class Person extends GenericObject {
 
     this.health = 1;
     this.speed = Math.random() * 0.5 + 0.5;
-    this.intelligence = Math.random(); //opposite of corage
-    this.corage = 1 - this.intelligence;
+    this.intelligence = Math.random(); //opposite of courage
+    this.courage = 1 - this.intelligence;
 
     this.sightDistance = Math.random() * 200 + 400;
 
@@ -475,9 +475,9 @@ class Person extends GenericObject {
     this.state = "chasing";
   }
 
-  findClosestTarget() {
+  findClosestTarget(team) {
     let arr = this.particleSystem.people
-      .filter((k) => k.team != this.team && !k.dead)
+      .filter((k) => k.team == team && !k.dead)
       .map((k) => {
         let x = this.cellX - k.cellX;
         let y = this.cellY - k.cellY;

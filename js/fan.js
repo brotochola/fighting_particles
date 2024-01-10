@@ -1,17 +1,18 @@
 class Fan extends Person {
   constructor(opt) {
     super({ ...opt, diameter: 7 });
+
     this.strength = Math.random() * 0.4 + 0.1;
 
     //OPT DEBERIA TENER VALORES MINIMOS Y MAXIMOS PARA GENERAR FANS DE DIFERENTES TIPOS
   }
-  findIdol() {
-    let idols = this.particleSystem.people.filter((k) => k instanceof Idol);
-    // console.log(idols);
-    if (idols.length > 0) {
-      this.setTarget(idols[0]);
-    }
-  }
+  // findIdol() {
+  //   let idols = this.particleSystem.people.filter((k) => k instanceof Idol);
+  //   // console.log(idols);
+  //   if (idols.length > 0) {
+  //     this.setTarget(idols[0]);
+  //   }
+  // }
 
   doStuffAccordingToState() {
     if (
@@ -19,7 +20,8 @@ class Fan extends Person {
       this.state == "chasing" ||
       this.state == "idle"
     ) {
-      if (this.COUNTER % 4 == 0) this.findIdol();
+      if (this.COUNTER % 20 == 0)
+        this.findClosestTarget(this.team == "boca" ? "river" : "boca");
     }
 
     if (this.state == "searching" || (this.state == "chasing" && this.target)) {
@@ -41,7 +43,7 @@ class Fan extends Person {
 
     // this.fear += this.intelligence * howMuchHealthThisIsTakingFromMe; //FEAR GOES UP ACCORDING TO INTELLIGENCE. MORE INTELLIGENT, MORE FEAR
 
-    // this.anger += this.corage * howMuchHealthThisIsTakingFromMe; //ANGER GOES UP ACCORDING TO CORAGE. MORE CORAGE, YOU GET ANGRIER
+    // this.anger += this.courage * howMuchHealthThisIsTakingFromMe; //ANGER GOES UP ACCORDING TO courage. MORE courage, YOU GET ANGRIER
 
     let incomingAngleOfHit = Math.atan2(
       part.body.position.y,

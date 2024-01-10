@@ -109,25 +109,31 @@ class ParticleSystem {
     //DEBUG
     globalThis.__PIXI_APP__ = this.pixiApp;
 
-    this.loader.add("walk_fan", "img/m_walk.png");
-    this.loader.add("walk_bouncer", "img/m_walk_2.png");
-    this.loader.add("idle_fan", "img/m_idle.png");
-    this.loader.add("idle_bouncer", "img/m_idle_2.png");
+    this.loader.add("walk_boca", "img/boca/walk.png");
+    this.loader.add("idle_boca", "img/boca/idle.png");
+    this.loader.add("die_boca", "img/boca/dead.png");
+    this.loader.add("attack_boca", "img/boca/attack.png");
 
-    this.loader.add("die_fan", "img/m_dying_1.png");
-    // this.loader.add("dead_1", "img/dead_1.png");
-    this.loader.add("die_bouncer", "img/m_dying_2.png");
-    this.loader.add("attack_fan", "img/m_attack.png");
-    this.loader.add("attack_bouncer", "img/m_attack_2.png");
+    this.loader.add("walk_river", "img/river/walk.png");
+    this.loader.add("idle_river", "img/river/idle.png");
+    this.loader.add("die_river", "img/river/dead.png");
+    this.loader.add("attack_river", "img/river/attack.png");
+
+    this.loader.add("attack_bouncer", "img/poli/attack2.png");
+    this.loader.add("push_bouncer", "img/poli/attack.png");
+    this.loader.add("walk_bouncer", "img/poli/walk.png");
+    this.loader.add("idle_bouncer", "img/poli/idle.png");
+    this.loader.add("die_bouncer", "img/poli/dead.png");
+
     // this.loader.add("dead_2", "img/dead_2.png");
     this.loader.add("bg", "img/bg.jpg");
     this.loader.add("blood", "img/blood.png");
     // this.loader.add("fence", "img/fence.png");
 
     //POR AHORA USAMOS AL ZOMBIE COMO IDOLO:
-    this.loader.add("walk_idol", "img/z_walk.png");
-    this.loader.add("idle_idol", "img/z_idle.png");
-    this.loader.add("pole", "img/pole.png");
+    // this.loader.add("walk_idol", "img/river/walk.png");
+    // this.loader.add("idle_idol", "img/river/idle.png");
+    // this.loader.add("pole", "img/pole.png");
 
     this.loader.load((loader, resources) => {
       this.res = resources;
@@ -514,11 +520,11 @@ class ParticleSystem {
       let y = e.y - box.y - this.mainContainer.y;
       if (e.which == 1) this.indicateWhichParticleItIs(x, y);
       else if (e.which == 3) {
-        if (this.checkIfAPointCollidesWithTheGrounds(x, y)) {
-          this.addFan(x, y);
-        } else {
-          this.addFan(x, y);
-        }
+        // if (this.checkIfAPointCollidesWithTheGrounds(x, y)) {
+        //   this.addFan(x, y);
+        // } else {
+        //   this.addFan(x, y);
+        // }
       }
     };
     canvas.onmouseup = (e) => {
@@ -545,21 +551,21 @@ class ParticleSystem {
 
         return;
       } else if (window.isDown == 3) {
-        //ADD PARTICLES WHILE DRAGGING
-
-        //GOO MODE DOESN'T WORK WHILE DRAGGING!
-        this.addFan(x, y);
+        // this.addFan(x, y);
       }
 
       //KEYS
-      if (window.keyIsDown == 71) {
-        //G
-        this.addFan(x, y, true);
-      } else if (window.keyIsDown == 70) {
-        //F
-        this.addFan(x, y, false);
+      if (window.keyIsDown == 66) {
+        //B de boca
+        this.addFan(x, y, false, "boca");
+      } else if (window.keyIsDown == 82) {
+        //R de river
+        this.addFan(x, y, false, "river");
       } else if (window.keyIsDown == 80) {
-        //P
+        //P de poli
+        this.addBouncer(x, y, false);
+      } else if (window.keyIsDown == 86) {
+        //V
         this.addPole({ x, y, particleSystem: this });
       } else if (window.keyIsDown == 77) {
         //M
@@ -569,11 +575,12 @@ class ParticleSystem {
         //B
 
         this.addBouncer(x, y, false);
-      } else if (window.keyIsDown == 73) {
-        //i
-
-        this.addIdol(x, y, false);
-      } else if (window.keyIsDown == 72) {
+      }
+      // else if (window.keyIsDown == 73) {
+      //   //i
+      //   this.addIdol(x, y, false);
+      // }
+      else if (window.keyIsDown == 72) {
         //H (heat)
         // let closeParticles = this.getParticlesAndTheirDistance(x, y, null);
         // for (let p of closeParticles) {
@@ -733,15 +740,12 @@ class ParticleSystem {
     this.poles.push(p);
     window.lastPole = p;
   }
-  addFan(x, y, isStatic) {
-    // let substance = "wood";
-    /// IT CAN BE WOOD GAS ;)
-
+  addFan(x, y, isStatic, team) {
     const particle = new Fan({
       x,
       y,
       particleSystem: this,
-      team: "fan",
+      team,
       isStatic,
     });
     particle.particles = this.people;
