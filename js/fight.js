@@ -22,4 +22,4 @@ document.body.onload = (e) => {
   //   particleSystem.startSimulation();
 };
 
-var addingParticlesOfTeam = 1;
+// var addingParticlesOfTeam = 1;

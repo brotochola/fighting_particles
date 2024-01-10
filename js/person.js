@@ -33,7 +33,15 @@ class Person extends GenericObject {
     this.amILookingLeft = false;
 
     //create stuff
-    this.createBody(this.diameter, this.diameter, "circle", "person");
+    this.createBody(
+      this.diameter,
+      this.diameter,
+      "circle",
+      "person",
+      0,
+      false,
+      this.weight
+    );
     this.createContainers();
     this.createSprite("idle_" + this.team);
 
@@ -45,6 +53,7 @@ class Person extends GenericObject {
     this.dead = false;
     this.name = generateID();
     this.strength = Math.random() * 0.05 + 0.05;
+    this.weight = Math.random() * 50 + 50;
 
     this.health = 1;
     this.speed = Math.random() * 0.5 + 0.5;
@@ -396,10 +405,10 @@ class Person extends GenericObject {
     let minStam = this.particleSystem.MINIMUM_STAMINA_TO_MOVE;
     if (!this.isStatic) {
       if (this.stamina >= minStam) {
-        this.body.force.y +=
+        this.body.force.y =
           this.vel.y * this.particleSystem.SPEED_REDUCER * this.speed;
 
-        this.body.force.x +=
+        this.body.force.x =
           this.vel.x * this.particleSystem.SPEED_REDUCER * this.speed;
 
         this.stamina -= minStam * 0.01;

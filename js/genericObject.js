@@ -34,16 +34,33 @@ class GenericObject {
     );
   }
 
-  createBody(width, height, type, label, angle = 0, isStatic = false) {
+  createBody(
+    width,
+    height,
+    type,
+    label,
+    angle = 0,
+    isStatic = false,
+    mass = 10
+  ) {
+    // console.log(mass);
     let bodyOptions = {
       restitution: 0.1,
-      mass: 0.01,
-      friction: 1,
-      slop: 0,
+      mass: mass, //peso en kg? de esto depende la fuerza q tengamos q meterle para q caminen
+      friction: 0.9,
+      slop: 0.05,
       frictionAir: 0.5,
       label: label || "particle",
       // isSensor: true,
-      render: { visible: true },
+      render: {
+        visible: true,
+        fillStyle:
+          this.team == "boca"
+            ? "blue"
+            : this.team == "river"
+            ? "white"
+            : "yellow",
+      },
       isStatic,
       // density: 99999999999999
       // mass: 0

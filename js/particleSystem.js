@@ -18,7 +18,7 @@ class ParticleSystem {
 
     this.cameraHeight = window.innerHeight / 2;
     this.FORCE_REDUCER = 0.0001;
-    this.SPEED_REDUCER = 0.0002;
+    this.SPEED_REDUCER = 1.7;
     this.MINIMUM_STAMINA_TO_MOVE = 0.01;
     this.CELL_SIZE = 40;
     this.buttonPanelHeight = 100;
@@ -280,7 +280,7 @@ class ParticleSystem {
         width: this.worldWidth,
         // showVertexNumbers: true,
         constraintIterations: 4,
-        positionIterations: 0,
+        positionIterations: 999,
         height: this.worldHeight,
         wireframes: false, // <-- important
         // showAngleIndicator: true,
@@ -316,7 +316,7 @@ class ParticleSystem {
     this.Matter.Render.run(this.render);
 
     // create runner
-    this.runner = this.Matter.Runner.create();
+    this.runner = this.Matter.Runner.create({ isFixed: true, delta: 12 });
     // this.runner.isFixed = true;
     // this.runner.delta = 10;
 
