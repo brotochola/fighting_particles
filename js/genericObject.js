@@ -19,6 +19,8 @@ class GenericObject {
     this.direction = 1;
     this.image = null;
     this.startingFrame = randomInt(6);
+    this.maxLuckyNumbers = 25;
+    this.myLuckyNumber = randomInt(this.maxLuckyNumbers);
 
     // this.createBody(10);
   }
@@ -27,7 +29,7 @@ class GenericObject {
     return this.COUNTER % 7 == this.startingFrame;
   }
   oncePerSecond() {
-    return (this.COUNTER * 0.25) % 7 == this.startingFrame;
+    return this.COUNTER % this.maxLuckyNumbers == this.myLuckyNumber;
   }
 
   getFullwidthOfCurrentSprite() {
@@ -191,7 +193,7 @@ class GenericObject {
     this.ratioOfY = this.getRatioOfY();
     this.ratioOfX = this.getRatioOfX();
 
-    // if (this.oncePerSecond()) console.log(this.name, performance.now());
+    if (this.oncePerSecond()) console.log(this.name, performance.now());
   }
   render() {
     if (!this.doNotShowIfOutOfScreen()) return;
