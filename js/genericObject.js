@@ -136,20 +136,16 @@ class GenericObject {
   }
 
   calculateScaleAccordingToY() {
+    // DEFINE SCALE
+
     let dif =
       this.particleSystem.maxScaleOfSprites -
       this.particleSystem.minScaleOfSprites;
 
-    // DEFINE SCALE
-    if (this.particleSystem.doPerspective) {
-      this.scale = Math.pow(dif, this.ratioOfY);
-      // this.scale = dif * this.ratioOfY + this.particleSystem.minScaleOfSprites;
-    } else {
-      this.scale = 2;
-    }
-    //SCALE.Y DOESN'T DEPEND ON WHICH SIDE THE PARTICLE IS WALKING TOWARDS
+    this.scale = Math.pow(dif, this.ratioOfY);
+    // this.scale = dif * this.ratioOfY + this.particleSystem.minScaleOfSprites;
 
-    this.container.scale.y = this.scale;
+    //SCALE.Y DOESN'T DEPEND ON WHICH SIDE THE PARTICLE IS WALKING TOWARDS
   }
 
   calculateContainersX() {
@@ -191,7 +187,8 @@ class GenericObject {
 
     this.container.y = this.calculateContainersY();
 
-    this.calculateScaleAccordingToY();
+    if (this.particleSystem.doPerspective) this.calculateScaleAccordingToY();
+    this.container.scale.y = this.scale;
 
     this.container.x = this.calculateContainersX();
     try {
@@ -335,8 +332,6 @@ class GenericObject {
     );
 
     this.image.texture.frame = frame1;
-    // this.image.scale.x = 2;
-    // this.image.scale.y = 2;
 
     this.container.addChildAt(this.image, 0);
   }

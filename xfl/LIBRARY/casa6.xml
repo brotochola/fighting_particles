@@ -1,14 +1,14 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="chaboncito" itemID="65773c77-0000022d" lastModified="1704146060">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="casa6" itemID="65a00782-00000406" lastModified="1704986498">
   <timeline>
-    <DOMTimeline name="chaboncito" layerDepthEnabled="true">
+    <DOMTimeline name="casa6" layerDepthEnabled="true">
       <layers>
         <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMBitmapInstance libraryItemName="m_idle.png">
+                <DOMBitmapInstance selected="true" libraryItemName="Bitmap 10">
                   <matrix>
-                    <Matrix a="2" d="2" tx="-12" ty="-42"/>
+                    <Matrix tx="-57" ty="-163"/>
                   </matrix>
                 </DOMBitmapInstance>
               </elements>

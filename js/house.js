@@ -1,12 +1,12 @@
-class Pole extends GenericObject {
+class House extends GenericObject {
   constructor(opt) {
     // console.log("pole", opt);
     super(opt);
-    const { x, y, particleSystem, fence } = opt;
+    const { x, y, particleSystem, width, height, sprite } = opt;
+    this.sprite = sprite;
 
-    this.fence = fence;
-    this.spriteWidth = 10;
-    this.spriteHeight = 10;
+    this.spriteWidth = particleSystem.res[sprite].texture.width * 2;
+    this.spriteHeight = particleSystem.res[sprite].texture.height * 2;
 
     /////////////////////////////
 
@@ -15,11 +15,12 @@ class Pole extends GenericObject {
     //create stuff
     this.createBody(
       this.spriteWidth,
-      this.spriteWidth,
-      "circle",
-      "pole",
+      this.spriteHeight,
+      "rectangle",
+      "house",
       0,
-      true
+      true,
+      999
     );
 
     this.createContainers();
@@ -27,19 +28,32 @@ class Pole extends GenericObject {
     this.createSprite();
 
     this.updateMyPositionInCell();
-    // this.update();
+    this.update();
 
     // this.body.angle = this.startingAngle;
     // this.addParticleEmitter();
   }
+
+  createContainers() {
+    this.container = new PIXI.Container();
+
+    this.container.pivot.set(
+      this.spriteWidth * 0.25,
+      -this.spriteHeight * 0.125
+    );
+
+    // this.particleContainer.zIndex = 1;
+
+    // this.container.addChild(this.particleContainer);
+    this.particleSystem.mainContainer.addChild(this.container);
+  }
+
   createSprite() {
     this.image = new PIXI.Sprite(
-      this.particleSystem.res["pole"].texture.clone()
+      this.particleSystem.res[this.sprite].texture.clone()
     );
 
     this.container.addChildAt(this.image, 0);
-    this.container.scale.x = 2;
-    this.container.scale.y = 2;
   }
 
   update(COUNTER) {
@@ -55,7 +69,9 @@ class Pole extends GenericObject {
     this.container.zIndex = Math.floor(this.pos.y);
 
     this.updateMyPositionInCell();
+
     super.render();
+    this.container.scale.x = this.container.scale.y;
   }
 
   // render() {

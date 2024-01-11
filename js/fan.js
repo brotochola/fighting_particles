@@ -19,16 +19,22 @@ class Fan extends Person {
       this.state == "searching" ||
       this.state == "chasing" ||
       this.state == "idle" ||
-      this.state == "attacking"
+      this.state == "attacking" ||
+      this.state == "escaping"
     ) {
+      //BUSCAR A QUIEN PEGARLE
       if (this.COUNTER % 20 == 0)
         this.findClosestTarget(this.team == "boca" ? "river" : "boca");
     }
 
     if (
       this.state == "searching" ||
-      ((this.state == "chasing" || this.state == "attacking") && this.target)
+      ((this.state == "chasing" ||
+        this.state == "attacking" ||
+        this.state == "escaping") &&
+        this.target)
     ) {
+      //TIENE UN TARGET
       if (this.COUNTER % 7 == this.startingFrame) {
         this.calculateVelVectorAccordingToTarget();
         if (this.distanceToTarget <= this.particleSystem.CELL_SIZE) {

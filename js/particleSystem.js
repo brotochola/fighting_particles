@@ -40,6 +40,7 @@ class ParticleSystem {
     // this.canvas.height = height;
     this.people = []; // array to hold all particles
     // this.fences = [];
+    this.fixedObjects = [];
     this.poles = [];
     this.bullets = [];
     this.createPixiStage();
@@ -133,7 +134,14 @@ class ParticleSystem {
     //POR AHORA USAMOS AL ZOMBIE COMO IDOLO:
     // this.loader.add("walk_idol", "img/river/walk.png");
     // this.loader.add("idle_idol", "img/river/idle.png");
-    // this.loader.add("pole", "img/pole.png");
+    this.loader.add("pole", "img/pole.png");
+
+    this.loader.add("casa1", "img/casas/casa1.png");
+    this.loader.add("casa2", "img/casas/casa2.png");
+    this.loader.add("casa3", "img/casas/casa3.png");
+    this.loader.add("casa4", "img/casas/casa4.png");
+    this.loader.add("casa5", "img/casas/casa5.png");
+    this.loader.add("casa6", "img/casas/casa6.png");
 
     this.loader.load((loader, resources) => {
       this.res = resources;
@@ -754,6 +762,19 @@ class ParticleSystem {
     return particle;
   }
 
+  addHouse(data) {
+    const house = new House({
+      x: data.x,
+      y: data.y,
+      particleSystem: this,
+      sprite: data.type,
+    });
+
+    this.fixedObjects.push(house);
+    window.lastObject = house;
+    return house;
+  }
+
   addBullet(part) {
     // console.log(part.vel);
 
@@ -1025,16 +1046,23 @@ class ParticleSystem {
     this.restartLevel(itemsOfLevel);
   }
   getAllObjects() {
-    return [...this.people, ...this.bullets, ...this.poles];
+    return [
+      ...this.people,
+      ...this.bullets,
+      ...this.poles,
+      ...this.fixedObjects,
+    ];
   }
   restartLevel(data) {
     this.getAllObjects().forEach((k) => k.remove());
 
     data.forEach((k) => {
-      if (k.type == "chaboncito") {
-        this.addFan(Math.floor(k.x), Math.floor(k.y), false);
+      if (k.type == "boca" || k.type == "river") {
+        this.addFan(Math.floor(k.x), Math.floor(k.y), false, k.type);
       } else if (k.type == "pole") {
         this.addPole(k);
+      } else if (k.type.startsWith("casa")) {
+        this.addHouse(k);
       }
     });
   }

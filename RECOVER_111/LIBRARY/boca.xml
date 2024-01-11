@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="boca" itemID="65a007ce-00000413" lastModified="1704986853">
+  <timeline>
+    <DOMTimeline name="boca" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="idle.png copy 2">
+                  <matrix>
+                    <Matrix a="2" d="2" tx="-12" ty="-42"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6" y="10.75"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
