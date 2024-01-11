@@ -37,10 +37,7 @@ class House extends GenericObject {
   createContainers() {
     this.container = new PIXI.Container();
 
-    this.container.pivot.set(
-      this.spriteWidth * 0.25,
-      -this.spriteHeight * 0.125
-    );
+    this.container.pivot.set(this.spriteWidth * 0.5, -this.spriteHeight * 0.25);
 
     // this.particleContainer.zIndex = 1;
 
@@ -71,7 +68,6 @@ class House extends GenericObject {
     this.updateMyPositionInCell();
 
     super.render();
-    this.container.scale.x = this.container.scale.y;
   }
 
   // render() {

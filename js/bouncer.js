@@ -1,5 +1,5 @@
 //PATOVA
-class Bouncer extends Person {
+class Poli extends Person {
   constructor(opt) {
     super({ ...opt, diameter: 9 });
     this.strength = Math.random() * 0.5 + 0.5;

@@ -232,6 +232,8 @@ class ParticleSystem {
       window.keyIsDown = window.keyIsDown.filter((k) => k != e.keyCode);
       console.log("letra", e.keyCode);
       this.unHighlightAllParticles();
+      this.evaluateKeyDowns(e.keyCode);
+
       if (e.keyCode == 32) {
         //space bar
         this.togglePause();
@@ -562,46 +564,8 @@ class ParticleSystem {
         // this.addFan(x, y);
       }
 
-      //KEYS
-      if (window.keyIsDown == 66) {
-        //B de boca
-        this.addFan(x, y, false, "boca");
-      } else if (window.keyIsDown == 82) {
-        //R de river
-        this.addFan(x, y, false, "river");
-      } else if (window.keyIsDown == 80) {
-        //P de poli
-        this.addBouncer(x, y, false);
-      } else if (window.keyIsDown == 86) {
-        //V
-        this.addPole({ x, y, particleSystem: this });
-      } else if (window.keyIsDown == 77) {
-        //M
-        for (let i = 0; i < 10; i++)
-          this.addFan(x + Math.random() * 20, y + Math.random() * 20, false);
-      } else if (window.keyIsDown == 66) {
-        //B
+      this.evaluateKeyDowns(window.keyIsDown);
 
-        this.addBouncer(x, y, false);
-      }
-      // else if (window.keyIsDown == 73) {
-      //   //i
-      //   this.addIdol(x, y, false);
-      // }
-      else if (window.keyIsDown == 72) {
-        //H (heat)
-        // let closeParticles = this.getParticlesAndTheirDistance(x, y, null);
-        // for (let p of closeParticles) {
-        //   let part = p.body.particle || {};
-        //   if (p.distance < 25) {
-        //     let part = p.body.particle || {};
-        //     part.highlight();
-        //     part.heatUp(5);
-        //   } else {
-        //     part.unHighlight();
-        //   }
-        // }
-      }
       // else if (window.keyIsDown == 67) {
       //   //C (cold)
       //   let closeParticles = this.getParticlesAndTheirDistance(x, y, null);
@@ -650,6 +614,38 @@ class ParticleSystem {
   //     // }
   //   });
   // }
+
+  evaluateKeyDowns(key) {
+    let x = this.mouseX;
+    let y = this.mouseY;
+    //KEYS
+    if (key == 66) {
+      //B de boca
+      this.addFan(x, y, false, "boca");
+    } else if (key == 82) {
+      //R de river
+      this.addFan(x, y, false, "river");
+    } else if (key == 80) {
+      //P de poli
+      this.addPoli(x, y, false);
+    } else if (key == 86) {
+      //V
+      this.addPole({ x, y, particleSystem: this });
+    } else if (key == 77) {
+      //M
+      for (let i = 0; i < 10; i++)
+        this.addFan(x + Math.random() * 20, y + Math.random() * 20, false);
+    } else if (key == 67) {
+      // C DE CASA
+      this.addHouse({
+        x,
+        y,
+        particleSystem: this,
+        type: "casa" + (randomInt(5) + 1),
+      });
+    }
+  }
+
   addFloor() {
     var ground = Bodies.rectangle(0, this.worldHeight + 90, 3000, 200, {
       restitution: 0,
@@ -710,11 +706,11 @@ class ParticleSystem {
     this.world.add(this.engine.world, [ground, leftWall, rightWall, roof]);
   }
 
-  addBouncer(x, y, isStatic) {
+  addPoli(x, y, isStatic) {
     // let substance = "wood";
     /// IT CAN BE WOOD GAS ;)
 
-    const particle = new Bouncer({
+    const particle = new Poli({
       x,
       y,
       particleSystem: this,

@@ -38,8 +38,6 @@ class Pole extends GenericObject {
     );
 
     this.container.addChildAt(this.image, 0);
-    this.container.scale.x = 2;
-    this.container.scale.y = 2;
   }
 
   update(COUNTER) {

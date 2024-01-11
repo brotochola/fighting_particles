@@ -16,6 +16,7 @@ class GenericObject {
     this.pos = new p5.Vector(parseInt(x), parseInt(y));
     this.visible = true;
     this.scale = 2;
+    this.direction = 1;
     this.image = null;
 
     // this.createBody(10);
@@ -185,12 +186,20 @@ class GenericObject {
   render() {
     if (!this.doNotShowIfOutOfScreen()) return;
 
+    //POSICION X E Y
     this.container.y = this.calculateContainersY();
-
-    if (this.particleSystem.doPerspective) this.calculateScaleAccordingToY();
-    this.container.scale.y = this.scale;
-
     this.container.x = this.calculateContainersX();
+
+    //ESCALA, SI HACEMOS LA MOVIDA DE LA PERSPOECTIVA
+    if (this.particleSystem.doPerspective) {
+      this.calculateScaleAccordingToY();
+      this.image.scale.y = this.scale;
+      this.image.scale.x = this.direction * this.scale;
+    } else {
+      this.image.scale.x = this.direction * this.scale;
+      this.image.scale.y = this.scale;
+    }
+    //SI ESTA HIGHLIGHTED
     try {
       if (this.highlighted) {
         if (this.image.tint != 0xff0000) this.image.tint = 0xff0000;
@@ -330,6 +339,9 @@ class GenericObject {
     this.image = new PIXI.Sprite(
       this.particleSystem.res[which].texture.clone()
     );
+
+    this.image.pivot.y = 0;
+    this.image.pivot.x = this.spriteWidth * 0.5;
 
     this.image.texture.frame = frame1;
 

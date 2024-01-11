@@ -211,8 +211,7 @@ class Person extends GenericObject {
         // console.log(this.container.x + k.position.x);
         blood.position.x = this.container.x + k.position.x;
         blood.position.y = this.container.y + k.position.y;
-        blood.scale.x = 1;
-        blood.scale.y = 1;
+
         blood.alpha = 0.6;
         this.container.parent.addChild(blood);
 
@@ -451,9 +450,9 @@ class Person extends GenericObject {
 
   makeMeLookLeft() {
     // if (this.COUNTER - this.lastTimeItFlipped < this.spriteSpeed) return;
+    this.direction = -1;
 
-    this.image.scale.x = -1 * this.scale;
-    this.image.x = 6;
+    // this.image.x = 6;
 
     if (!this.amILookingLeft) {
       this.lastTimeItFlipped = this.COUNTER;
@@ -463,10 +462,10 @@ class Person extends GenericObject {
   }
 
   makeMeLookRight() {
+    this.direction = 1;
     // if (this.COUNTER - this.lastTimeItFlipped < this.spriteSpeed) return;
 
-    this.image.scale.x = 1 * this.scale;
-    this.image.x = -9;
+    // this.image.x = -9;
 
     if (this.amILookingLeft) {
       this.lastTimeItFlipped = this.COUNTER;

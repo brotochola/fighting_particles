@@ -79,7 +79,7 @@ class Fan extends Person {
     this.body.position.x -= dif.x * part.strength * 10;
     this.body.position.y -= dif.y * part.strength * 10;
 
-    this.makeMeFlash();
+    // this.makeMeFlash();
 
     // if (part instanceof Bullet) setTimeout(() => this.die(), 100);
   }
