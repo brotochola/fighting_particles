@@ -21,7 +21,7 @@ class Poli extends Person {
   }
 
   checkWhichFansAreClose() {
-    let closestFans = this.nearParticles.filter((k) => k.part instanceof Fan);
+    let closestFans = this.nearPeople.filter((k) => k.part instanceof Fan);
     if (closestFans.length > 0) {
       // this.closestFan = closestFans[0];
       let dist = closestFans[0].dist;

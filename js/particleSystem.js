@@ -634,7 +634,12 @@ class ParticleSystem {
     } else if (key == 77) {
       //M
       for (let i = 0; i < 10; i++)
-        this.addFan(x + Math.random() * 20, y + Math.random() * 20, false);
+        this.addFan(
+          x + Math.random() * 20,
+          y + Math.random() * 20,
+          false,
+          "boca"
+        );
     } else if (key == 67) {
       // C DE CASA
       this.addHouse({
@@ -898,7 +903,7 @@ class ParticleSystem {
   //           Math.pow(p.x - p2.x, 2) + Math.pow(p.y - p2.y, 2)
   //         );
   //         if (distance > 2) continue;
-  //         p.nearParticles.push(p2);
+  //         p.nearPeople.push(p2);
   //       }
   //     }
   //   }

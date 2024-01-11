@@ -35,7 +35,7 @@ class Fan extends Person {
         this.target)
     ) {
       //TIENE UN TARGET
-      if (this.COUNTER % 7 == this.startingFrame) {
+      if (this.isItMyFrame()) {
         this.calculateVelVectorAccordingToTarget();
         if (this.distanceToTarget <= this.particleSystem.CELL_SIZE) {
           this.whatToDoIfIReachedMyTarget();

@@ -18,8 +18,16 @@ class GenericObject {
     this.scale = 2;
     this.direction = 1;
     this.image = null;
+    this.startingFrame = randomInt(6);
 
     // this.createBody(10);
+  }
+
+  isItMyFrame() {
+    return this.COUNTER % 7 == this.startingFrame;
+  }
+  oncePerSecond() {
+    return (this.COUNTER * 0.25) % 7 == this.startingFrame;
   }
 
   getFullwidthOfCurrentSprite() {
@@ -182,6 +190,8 @@ class GenericObject {
     this.COUNTER = COUNTER;
     this.ratioOfY = this.getRatioOfY();
     this.ratioOfX = this.getRatioOfX();
+
+    // if (this.oncePerSecond()) console.log(this.name, performance.now());
   }
   render() {
     if (!this.doNotShowIfOutOfScreen()) return;
@@ -288,8 +298,25 @@ class GenericObject {
     if (!this.cell) return;
     return this.cell.particlesHere;
   }
+
+  findCloseParticles(xMargin, yMargin) {
+    // let tiempo = performance.now();
+
+    let ret = this.particleSystem.people.filter(
+      (k) =>
+        k.cellX > this.cellX - xMargin &&
+        k.cellX < this.cellX + xMargin &&
+        k.cellY > this.cellY - yMargin &&
+        k.cellY < this.cellY + yMargin
+    );
+
+    // console.log("###", performance.now() - tiempo);
+    return ret;
+  }
+
   getParticlesFromCloseCells() {
     //from this cell and neighbour cells
+    // let tiempo = performance.now();
     if (!this.cell) return [];
     let arr = [];
     arr.push(...this.getParticlesFromCell());
@@ -299,7 +326,7 @@ class GenericObject {
         arr.push(p);
       }
     }
-    return arr
+    let ret = arr
       .map((k) => {
         return {
           dist: cheaperDist(this.pos.x, this.pos.y, k.pos.x, k.pos.y),
@@ -307,8 +334,12 @@ class GenericObject {
         };
       })
       .sort((a, b) => (a.dist > b.dist ? 1 : -1))
-      .filter((k) => k.dist > 0);
+      .filter((k) => k != this);
+
+    // console.log("###", performance.now() - tiempo);
+    return ret;
   }
+
   makeMeFlash() {
     this.highlight();
     setTimeout(() => this.unHighlight(), this.particleSystem.deltaTime);

@@ -22,12 +22,11 @@ class Person extends GenericObject {
     this.spriteWidth = 12;
     this.spriteHeight = 21;
     this.spriteSpeed = Math.floor(10 * this.speed);
-    this.startingFrame = Math.floor(Math.random() * 7);
 
     /////////////////////////////
 
     //initialize variables:
-    this.nearParticles = [];
+    this.nearPeople = [];
     this.vel = new p5.Vector(0, 0);
     this.lastTimeItFlipped = 0;
     this.amILookingLeft = false;
@@ -293,7 +292,8 @@ class Person extends GenericObject {
     this.container.zIndex = Math.floor(this.pos.y);
 
     this.updateMyPositionInCell();
-    this.nearParticles = this.getParticlesFromCloseCells();
+    if (this.oncePerSecond())
+      this.nearPeople = this.getParticlesFromCloseCells();
     this.updateStateAccordingToStuff();
 
     this.doStuffAccordingToState();
