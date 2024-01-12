@@ -5,6 +5,7 @@ class Person extends GenericObject {
     super(opt);
     const { x, y, particleSystem, team, isStatic, diameter } = opt;
     this.diameter = diameter;
+
     //PARAMS OF THIS PERSON:
 
     this.possibleStates = [
@@ -26,6 +27,7 @@ class Person extends GenericObject {
     /////////////////////////////
 
     //initialize variables:
+    this.log = [];
     this.nearPeople = [];
     this.vel = new p5.Vector(0, 0);
     this.lastTimeItFlipped = 0;
@@ -59,7 +61,7 @@ class Person extends GenericObject {
     this.intelligence = Math.random(); //opposite of courage
     this.courage = 1 - this.intelligence;
 
-    this.sightDistance = Math.random() * 200 + 400;
+    this.sightDistance = Math.random() * 100 + 300;
 
     this.stamina = 1;
     this.fear = 0;
@@ -292,8 +294,11 @@ class Person extends GenericObject {
     this.container.zIndex = Math.floor(this.pos.y);
 
     this.updateMyPositionInCell();
-    if (this.oncePerSecond())
+    if (this.oncePerSecond()) {
       this.nearPeople = this.getParticlesFromCloseCells();
+
+      // this.getClosePeopleWithWebWorkers();
+    }
     this.updateStateAccordingToStuff();
 
     this.doStuffAccordingToState();
@@ -307,6 +312,17 @@ class Person extends GenericObject {
     if (this.emitter) this.emitter.emit = false;
 
     this.render();
+
+    // this.saveLog();
+  }
+  saveLog() {
+    this.log.push({
+      name: this.name,
+      team: this.team,
+      state: this.state,
+      target: (this.target || {}).name,
+      sprite: this.whichSpriteAmIShowing(),
+    });
   }
 
   changeSpriteAccordingToStateAndVelocity() {
@@ -487,23 +503,48 @@ class Person extends GenericObject {
   }
 
   findClosestTarget(team) {
-    let arr = this.particleSystem.people
+    let offset = Math.floor(this.sightDistance / this.particleSystem.CELL_SIZE);
+
+    let arr = this.findCloseParticles(offset, offset)
       .filter((k) => k.team == team && !k.dead)
       .map((k) => {
         return {
           dist: cheaperDist(this.pos.x, this.pos.y, k.pos.x, k.pos.y),
           part: k,
         };
-      });
-    let newArr = arr.sort((a, b) => (a.dist > b.dist ? 1 : -1));
-    newArr = newArr.filter((k) => k.dist < this.sightDistance);
-    if (newArr.length == 0) return;
+      })
+      .sort((a, b) => (a.dist > b.dist ? 1 : -1));
 
-    let closestEnemy = newArr[0].part;
-    this.distanceToTarget = newArr[0].dist;
+    // console.log(arr, this.sightDistance, this.team);
+
+    if (arr.length == 0) return;
+
+    let closestEnemy = arr[0].part;
+    this.distanceToTarget = arr[0].dist;
 
     this.setTarget(closestEnemy);
   }
+
+  // getClosePeopleWithWebWorkers() {
+  //   let dataToSend = {
+  //     people: this.particleSystem.saveLevel(),
+  //     myX: this.pos.x,
+  //     myY: this.pos.y,
+  //     maxSight: this.sightDistance,
+  //   };
+
+  //   mandarAProcesarEnSegundoPlano("findClosePeople", dataToSend, (e) => {
+  //     // console.log("volvio la data", e);
+  //     this.nearPeople = e.resp
+  //       .filter((k) => k.dist < this.sightDistance)
+  //       .map((p) => {
+  //         return {
+  //           part: this.particleSystem.getPersonByID(p.id),
+  //           dist: p.dist,
+  //         };
+  //       });
+  //   });
+  // }
   createCircleInPixi() {
     // this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);
 

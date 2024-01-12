@@ -23,8 +23,9 @@ class Fan extends Person {
       this.state == "escaping"
     ) {
       //BUSCAR A QUIEN PEGARLE
-      if (this.COUNTER % 20 == 0)
+      if (this.oncePerSecond()) {
         this.findClosestTarget(this.team == "boca" ? "river" : "boca");
+      }
     }
 
     if (

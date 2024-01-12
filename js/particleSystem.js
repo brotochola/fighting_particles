@@ -650,6 +650,16 @@ class ParticleSystem {
       });
     }
   }
+  saveLevel() {
+    return this.people.map((p) => {
+      return { team: p.team, x: p.pos.x, y: p.pos.y, id: p.id };
+    });
+  }
+  getPersonByID(id) {
+    for (let i = 0; i < this.people.length; i++) {
+      if (this.people[i].id == id) return this.people[i];
+    }
+  }
 
   addFloor() {
     var ground = Bodies.rectangle(0, this.worldHeight + 90, 3000, 200, {

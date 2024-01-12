@@ -11,6 +11,7 @@ class GenericObject {
     this.isStatic = isStatic;
     this.world = particleSystem.world;
     this.DISPLACEMENT_X = 0.4;
+    this.id = Math.floor(Math.random() * 9999999999999);
 
     //INIT STUFF:
     this.pos = new p5.Vector(parseInt(x), parseInt(y));
@@ -193,7 +194,7 @@ class GenericObject {
     this.ratioOfY = this.getRatioOfY();
     this.ratioOfX = this.getRatioOfX();
 
-    if (this.oncePerSecond()) console.log(this.name, performance.now());
+    // if (this.oncePerSecond()) console.log(this.name, performance.now());
   }
   render() {
     if (!this.doNotShowIfOutOfScreen()) return;
@@ -336,7 +337,7 @@ class GenericObject {
         };
       })
       .sort((a, b) => (a.dist > b.dist ? 1 : -1))
-      .filter((k) => k != this);
+      .filter((k) => k.part != this);
 
     // console.log("###", performance.now() - tiempo);
     return ret;
