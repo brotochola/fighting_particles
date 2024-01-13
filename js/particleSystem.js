@@ -75,11 +75,11 @@ class ParticleSystem {
     this.doPerspective = !this.doPerspective;
     this.bg.visible = !this.bg.visible;
     let htmlBG = document.querySelector("#bg");
-    if (htmlBG.style.display == "none") {
-      htmlBG.style.display = "block";
-    } else {
-      htmlBG.style.display = "none";
-    }
+    // if (htmlBG.style.display == "none") {
+    //   htmlBG.style.display = "block";
+    // } else {
+    //   htmlBG.style.display = "none";
+    // }
   }
 
   getDurationOfOneFrame() {

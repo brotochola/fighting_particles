@@ -4,6 +4,8 @@ class Poli extends Person {
     super({ ...opt, diameter: 9 });
     this.strength = Math.random() * 0.5 + 0.5;
     this.setPointWhereIShouldHold();
+    this.maxDistanceToBecomeViolent = this.diameter * 8;
+    this.minBearableDistance = this.diameter * 2;
   }
   setPointWhereIShouldHold() {
     this.targetPoint = this.pos.copy();
@@ -17,53 +19,83 @@ class Poli extends Person {
 
   update(COUNTER) {
     super.update(COUNTER);
-    if (COUNTER % 10 == 0) this.checkWhichFansAreClose();
   }
 
   checkWhichFansAreClose() {
-    let closestFans = this.nearPeople.filter((k) => k.part instanceof Fan);
+    this.closestFan = null;
+
+    let closestFans = this.nearPeople.filter(
+      (k) => k.part instanceof Fan && !k.part.dead && k.part.health > 0
+    );
     if (closestFans.length > 0) {
-      // this.closestFan = closestFans[0];
       let dist = closestFans[0].dist;
       let fan = closestFans[0].part;
-      if (dist < this.diameter * 2) {
-        this.makeMeFlash();
-        fan.makeMeFlash();
 
-        fan.body.force.x -=
-          fan.vel.x * this.strength * this.particleSystem.FORCE_REDUCER;
-        fan.body.force.y -=
-          fan.vel.y * this.strength * this.particleSystem.FORCE_REDUCER;
+      if (dist < this.minBearableDistance) {
+        this.closestFan = fan;
       }
     }
   }
 
-  updateStateAccordingToStuff() {
-    super.updateStateAccordingToStuff();
+  pushClosestFan() {
+    let fan = this.closestFan;
+    if (!fan) return;
+    fan.makeMeFlash();
+
+    fan.interactWithAnotherPerson(this, 0.02);
+
+    fan.body.force.x = -fan.vel.x * this.strength * 0.02;
+    fan.body.force.y = -fan.vel.y * this.strength * 0.02;
+  }
+
+  attackClosestFan() {
+    let fan = this.closestFan;
+    if (!fan) return;
+
+    console.log(this.name, " attacking ", fan.name, fan.health);
+
+    fan.interactWithAnotherPerson(this, 0.5);
+    if (fan.dead || fan.health < 0) this.closestFan = null;
+  }
+
+  updateStateAccordingToManyThings() {
+    super.updateStateAccordingToManyThings();
     this.distToTarget = cheaperDist(
       this.pos.x,
       this.pos.y,
       this.targetPoint.x,
       this.targetPoint.y
     );
-    if (this.distToTarget > this.diameter * 3) {
+
+    if (
+      this.distToTarget > this.minBearableDistance &&
+      this.distToTarget < this.maxDistanceToBecomeViolent
+    ) {
       this.setState("chasing");
-    } else {
+    } else if (this.distToTarget > this.maxDistanceToBecomeViolent) {
+      this.setState("attacking");
+    } else if (this.distToTarget < this.minBearableDistance) {
       this.setState("idle");
     }
   }
 
   doStuffAccordingToState() {
-    if (this.state == "searching" || (this.state == "chasing" && this.target)) {
-      if (this.COUNTER % 5 == 0) {
-        this.calculateVelVectorAccordingToTarget();
-      }
+    if (!this.target) {
+      this.setState("idle");
+      return;
+    }
 
-      // if (this.isStatic) {
-      //   this.fireBullet();
-      // }
+    if (this.state == "chasing" || this.state == "attacking") {
+      if (this.oncePerSecond()) this.checkWhichFansAreClose();
+      if (this.isItMyFrame()) this.calculateVelVectorAccordingToTarget();
+    }
 
-      if (!this.target) this.setState("idle");
+    if (this.state == "attacking") {
+      this.attackClosestFan();
+    }
+
+    if (this.state == "chasing") {
+      this.pushClosestFan();
     }
   }
 

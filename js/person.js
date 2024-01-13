@@ -22,7 +22,7 @@ class Person extends GenericObject {
 
     this.spriteWidth = 12;
     this.spriteHeight = 21;
-    this.spriteSpeed = Math.floor(10 * this.speed);
+    this.spriteSpeed = Math.floor(5 * this.speed);
 
     /////////////////////////////
 
@@ -44,6 +44,7 @@ class Person extends GenericObject {
       this.weight
     );
     this.createContainers();
+    this.createDebugContainer();
     this.createSprite("idle_" + this.team);
 
     this.updateMyPositionInCell();
@@ -67,6 +68,26 @@ class Person extends GenericObject {
     this.fear = 0;
     this.anger = 0;
     this.happiness = 1;
+  }
+  createDebugContainer() {
+    this.debugContainer = new PIXI.Container();
+    this.debugContainer.x = -10;
+    this.debugContainer.y = -15;
+
+    this.debugText = new PIXI.Text("", {
+      fontFamily: "Arial",
+      fontWeight: "bold",
+      fontSize: 13,
+      fill: 0x000000,
+      align: "left",
+    });
+
+    this.debugContainer.addChild(this.debugText);
+
+    this.container.addChild(this.debugContainer);
+  }
+  updateDebugText(txt) {
+    this.debugText.text = txt;
   }
   createContainers() {
     this.container = new PIXI.Container();
@@ -296,12 +317,14 @@ class Person extends GenericObject {
     this.updateMyPositionInCell();
     if (this.oncePerSecond()) {
       this.nearPeople = this.getParticlesFromCloseCells();
-
+      // this.updateDebugText(this.nearPeople.length);
       // this.getClosePeopleWithWebWorkers();
     }
-    this.updateStateAccordingToStuff();
 
-    this.doStuffAccordingToState();
+    if (!this.dead) {
+      this.updateStateAccordingToManyThings();
+      this.doStuffAccordingToState();
+    }
     this.changeSpriteAccordingToStateAndVelocity();
     // }
 
@@ -376,8 +399,6 @@ class Person extends GenericObject {
   }
 
   calculateVelVectorAccordingToTarget() {
-    //I REFRESH THIS EVERY 3 FRAMES
-
     if (!("x" in this.vel) || !("x" in this.pos)) return;
 
     if ((this.target || {}).dead) {
@@ -436,7 +457,7 @@ class Person extends GenericObject {
     }
   }
 
-  updateStateAccordingToStuff() {
+  updateStateAccordingToManyThings() {
     // this.state = "searching";
 
     if (this.health <= 0) {
@@ -454,11 +475,13 @@ class Person extends GenericObject {
   }
 
   die() {
+    if (this.dead) return;
     this.unHighlight();
     this.dead = true;
     this.body.isStatic = true;
     this.health = 0;
     this.setState("dead");
+    console.log(this.name, " died");
     // this.createSprite("die_1");
 
     // setTimeout(() => this.remove(), 1000);

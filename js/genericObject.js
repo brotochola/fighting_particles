@@ -238,6 +238,7 @@ class GenericObject {
     }
   }
   updateMyPositionInCell() {
+    if (this.dead) return;
     // let ret;
 
     this.cellX = Math.floor(this.pos.x / this.particleSystem.CELL_SIZE);

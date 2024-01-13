@@ -51,12 +51,24 @@ class Fan extends Person {
     this.throwAPunch();
   }
 
-  interactWithAnotherPerson(part, what) {
+  // render() {
+  //   this.updateDebugText(
+  //     this.health.toFixed(2) +
+  //       "," +
+  //       this.fear.toFixed(2) +
+  //       "," +
+  //       this.anger.toFixed(2)
+  //   );
+  //   super.render();
+  // }
+
+  interactWithAnotherPerson(part, coeficient = 1) {
     // console.log(this.team, part.team, this.health);
     if (!part || part.dead) return;
     // console.log(this.team, part.team, this.health, "sdsd");
     let howMuchHealthThisIsTakingFromMe =
-      (part || {}).strength || 0 * this.particleSystem.FORCE_REDUCER;
+      (part || {}).strength ||
+      0 * this.particleSystem.FORCE_REDUCER * coeficient;
     //take health:
 
     this.health -= howMuchHealthThisIsTakingFromMe;
@@ -72,13 +84,13 @@ class Fan extends Person {
 
     this.emitBlood(incomingAngleOfHit);
 
-    let difX = part.body.position.x - this.body.position.x;
-    let difY = part.body.position.y - this.body.position.y;
+    // let difX = part.body.position.x - this.body.position.x;
+    // let difY = part.body.position.y - this.body.position.y;
 
-    let dif = new p5.Vector(difX, difY).setMag(1);
+    // let dif = new p5.Vector(difX, difY).setMag(1);
 
-    this.body.position.x -= dif.x * part.strength * 10;
-    this.body.position.y -= dif.y * part.strength * 10;
+    // this.body.position.x -= dif.x * part.strength * 10;
+    // this.body.position.y -= dif.y * part.strength * 10;
 
     // this.makeMeFlash();
 
