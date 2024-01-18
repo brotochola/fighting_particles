@@ -372,8 +372,8 @@ class Person extends GenericObject {
     if (Math.abs(vel.mag()) > 0.05) {
       //IT'S IDLE AND STARTS TO WALK
       if (
-        this.whichSpriteAmIShowing().startsWith("idle") ||
-        this.whichSpriteAmIShowing().startsWith("attack")
+        this.whichSpriteAmIShowing().startsWith("idle")
+        //|| this.whichSpriteAmIShowing().startsWith("attack")
       ) {
         this.createSprite("walk_" + this.team);
       }
