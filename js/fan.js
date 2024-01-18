@@ -82,7 +82,7 @@ class Fan extends Person {
       part.body.position.x
     );
 
-    this.emitBlood(incomingAngleOfHit);
+    // this.emitBlood(incomingAngleOfHit);
 
     // let difX = part.body.position.x - this.body.position.x;
     // let difY = part.body.position.y - this.body.position.y;

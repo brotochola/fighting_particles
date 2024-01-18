@@ -54,6 +54,7 @@ class Person extends GenericObject {
   initStartingAttributes() {
     this.dead = false;
     this.name = generateID();
+
     this.strength = Math.random() * 0.05 + 0.05;
     this.weight = Math.random() * 50 + 50;
 
@@ -332,11 +333,11 @@ class Person extends GenericObject {
     this.animateGravityToParticles();
 
     // this.emitBlood();
-    if (this.emitter) this.emitter.emit = false;
+    // if (this.emitter) this.emitter.emit = false;
 
     this.render();
 
-    // this.saveLog();
+    this.saveLog();
   }
   saveLog() {
     this.log.push({
@@ -345,7 +346,13 @@ class Person extends GenericObject {
       state: this.state,
       target: (this.target || {}).name,
       sprite: this.whichSpriteAmIShowing(),
+      dist2Target: this.distanceToTarget,
+      fear: this.fear,
+      health: this.health,
+      anger: this.anger,
+      // happiness: this.happiness,
     });
+    // if(this.log.length>300) this.log.splice(this.log.length)
   }
 
   changeSpriteAccordingToStateAndVelocity() {
