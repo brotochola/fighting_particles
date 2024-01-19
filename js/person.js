@@ -322,9 +322,12 @@ class Person extends GenericObject {
       // this.getClosePeopleWithWebWorkers();
     }
 
+    if (this.isItMyFrame()) this.evaluateSituation();
+
     if (!this.dead) {
       this.updateStateAccordingToManyThings();
       this.doStuffAccordingToState();
+      this.getBetterSlowly();
     }
     this.changeSpriteAccordingToStateAndVelocity();
     // }
@@ -339,19 +342,44 @@ class Person extends GenericObject {
 
     this.saveLog();
   }
-  saveLog() {
-    this.log.push({
+  evaluateSituation() {
+    let val =
+      this.nearPeople.filter((k) => k.part.team == this.team).length /
+      this.nearPeople.filter((k) => k.part.team != this.team).length;
+
+    this.prediction = val;
+  }
+  getBetterSlowly() {
+    this.fear -= this.particleSystem.FEAR_RECOVERY_REDUCER;
+    this.anger -= this.particleSystem.FEAR_RECOVERY_REDUCER;
+    this.health += this.particleSystem.HEALTH_RECOVERY_REDUCER * this.strength;
+
+    if (this.health > 1) this.health = 1;
+    if (this.anger < 0) this.anger = 0;
+    if (this.fear < 0) this.fear = 0;
+  }
+  getInfo() {
+    return {
       name: this.name,
       team: this.team,
       state: this.state,
       target: (this.target || {}).name,
       sprite: this.whichSpriteAmIShowing(),
-      dist2Target: this.distanceToTarget,
-      fear: this.fear,
-      health: this.health,
-      anger: this.anger,
-      // happiness: this.happiness,
-    });
+      dist2Target: (this.distanceToTarget || 0).toFixed(2),
+      health: this.health.toFixed(2),
+      fear: this.fear.toFixed(2),
+      anger: this.anger.toFixed(2),
+      sight: this.sightDistance.toFixed(2),
+      intelligence: this.intelligence.toFixed(2),
+      stamina: this.stamina,
+      prediction:
+        this.prediction == Infinity || !this.prediction
+          ? this.prediction
+          : this.prediction.toFixed(2),
+    };
+  }
+  saveLog() {
+    if (!this.dead) this.log.push(this.getInfo());
     // if(this.log.length>300) this.log.splice(this.log.length)
   }
 
@@ -368,7 +396,12 @@ class Person extends GenericObject {
       // );
     } else if (this.state == "attacking") {
       this.createSprite("attack_" + this.team);
-    } else if (this.state == "searching") {
+    } else if (
+      this.state == "searching" ||
+      this.state == "chasing" ||
+      this.state == "escaping" ||
+      this.state == "idle"
+    ) {
       if (this.whichSpriteAmIShowing().startsWith("attack")) {
         this.createSprite("idle_" + this.team);
       }
@@ -451,13 +484,24 @@ class Person extends GenericObject {
     let minStam = this.particleSystem.MINIMUM_STAMINA_TO_MOVE;
     if (!this.isStatic) {
       if (this.stamina >= minStam) {
+        //SI ESTA ESCAPANDOSE VA MAS RAPIDO
+        let extraSpeed =
+          this.state == "escaping"
+            ? this.particleSystem.EXTRA_SPEED_WHEN_ESCAPING
+            : 1;
         this.body.force.y =
-          this.vel.y * this.particleSystem.SPEED_REDUCER * this.speed;
+          this.vel.y *
+          this.particleSystem.SPEED_REDUCER *
+          this.speed *
+          extraSpeed;
 
         this.body.force.x =
-          this.vel.x * this.particleSystem.SPEED_REDUCER * this.speed;
+          this.vel.x *
+          this.particleSystem.SPEED_REDUCER *
+          this.speed *
+          extraSpeed;
 
-        this.stamina -= minStam * 0.01;
+        // this.stamina -= minStam * 0.1;
       } else {
         this.stamina += minStam;
       }
@@ -469,9 +513,18 @@ class Person extends GenericObject {
 
     if (this.health <= 0) {
       this.die();
-    } else if (this.health < 0.1 || this.fear > 0.75) {
+    } else if (
+      this.health < 0.1 ||
+      this.fear > this.particleSystem.FEAR_LIMIT_TO_ESCAPE
+    ) {
       this.setState("escaping");
+    } else if (
+      this.fear < this.particleSystem.FEAR_LIMIT_TO_ESCAPE &&
+      this.health > this.particleSystem.HEALTH_LIMIT_TO_ESCAPE
+    ) {
+      this.setState("idle");
     }
+
     if (!this.target) {
     }
   }
@@ -484,12 +537,17 @@ class Person extends GenericObject {
   die() {
     if (this.dead) return;
     this.unHighlight();
-    this.dead = true;
+
     this.body.isStatic = true;
     this.health = 0;
-    this.setState("dead");
-    console.log(this.name, " died");
+
+    // console.log(this.name, " died");
     // this.createSprite("die_1");
+
+    setTimeout(() => {
+      this.setState("dead");
+      this.dead = true;
+    }, this.particleSystem.deltaTime * 4);
 
     // setTimeout(() => this.remove(), 1000);
   }

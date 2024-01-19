@@ -16,7 +16,13 @@ var particleSystem;
 
 //STARTING POINT
 document.body.onload = (e) => {
-  particleSystem = new ParticleSystem("canvas", 4000, 2000, Matter);
+  particleSystem = new ParticleSystem(
+    "canvas",
+    4000,
+    2000,
+    Matter,
+    document.querySelector("panelInfo")
+  );
   //   particleSystem.init();
 
   //   particleSystem.startSimulation();

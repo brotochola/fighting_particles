@@ -2,9 +2,10 @@
 //https://github.com/celsowhite/matter-pixi/tree/master
 
 class ParticleSystem {
-  constructor(canvasId, width, height, Matter) {
+  constructor(canvasId, width, height, Matter, panelInfoElement) {
     window.keyIsDown = [];
     this.pixiApp;
+    this.panelInfoElement = panelInfoElement;
 
     this.COUNTER = 0;
     this.debugMode = false;
@@ -17,8 +18,16 @@ class ParticleSystem {
     this.doPerspective = false;
 
     this.cameraHeight = window.innerHeight / 2;
-    this.FORCE_REDUCER = 0.0001;
+    //LLAMO REDUCERS A ESTOS COEFICIENTES Q SE USAN PARA TUNEAR EL JUEGO
+    this.FORCE_REDUCER = 0.1;
     this.SPEED_REDUCER = 1.7;
+    this.FEAR_REDUCER = 0.3;
+    this.HEALTH_RECOVERY_REDUCER = 0.001;
+    this.FEAR_RECOVERY_REDUCER = 0.002;
+    this.HEALTH_LIMIT_TO_ESCAPE = 0.1;
+    this.FEAR_LIMIT_TO_ESCAPE = 0.75;
+    this.EXTRA_SPEED_WHEN_ESCAPING = 1.3;
+    //////////////////// FIN REDUCERS
     this.MINIMUM_STAMINA_TO_MOVE = 0.01;
     this.CELL_SIZE = 40;
     this.buttonPanelHeight = 100;
@@ -69,8 +78,15 @@ class ParticleSystem {
     // });
 
     // this.createSmallerCanvas();
-  }
 
+    this.createUI();
+  }
+  createUI() {
+    this.UI = new UI({
+      particleSystem: this,
+      panelInfoElement: this.panelInfoElement,
+    });
+  }
   togglePerspectiveMode() {
     this.doPerspective = !this.doPerspective;
     this.bg.visible = !this.bg.visible;
@@ -346,18 +362,19 @@ class ParticleSystem {
     if (!closeP[0]) return;
 
     const maxDistance = 20;
+    this.people.forEach((person) => person.unHighlight());
 
     if (
       dist(x, y, closeP[0].body.position.x, closeP[0].body.position.y) <
       maxDistance
     ) {
       let p = closeP[0].body;
-      window.tempParticle = p.particle;
-
-      this.people.forEach((person) => person.unHighlight());
+      this.selectedPerson = p.particle;
 
       console.log(p.particle);
       p.particle.highlighted = !p.particle.highlighted;
+    } else {
+      this.selectedPerson = null;
     }
   }
 
@@ -822,6 +839,7 @@ class ParticleSystem {
     this.getAllObjects().forEach((k) => {
       k.update(this.COUNTER);
     });
+    this.UI.update(this.COUNTER);
 
     // this.grid.forEach((k) => {
     //   k.forEach((v) => {

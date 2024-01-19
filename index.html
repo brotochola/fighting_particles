@@ -12,6 +12,7 @@
     <script src="js/pixi-particles.js"> </script>
 
     <script src="js/particle-emitter.js"> </script>
+    <script src="js/UI.js"> </script>
 
 
     <style>
@@ -125,6 +126,15 @@
             background-color: green;
             border: 1px solid black
         }
+
+        panelInfo {
+            position: fixed;
+            width: 200px;
+            height: 500px;
+            z-index: 999;
+            background: white;
+            border-radius: 5px;
+        }
     </style>
     <script src="js/p5.min.js"></script>
     <script src="js/matter.js"></script>
@@ -150,7 +160,6 @@
         <div id="bg" style="display:none"></div>
     </div>
 
-    <script src="js/fight.js"></script>
 
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
         <filter id="water-goo">
@@ -180,9 +189,14 @@
 
 
     </div>
+    <panelInfo>
+    </panelInfo>
 
 
     <script src="js/alert.js"></script>
+
+    <script src="js/fight.js"></script>
+
 </body>
 
 </html>
