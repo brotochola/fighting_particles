@@ -22,6 +22,7 @@ class GenericObject {
     this.startingFrame = randomInt(6);
     this.maxLuckyNumbers = 25;
     this.myLuckyNumber = randomInt(this.maxLuckyNumbers);
+    this.drawTargetLine = false; //true;
 
     // this.createBody(10);
   }
@@ -220,6 +221,8 @@ class GenericObject {
         if (this.image.tint != 0xffffff) this.image.tint = 0xffffff;
       }
     } catch (e) {}
+
+    this.drawLineBetweenMeAndTarget();
   }
 
   highlight() {
@@ -303,7 +306,7 @@ class GenericObject {
     return this.cell.particlesHere;
   }
 
-  findCloseParticles(xMargin, yMargin) {
+  findClosePeople(xMargin, yMargin) {
     // let tiempo = performance.now();
 
     let ret = this.particleSystem.people.filter(
@@ -316,6 +319,36 @@ class GenericObject {
 
     // console.log("###", performance.now() - tiempo);
     return ret;
+  }
+
+  drawLineBetweenMeAndTarget() {
+    // console.log("line", obj.pos.x, obj.pos.y);
+    if (this.targetLine) this.container.removeChild(this.targetLine);
+
+    if (!this.drawTargetLine || !this.target || this.dead) {
+      return;
+    }
+
+    this.targetLine = new PIXI.Graphics();
+    this.container.addChild(this.targetLine);
+
+    // Move it to the beginning of the line
+    // this.targetLine.position.set(0, 0);
+
+    // Draw the line (endPoint should be relative to myGraph's position)
+
+    let relativePosition = {
+      x: this.target.pos.x - this.pos.x,
+      y: this.target.pos.y - this.pos.y,
+    };
+
+    this.targetLine.alpha = 0.5;
+
+    this.targetLine
+      .lineStyle(3, 0xffffff)
+      .lineTo(relativePosition.x, relativePosition.y);
+
+    // this.targetLine.opa
   }
 
   getParticlesFromCloseCells() {

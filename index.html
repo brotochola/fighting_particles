@@ -135,6 +135,18 @@
             background: white;
             border-radius: 5px;
         }
+
+        config {
+            position: fixed;
+            z-index: 999;
+            width: 26vw;
+            background: white;
+            right: 0px;
+            padding: 1vw;
+            border-radius: 5px;
+            box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+            font-size: 12px;
+        }
     </style>
     <script src="js/p5.min.js"></script>
     <script src="js/matter.js"></script>
@@ -186,12 +198,13 @@
         <button onclick=" window.location.reload()">remove all bodies</button>
         <button onclick=" particleSystem.loadLevel(1)">load level 1</button>
         <button onclick=" particleSystem.loadLevel(2)">load level 2</button>
+        <button onclick=" particleSystem.UI.toggleConfig()">toggle config</button>
 
 
     </div>
     <panelInfo>
     </panelInfo>
-
+    <config></config>
 
     <script src="js/alert.js"></script>
 

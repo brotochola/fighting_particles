@@ -5,6 +5,7 @@ class Person extends GenericObject {
     super(opt);
     const { x, y, particleSystem, team, isStatic, diameter } = opt;
     this.diameter = diameter;
+    this.peopleICanSee = [];
 
     //PARAMS OF THIS PERSON:
 
@@ -63,6 +64,7 @@ class Person extends GenericObject {
     this.intelligence = Math.random(); //opposite of courage
     this.courage = 1 - this.intelligence;
 
+    this.attackDistance = this.diameter * 2;
     this.sightDistance = Math.random() * 100 + 300;
 
     this.stamina = 1;
@@ -316,7 +318,10 @@ class Person extends GenericObject {
     this.container.zIndex = Math.floor(this.pos.y);
 
     this.updateMyPositionInCell();
+
     if (this.oncePerSecond()) {
+      this.seePeople();
+      this.evaluateSituation();
       this.nearPeople = this.getParticlesFromCloseCells();
       // this.updateDebugText(this.nearPeople.length);
       // this.getClosePeopleWithWebWorkers();
@@ -343,16 +348,30 @@ class Person extends GenericObject {
     this.saveLog();
   }
   evaluateSituation() {
-    let val =
-      this.nearPeople.filter((k) => k.part.team == this.team).length /
-      this.nearPeople.filter((k) => k.part.team != this.team).length;
+    // let time = performance.now();
+
+    let friendsClose =
+      this.peopleICanSee.filter((k) => k.team == this.team).length + 1;
+
+    let enemiesClose =
+      this.peopleICanSee.filter((k) => k.team != this.team).length + 1;
+
+    let val = friendsClose / enemiesClose;
 
     this.prediction = val;
+    // console.log(performance.now() - time, "XXXXXXX");
+
+    //COMBINACION DE MIEDO, VIDA, ENEMIGOS CERCA, ETC
+    this.arrogance =
+      (this.prediction *
+        (this.anger + this.health - this.fear + this.courage)) /
+      4;
   }
   getBetterSlowly() {
-    this.fear -= this.particleSystem.FEAR_RECOVERY_REDUCER;
-    this.anger -= this.particleSystem.FEAR_RECOVERY_REDUCER;
-    this.health += this.particleSystem.HEALTH_RECOVERY_REDUCER * this.strength;
+    this.fear -= this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER;
+    this.anger -= this.particleSystem.MULTIPLIERS.ANGER_RECOVERY_REDUCER;
+    this.health +=
+      this.particleSystem.MULTIPLIERS.HEALTH_RECOVERY_REDUCER * this.strength;
 
     if (this.health > 1) this.health = 1;
     if (this.anger < 0) this.anger = 0;
@@ -361,21 +380,23 @@ class Person extends GenericObject {
   getInfo() {
     return {
       name: this.name,
+      diameter: this.diameter,
       team: this.team,
       state: this.state,
       target: (this.target || {}).name,
       sprite: this.whichSpriteAmIShowing(),
-      dist2Target: (this.distanceToTarget || 0).toFixed(2),
+      distanceToClosestEnemy: (this.distanceToClosestEnemy || 0).toFixed(2),
+      sight: this.sightDistance.toFixed(2),
+      intelligence: this.intelligence.toFixed(2),
+      // stamina: this.stamina,
       health: this.health.toFixed(2),
       fear: this.fear.toFixed(2),
       anger: this.anger.toFixed(2),
-      sight: this.sightDistance.toFixed(2),
-      intelligence: this.intelligence.toFixed(2),
-      stamina: this.stamina,
       prediction:
         this.prediction == Infinity || !this.prediction
           ? this.prediction
           : this.prediction.toFixed(2),
+      arrogance: (this.arrogance || 0).toFixed(2), //envalentonamiento
     };
   }
   saveLog() {
@@ -487,17 +508,17 @@ class Person extends GenericObject {
         //SI ESTA ESCAPANDOSE VA MAS RAPIDO
         let extraSpeed =
           this.state == "escaping"
-            ? this.particleSystem.EXTRA_SPEED_WHEN_ESCAPING
+            ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
             : 1;
         this.body.force.y =
           this.vel.y *
-          this.particleSystem.SPEED_REDUCER *
+          this.particleSystem.MULTIPLIERS.SPEED_REDUCER *
           this.speed *
           extraSpeed;
 
         this.body.force.x =
           this.vel.x *
-          this.particleSystem.SPEED_REDUCER *
+          this.particleSystem.MULTIPLIERS.SPEED_REDUCER *
           this.speed *
           extraSpeed;
 
@@ -515,12 +536,12 @@ class Person extends GenericObject {
       this.die();
     } else if (
       this.health < 0.1 ||
-      this.fear > this.particleSystem.FEAR_LIMIT_TO_ESCAPE
+      this.fear > this.particleSystem.MULTIPLIERS.FEAR_LIMIT_TO_ESCAPE
     ) {
       this.setState("escaping");
     } else if (
-      this.fear < this.particleSystem.FEAR_LIMIT_TO_ESCAPE &&
-      this.health > this.particleSystem.HEALTH_LIMIT_TO_ESCAPE
+      this.fear < this.particleSystem.MULTIPLIERS.FEAR_LIMIT_TO_ESCAPE &&
+      this.health > this.particleSystem.MULTIPLIERS.HEALTH_LIMIT_TO_ESCAPE
     ) {
       this.setState("idle");
     }
@@ -590,10 +611,17 @@ class Person extends GenericObject {
     this.state = "chasing";
   }
 
-  findClosestTarget(team) {
+  seePeople() {
+    // let time = performance.now();
     let offset = Math.floor(this.sightDistance / this.particleSystem.CELL_SIZE);
+    //ya q estamos lo guardo
+    this.peopleICanSee = this.findClosePeople(offset, offset);
 
-    let arr = this.findCloseParticles(offset, offset)
+    // console.log(performance.now() - time, "XXXXXXX");
+  }
+
+  findClosestEnemy(team) {
+    let arr = this.peopleICanSee
       .filter((k) => k.team == team && !k.dead)
       .map((k) => {
         return {
@@ -607,10 +635,10 @@ class Person extends GenericObject {
 
     if (arr.length == 0) return;
 
-    let closestEnemy = arr[0].part;
-    this.distanceToTarget = arr[0].dist;
+    this.closestEnemy = arr[0].part;
+    this.distanceToClosestEnemy = arr[0].dist;
 
-    this.setTarget(closestEnemy);
+    this.setTarget(this.closestEnemy);
   }
 
   // getClosePeopleWithWebWorkers() {

@@ -17,14 +17,14 @@ class Fan extends Person {
   doStuffAccordingToState() {
     //BUSCAR A QUIEN PEGARLE
     if (this.oncePerSecond()) {
-      this.findClosestTarget(this.team == "boca" ? "river" : "boca");
+      this.findClosestEnemy(this.team == "boca" ? "river" : "boca");
     }
 
     if (this.target) {
       //TIENE UN TARGET
       if (this.isItMyFrame()) {
         this.calculateVelVectorAccordingToTarget();
-        if (this.distanceToTarget <= this.particleSystem.CELL_SIZE) {
+        if (this.distanceToClosestEnemy <= this.particleSystem.CELL_SIZE) {
           this.whatToDoIfIReachedMyTarget();
         }
       }
@@ -47,24 +47,25 @@ class Fan extends Person {
   // }
 
   interactWithAnotherPerson(part, coeficient = 1) {
-    // console.log(this.team, part.team, this.health);
     if (!part || part.dead) return;
-    // console.log(this.team, part.team, this.health, "sdsd");
+    // console.log(this.team, part.team, this.health);
+
     let howMuchHealthThisIsTakingFromMe = (part || {}).strength * coeficient;
     //take health:
 
     this.health -=
-      howMuchHealthThisIsTakingFromMe * this.particleSystem.FORCE_REDUCER;
+      howMuchHealthThisIsTakingFromMe *
+      this.particleSystem.MULTIPLIERS.FORCE_REDUCER;
 
     this.fear +=
       this.intelligence *
       howMuchHealthThisIsTakingFromMe *
-      this.particleSystem.FEAR_REDUCER; //FEAR GOES UP ACCORDING TO INTELLIGENCE. MORE INTELLIGENT, MORE FEAR
+      this.particleSystem.MULTIPLIERS.FEAR_REDUCER; //FEAR GOES UP ACCORDING TO INTELLIGENCE. MORE INTELLIGENT, MORE FEAR
 
     this.anger +=
       this.courage *
       howMuchHealthThisIsTakingFromMe *
-      this.particleSystem.FEAR_REDUCER; //ANGER GOES UP ACCORDING TO courage. MORE courage, YOU GET ANGRIER
+      this.particleSystem.MULTIPLIERS.FEAR_REDUCER; //ANGER GOES UP ACCORDING TO courage. MORE courage, YOU GET ANGRIER
 
     let incomingAngleOfHit = Math.atan2(
       part.body.position.y,

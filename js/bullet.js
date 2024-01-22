@@ -16,12 +16,12 @@ class Bullet {
     this.createBody();
     this.createCircleInPixi();
 
-    this.FORCE_REDUCER = 0.0006;
+    this.MULTIPLIERS.FORCE_REDUCER = 0.0006;
 
     this.body.force.y =
-      vel.y * this.FORCE_REDUCER * (Math.random() * 0.1 + 0.9);
+      vel.y * this.MULTIPLIERS.FORCE_REDUCER * (Math.random() * 0.1 + 0.9);
     this.body.force.x =
-      vel.x * this.FORCE_REDUCER * (Math.random() * 0.1 + 0.9);
+      vel.x * this.MULTIPLIERS.FORCE_REDUCER * (Math.random() * 0.1 + 0.9);
 
     // console.log(this.pos, this.vel);
   }

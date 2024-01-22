@@ -2,10 +2,18 @@
 //https://github.com/celsowhite/matter-pixi/tree/master
 
 class ParticleSystem {
-  constructor(canvasId, width, height, Matter, panelInfoElement) {
+  constructor(
+    canvasId,
+    width,
+    height,
+    Matter,
+    panelInfoElement,
+    configElement
+  ) {
     window.keyIsDown = [];
     this.pixiApp;
     this.panelInfoElement = panelInfoElement;
+    this.configElement = configElement;
 
     this.COUNTER = 0;
     this.debugMode = false;
@@ -18,15 +26,20 @@ class ParticleSystem {
     this.doPerspective = false;
 
     this.cameraHeight = window.innerHeight / 2;
-    //LLAMO REDUCERS A ESTOS COEFICIENTES Q SE USAN PARA TUNEAR EL JUEGO
-    this.FORCE_REDUCER = 0.1;
-    this.SPEED_REDUCER = 1.7;
-    this.FEAR_REDUCER = 0.3;
-    this.HEALTH_RECOVERY_REDUCER = 0.001;
-    this.FEAR_RECOVERY_REDUCER = 0.002;
-    this.HEALTH_LIMIT_TO_ESCAPE = 0.1;
-    this.FEAR_LIMIT_TO_ESCAPE = 0.75;
-    this.EXTRA_SPEED_WHEN_ESCAPING = 1.3;
+    //LLAMO MULTIPLIERS/REDUCERS A ESTOS COEFICIENTES Q SE USAN PARA TUNEAR EL JUEGO
+    this.MULTIPLIERS = {
+      FORCE_REDUCER: 0.1,
+      SPEED_REDUCER: 1.7,
+      FEAR_REDUCER: 0.3,
+      HEALTH_RECOVERY_REDUCER: 0.001,
+      FEAR_RECOVERY_REDUCER: 0.002,
+      ANGER_RECOVERY_REDUCER: 0.0012,
+      HEALTH_LIMIT_TO_ESCAPE: 0.1,
+      FEAR_LIMIT_TO_ESCAPE: 0.75,
+      EXTRA_SPEED_WHEN_ESCAPING: 1.3,
+      POLI_FORCE_PUSH_MULTIPLIER: 3,
+    };
+
     //////////////////// FIN REDUCERS
     this.MINIMUM_STAMINA_TO_MOVE = 0.01;
     this.CELL_SIZE = 40;
@@ -85,7 +98,9 @@ class ParticleSystem {
     this.UI = new UI({
       particleSystem: this,
       panelInfoElement: this.panelInfoElement,
+      configElement: this.configElement,
     });
+    this.configElement.style.display = "none";
   }
   togglePerspectiveMode() {
     this.doPerspective = !this.doPerspective;

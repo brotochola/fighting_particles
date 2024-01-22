@@ -4,7 +4,9 @@ class Poli extends Person {
     super({ ...opt, diameter: 9 });
     this.strength = Math.random() * 0.5 + 0.5;
     this.setPointWhereIShouldHold();
-    this.maxDistanceToBecomeViolent = this.diameter * 8;
+    this.maxDistanceToBecomeViolent = this.diameter * 6;
+    this.attackDistance = this.diameter * 3;
+
     this.minBearableDistance = this.diameter * 2;
   }
   setPointWhereIShouldHold() {
@@ -27,12 +29,15 @@ class Poli extends Person {
     let closestFans = this.nearPeople.filter(
       (k) => k.part instanceof Fan && !k.part.dead && k.part.health > 0
     );
+    // console.log("###", closestFans);
     if (closestFans.length > 0) {
       let dist = closestFans[0].dist;
       let fan = closestFans[0].part;
-
-      if (dist < this.minBearableDistance) {
+      // console.log(dist, fan, this.minBearableDistance);
+      // if (dist < this.minBearableDistance) {
+      if (dist < this.attackDistance) {
         this.closestFan = fan;
+        // console.log(this.closestFan);
       }
     }
   }
@@ -41,20 +46,26 @@ class Poli extends Person {
     let fan = this.closestFan;
     if (!fan) return;
     fan.makeMeFlash();
+    // console.log("###", this.name, "pushing ", fan.name, fan.team);
+    fan.interactWithAnotherPerson(this, 0.1);
 
-    fan.interactWithAnotherPerson(this, 0.02);
-
-    fan.body.force.x = -fan.vel.x * this.strength * 0.02;
-    fan.body.force.y = -fan.vel.y * this.strength * 0.02;
+    fan.body.force.x =
+      -fan.vel.x *
+      this.strength *
+      this.particleSystem.MULTIPLIERS.POLI_FORCE_PUSH_MULTIPLIER;
+    fan.body.force.y =
+      -fan.vel.y *
+      this.strength *
+      this.particleSystem.MULTIPLIERS.POLI_FORCE_PUSH_MULTIPLIER;
   }
 
   attackClosestFan() {
     let fan = this.closestFan;
     if (!fan) return;
 
-    console.log(this.name, " attacking ", fan.name, fan.health);
+    // console.log(this.name, " attacking ", fan.name, fan.health);
 
-    fan.interactWithAnotherPerson(this, 0.5);
+    fan.interactWithAnotherPerson(this);
     if (fan.dead || fan.health < 0) this.closestFan = null;
   }
 
@@ -79,6 +90,12 @@ class Poli extends Person {
     }
   }
 
+  getInfo() {
+    return {
+      ...super.getInfo(),
+      distToTarget: (this.distToTarget || 0).toFixed(2),
+    };
+  }
   doStuffAccordingToState() {
     if (!this.target) {
       this.setState("idle");
@@ -91,18 +108,18 @@ class Poli extends Person {
     }
 
     if (this.state == "attacking") {
-      this.attackClosestFan();
+      if (this.isItMyFrame()) this.attackClosestFan();
     }
 
     if (this.state == "chasing") {
-      this.pushClosestFan();
+      if (this.isItMyFrame()) this.pushClosestFan();
     }
   }
 
   // interactWithAnotherPerson(part, what) {
   //   if (!part || part.dead || !(part instanceof Fan)) return;
   //   let howMuchHealthThisIsTakingFromMe =
-  //     (part || {}).strength || 0 * this.particleSystem.FORCE_REDUCER;
+  //     (part || {}).strength || 0 * this.particleSystem.MULTIPLIERS.FORCE_REDUCER;
   //   //take health:
 
   //   // this.health -= howMuchHealthThisIsTakingFromMe;

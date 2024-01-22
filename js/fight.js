@@ -21,7 +21,8 @@ document.body.onload = (e) => {
     4000,
     2000,
     Matter,
-    document.querySelector("panelInfo")
+    document.querySelector("panelInfo"),
+    document.querySelector("config")
   );
   //   particleSystem.init();
 
