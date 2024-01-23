@@ -245,7 +245,7 @@ class GenericObject {
     // let ret;
 
     this.cellX = Math.floor(this.pos.x / this.particleSystem.CELL_SIZE);
-    this.cellY = -Math.floor(-this.pos.y / this.particleSystem.CELL_SIZE);
+    this.cellY = Math.floor(this.pos.y / this.particleSystem.CELL_SIZE);
     if (isNaN(this.cellY)) {
       return;
     }

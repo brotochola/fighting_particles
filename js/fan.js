@@ -24,14 +24,20 @@ class Fan extends Person {
       //TIENE UN TARGET
       if (this.isItMyFrame()) {
         this.calculateVelVectorAccordingToTarget();
+        //VEMOS SI LLEGO A SU TARGET O NO
         if (this.distanceToClosestEnemy <= this.particleSystem.CELL_SIZE) {
           this.whatToDoIfIReachedMyTarget();
+        }
+      } else if (this.oncePerSecond()) {
+        if (this.isStatic) {
+          // this.fireBullet();
+          this.throwRock();
         }
       }
     } else if (!this.target || this.target.dead) this.setState("idle");
   }
   whatToDoIfIReachedMyTarget() {
-    this.interactWithAnotherPerson(this.target);
+    this.recieveDamageFrom(this.target);
     this.throwAPunch();
   }
 
@@ -45,45 +51,4 @@ class Fan extends Person {
   //   );
   //   super.render();
   // }
-
-  interactWithAnotherPerson(part, coeficient = 1) {
-    if (!part || part.dead) return;
-    // console.log(this.team, part.team, this.health);
-
-    let howMuchHealthThisIsTakingFromMe = (part || {}).strength * coeficient;
-    //take health:
-
-    this.health -=
-      howMuchHealthThisIsTakingFromMe *
-      this.particleSystem.MULTIPLIERS.FORCE_REDUCER;
-
-    this.fear +=
-      this.intelligence *
-      howMuchHealthThisIsTakingFromMe *
-      this.particleSystem.MULTIPLIERS.FEAR_REDUCER; //FEAR GOES UP ACCORDING TO INTELLIGENCE. MORE INTELLIGENT, MORE FEAR
-
-    this.anger +=
-      this.courage *
-      howMuchHealthThisIsTakingFromMe *
-      this.particleSystem.MULTIPLIERS.FEAR_REDUCER; //ANGER GOES UP ACCORDING TO courage. MORE courage, YOU GET ANGRIER
-
-    let incomingAngleOfHit = Math.atan2(
-      part.body.position.y,
-      part.body.position.x
-    );
-
-    // this.emitBlood(incomingAngleOfHit);
-
-    // let difX = part.body.position.x - this.body.position.x;
-    // let difY = part.body.position.y - this.body.position.y;
-
-    // let dif = new p5.Vector(difX, difY).setMag(1);
-
-    // this.body.position.x -= dif.x * part.strength * 10;
-    // this.body.position.y -= dif.y * part.strength * 10;
-
-    // this.makeMeFlash();
-
-    // if (part instanceof Bullet) setTimeout(() => this.die(), 100);
-  }
 }

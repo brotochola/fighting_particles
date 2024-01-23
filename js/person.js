@@ -6,7 +6,7 @@ class Person extends GenericObject {
     const { x, y, particleSystem, team, isStatic, diameter } = opt;
     this.diameter = diameter;
     this.peopleICanSee = [];
-
+    this.isStatic = isStatic;
     //PARAMS OF THIS PERSON:
 
     this.possibleStates = [
@@ -257,13 +257,46 @@ class Person extends GenericObject {
     if (!this.target || this.dead) return;
 
     //HERE WE CAN EVALUATE WHAT TYPE OF BULLET, HOW OFTEN, RELOD, ETC
-    if (Math.random() > 0.8 && this.COUNTER % 2 == 0)
-      this.particleSystem.addBullet(this);
-  }
-  interactWithAnotherPerson() {
-    //GENERIC METHOD. LEAVE EMPTY AND WRITE IT IN EACH CLASS
-  }
 
+    this.particleSystem.addBullet(this);
+  }
+  recieveDamageFrom(part, coeficient = 1) {
+    if (!part || part.dead) return;
+    // console.log(this.team, part.team, this.health);
+
+    let howMuchHealthThisIsTakingFromMe = (part || {}).strength * coeficient;
+    //take health:
+
+    this.health -=
+      howMuchHealthThisIsTakingFromMe *
+      this.particleSystem.MULTIPLIERS.FORCE_REDUCER;
+
+    this.fear +=
+      this.intelligence *
+      howMuchHealthThisIsTakingFromMe *
+      this.particleSystem.MULTIPLIERS.FEAR_REDUCER; //FEAR GOES UP ACCORDING TO INTELLIGENCE. MORE INTELLIGENT, MORE FEAR
+
+    this.anger +=
+      this.courage *
+      howMuchHealthThisIsTakingFromMe *
+      this.particleSystem.MULTIPLIERS.FEAR_REDUCER; //ANGER GOES UP ACCORDING TO courage. MORE courage, YOU GET ANGRIER
+
+    let incomingAngleOfHit = Math.atan2(part.pos.y, part.pos.x);
+
+    // this.emitBlood(incomingAngleOfHit);
+
+    // let difX = part.body.position.x - this.body.position.x;
+    // let difY = part.body.position.y - this.body.position.y;
+
+    // let dif = new p5.Vector(difX, difY).setMag(1);
+
+    // this.body.position.x -= dif.x * part.strength * 10;
+    // this.body.position.y -= dif.y * part.strength * 10;
+
+    // this.makeMeFlash();
+
+    // if (part instanceof Bullet) setTimeout(() => this.die(), 100);
+  }
   // createBody(radius) {
   //   let bodyOptions = {
   //     restitution: 0.1,
@@ -333,6 +366,7 @@ class Person extends GenericObject {
       this.updateStateAccordingToManyThings();
       this.doStuffAccordingToState();
       this.getBetterSlowly();
+      this.checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath();
     }
     this.changeSpriteAccordingToStateAndVelocity();
     // }
@@ -346,6 +380,25 @@ class Person extends GenericObject {
     this.render();
 
     this.saveLog();
+  }
+
+  throwRock() {
+    if (!this.target) return;
+
+    //HERE WE CAN EVALUATE WHAT TYPE OF BULLET, HOW OFTEN, RELOD, ETC
+
+    this.particleSystem.addRock(this);
+  }
+
+  checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath() {
+    let howMany = this.cell.particlesHere.length;
+    if (howMany > 11) {
+      let evilSqueezingEvilness = {
+        strength: 1,
+        pos: this.pos,
+      };
+      this.recieveDamageFrom(evilSqueezingEvilness, (howMany - 11) * 0.007);
+    }
   }
   evaluateSituation() {
     // let time = performance.now();
@@ -380,6 +433,7 @@ class Person extends GenericObject {
   getInfo() {
     return {
       name: this.name,
+      isStatic: this.isStatic,
       diameter: this.diameter,
       team: this.team,
       state: this.state,
@@ -479,15 +533,16 @@ class Person extends GenericObject {
         );
 
         let vectorThatAimsToTheTarget;
+        let targetsPosPlusVel = this.target.pos.copy().add(targetsVel);
         if (this.state != "escaping") {
           vectorThatAimsToTheTarget = p5.Vector.sub(
-            this.target.pos,
-            this.pos.add(targetsVel)
+            targetsPosPlusVel,
+            this.pos
           );
         } else {
           vectorThatAimsToTheTarget = p5.Vector.sub(
-            this.pos.add(targetsVel),
-            this.target.pos
+            this.pos,
+            targetsPosPlusVel
           );
         }
         // let invertedVector = p5.Vector.sub(this.pos, this.target.pos);

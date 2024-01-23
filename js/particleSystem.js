@@ -38,6 +38,12 @@ class ParticleSystem {
       FEAR_LIMIT_TO_ESCAPE: 0.75,
       EXTRA_SPEED_WHEN_ESCAPING: 1.3,
       POLI_FORCE_PUSH_MULTIPLIER: 3,
+      BULLET_FORCE_REDUCER: 0.001,
+      BULLETS_STRENGTH: 3,
+      ROCK_FORCE_REDUCER: 0.0001,
+      ROCK_STRENGTH: 2,
+      ROCK_SPEED: 8,
+      ROCK_MAX_HEIGHT: 100,
     };
 
     //////////////////// FIN REDUCERS
@@ -208,6 +214,19 @@ class ParticleSystem {
     });
   }
 
+  getObjectsAt(x, y) {
+    // let ret;
+
+    let cellX = Math.floor(x / this.CELL_SIZE);
+    let cellY = Math.floor(y / this.CELL_SIZE);
+    if (isNaN(cellY) || isNaN(cellX)) {
+      return console.warn("x or y wrong");
+    }
+    let newCell = (this.grid[cellY] || [])[cellX];
+
+    return newCell.particlesHere;
+  }
+
   collisionHandler(e) {
     for (let p of e.pairs) {
       // console.log(p.bodyA, p.bodyB);
@@ -247,8 +266,8 @@ class ParticleSystem {
       }
 
       if (p.bodyA.label == "person" && p.bodyB.label == "person") {
-        p.bodyB.particle.interactWithAnotherPerson(p.bodyA.particle);
-        p.bodyA.particle.interactWithAnotherPerson(p.bodyB.particle);
+        p.bodyB.particle.recieveDamageFrom(p.bodyA.particle);
+        p.bodyA.particle.recieveDamageFrom(p.bodyB.particle);
       }
     }
   }
@@ -657,6 +676,9 @@ class ParticleSystem {
     } else if (key == 82) {
       //R de river
       this.addFan(x, y, false, "river");
+    } else if (key == 70) {
+      //F de fijo
+      this.addFan(x, y, true, "river");
     } else if (key == 80) {
       //P de poli
       this.addPoli(x, y, false);
@@ -825,13 +847,29 @@ class ParticleSystem {
       engine: this.engine,
       x: part.pos.x,
       y: part.pos.y,
-      vel: part.vel,
+      vel:
+        part.state == "escaping" ? part.vel.copy().rotate(Math.PI) : part.vel,
       particleSystem: this,
       Matter: this.Matter,
       diameter: part.diameter,
     });
     this.bullets.push(bullet);
     // console.log(bullet);
+  }
+  addRock(part) {
+    let rock = new Rock({
+      engine: this.engine,
+      x: part.pos.x,
+      y: part.pos.y,
+      targetX: part.target.pos.x,
+      targetY: part.target.pos.y,
+      vel:
+        part.state == "escaping" ? part.vel.copy().rotate(Math.PI) : part.vel,
+      particleSystem: this,
+      Matter: this.Matter,
+      diameter: part.diameter,
+    });
+    this.bullets.push(rock);
   }
 
   onTick(e) {

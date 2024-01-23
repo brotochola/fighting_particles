@@ -1,6 +1,36 @@
+function findParabolaCoefficients(vertex, point1, point2) {
+  // Extracting coordinates from P5 Vectors
+  const x0 = vertex.x,
+    y0 = vertex.y;
+  const x1 = point1.x,
+    y1 = point1.y;
+  const x2 = point2.x,
+    y2 = point2.y;
+
+  // Solving for coefficients
+  let a =
+    (y2 - y1) / ((x2 - x0) * (x2 - x1)) - (y1 - y0) / ((x1 - x0) * (x2 - x1));
+  let b = (y1 - y0) / (x1 - x0) - a * (x0 + x1);
+  const c = y0 - a * x0 ** 2 - b * x0;
+
+  // Ensure a is negative
+  if (a >= 0) {
+    a = -a;
+    b = -b;
+  }
+
+  return { a, b, c };
+}
+
 function dist(x1, y1, x2, y2) {
   var a = x1 - x2;
   var b = y1 - y2;
+  return Math.sqrt(a * a + b * b);
+}
+
+function distObjects(obj1, obj2) {
+  var a = obj1.pos.x - obj2.pos.x;
+  var b = obj1.pos.y - obj2.pos.y;
   return Math.sqrt(a * a + b * b);
 }
 

@@ -1,5 +1,6 @@
 class Cell {
-  constructor(y, x, cellWidth, grid) {
+  constructor(y, x, cellWidth, grid, particleSystem) {
+    this.particleSystem = particleSystem;
     this.grid = grid;
     this.cellWidth = cellWidth;
     this.pos = { x: x * cellWidth, y: y * cellWidth };
@@ -34,6 +35,24 @@ class Cell {
     if (!areYouHere) {
       this.particlesHere.push(who);
     }
+  }
+  unHighlight() {
+    this.graphics.visible = false;
+  }
+  highlight() {
+    if (!this.graphics) {
+      this.graphics = new PIXI.Graphics();
+      this.graphics.beginFill("0xffffff");
+      this.graphics.drawRect(
+        this.pos.x,
+        this.pos.y,
+        this.cellWidth,
+        this.cellWidth
+      );
+      this.graphics.endFill();
+      this.particleSystem.mainContainer.addChild(this.graphics);
+    }
+    this.graphics.visible = true;
   }
 
   getNeighbours() {

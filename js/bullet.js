@@ -5,23 +5,28 @@ class Bullet {
     this.engine = engine;
     this.world = particleSystem.world;
     this.particleSystem = particleSystem;
+    this.id = Math.floor(Math.random() * 9999999999999);
 
     let positionPlusVel = new p5.Vector(x, y);
     positionPlusVel = positionPlusVel.add(vel.copy().setMag(diameter + 2));
 
     this.pos = positionPlusVel;
 
-    this.strength = 0.5;
+    this.strength = this.particleSystem.MULTIPLIERS.BULLETS_STRENGTH;
 
     this.createBody();
     this.createCircleInPixi();
 
-    this.MULTIPLIERS.FORCE_REDUCER = 0.0006;
+    // this.particleSystem.MULTIPLIERS.FORCE_REDUCER = 0.0006;
 
     this.body.force.y =
-      vel.y * this.MULTIPLIERS.FORCE_REDUCER * (Math.random() * 0.1 + 0.9);
+      vel.y *
+      this.particleSystem.MULTIPLIERS.BULLET_FORCE_REDUCER *
+      (Math.random() * 0.05 + 0.95);
     this.body.force.x =
-      vel.x * this.MULTIPLIERS.FORCE_REDUCER * (Math.random() * 0.1 + 0.9);
+      vel.x *
+      this.particleSystem.MULTIPLIERS.BULLET_FORCE_REDUCER *
+      (Math.random() * 0.05 + 0.95);
 
     // console.log(this.pos, this.vel);
   }
@@ -45,7 +50,7 @@ class Bullet {
       slop: 0,
       frictionAir: 0,
       isSensor: false,
-      render: { visible: false },
+      render: { visible: true },
       isStatic: false,
     };
 
@@ -74,7 +79,26 @@ class Bullet {
     let mag = vec.mag();
     // console.log(mag);
     if (Math.abs(mag) < 10 && Math.abs(mag) > 0) {
+      this.seeWhoIKilled();
       this.remove();
+    }
+  }
+
+  seeWhoIKilled() {
+    let people = this.particleSystem
+      .getObjectsAt(this.pos.x, this.pos.y)
+      .filter((k) => k instanceof Person && k != this)
+      .map((k) => {
+        return {
+          dist: cheaperDist(this.pos.x, this.pos.y, k.pos.x, k.pos.y),
+          part: k,
+        };
+      })
+      .sort((a, b) => (a.dist > b.dist ? 1 : -1));
+
+    if (people.length > 0) {
+      let personWhoDies = people[0].part;
+      personWhoDies.recieveDamageFrom(this);
     }
   }
 

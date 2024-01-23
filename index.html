@@ -140,12 +140,15 @@
             position: fixed;
             z-index: 999;
             width: 26vw;
+            height: calc(100vh - 160px);
             background: white;
             right: 0px;
+            overflow: scroll;
             padding: 1vw;
             border-radius: 5px;
             box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
             font-size: 12px;
+            overflow-x: hidden;
         }
     </style>
     <script src="js/p5.min.js"></script>
@@ -153,6 +156,7 @@
     <script src="js/utils.js"></script>
     <script src="js/person.js"></script>
     <script src="js/bullet.js"> </script>
+    <script src="js/rock.js"> </script>
     <script src="js/cell.js"> </script>
     <script src="js/fan.js"> </script>
     <script src="js/poli.js"> </script>

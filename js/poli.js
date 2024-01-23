@@ -47,7 +47,7 @@ class Poli extends Person {
     if (!fan) return;
     fan.makeMeFlash();
     // console.log("###", this.name, "pushing ", fan.name, fan.team);
-    fan.interactWithAnotherPerson(this, 0.1);
+    fan.recieveDamageFrom(this, 0.1);
 
     fan.body.force.x =
       -fan.vel.x *
@@ -65,7 +65,7 @@ class Poli extends Person {
 
     // console.log(this.name, " attacking ", fan.name, fan.health);
 
-    fan.interactWithAnotherPerson(this);
+    fan.recieveDamageFrom(this);
     if (fan.dead || fan.health < 0) this.closestFan = null;
   }
 
@@ -116,7 +116,7 @@ class Poli extends Person {
     }
   }
 
-  // interactWithAnotherPerson(part, what) {
+  // recieveDamageFrom(part, what) {
   //   if (!part || part.dead || !(part instanceof Fan)) return;
   //   let howMuchHealthThisIsTakingFromMe =
   //     (part || {}).strength || 0 * this.particleSystem.MULTIPLIERS.FORCE_REDUCER;
