@@ -71,6 +71,11 @@ class Person extends GenericObject {
     this.fear = 0;
     this.anger = 0;
     this.happiness = 1;
+
+    //que tan rapido le baja la ira
+    this.calma = Math.random();
+    //que tan rapido acumula ira ante diferente eventos
+    this.irascibilidad = 1 - this.calma;
   }
   createDebugContainer() {
     this.debugContainer = new PIXI.Container();
@@ -365,7 +370,7 @@ class Person extends GenericObject {
     if (!this.dead) {
       this.updateStateAccordingToManyThings();
       this.doStuffAccordingToState();
-      this.getBetterSlowly();
+      this.updateMyStats();
       this.checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath();
     }
     this.changeSpriteAccordingToStateAndVelocity();
@@ -391,7 +396,7 @@ class Person extends GenericObject {
   }
 
   checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath() {
-    let howMany = this.cell.particlesHere.length;
+    let howMany = this.cell.particlesHere.filter((k) => !k.dead).length;
     if (howMany > 11) {
       let evilSqueezingEvilness = {
         strength: 1,
@@ -412,15 +417,16 @@ class Person extends GenericObject {
     let val = friendsClose / enemiesClose;
 
     this.prediction = val;
+    this.mappedPrediction = mapLogExpValuesTo1(val);
     // console.log(performance.now() - time, "XXXXXXX");
 
-    //COMBINACION DE MIEDO, VIDA, ENEMIGOS CERCA, ETC
-    this.arrogance =
-      (this.prediction *
-        (this.anger + this.health - this.fear + this.courage)) /
-      4;
+    // //COMBINACION DE MIEDO, VIDA, ENEMIGOS CERCA, ETC
+    // this.arrogance =
+    //   (this.prediction *
+    //     (this.anger + this.health - this.fear + this.courage)) /
+    //   4;
   }
-  getBetterSlowly() {
+  updateMyStats() {
     this.fear -= this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER;
     this.anger -= this.particleSystem.MULTIPLIERS.ANGER_RECOVERY_REDUCER;
     this.health +=
@@ -585,8 +591,7 @@ class Person extends GenericObject {
   }
 
   updateStateAccordingToManyThings() {
-    // this.state = "searching";
-
+    // // this.state = "searching";
     if (this.health <= 0) {
       this.die();
     } else if (
@@ -600,7 +605,6 @@ class Person extends GenericObject {
     ) {
       this.setState("idle");
     }
-
     if (!this.target) {
     }
   }

@@ -22,3 +22,10 @@ PANEL:
 -etc
 -controlar mapear valores con tinte de colores
 EJ: salud -> verde:1 / rojo:0
+
+---
+
+hacer q las celdas tengan gas
+y q el gas se pase de una celda a otra
+ponerles dibujito
+q hagan daño

@@ -21,6 +21,15 @@ function findParabolaCoefficients(vertex, point1, point2) {
 
   return { a, b, c };
 }
+function mapLogExpValuesTo1(x) {
+  if (x < 1) {
+    return Math.PI ** (4 * x - 4) - 1;
+  } else if (x > 1) {
+    return Math.atan(x - 1) / (Math.PI * 0.5);
+  } else if (x == 1) {
+    return 0;
+  }
+}
 
 function dist(x1, y1, x2, y2) {
   var a = x1 - x2;

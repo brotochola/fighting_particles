@@ -1,0 +1,204 @@
+//si cae una piedra cerca te sube el miedo
+
+HINCHAS:
+-------------------
+
+inputs:
+-q tan cerca esta el enemigo mas cercano
+-coraje
+-miedo
+-vida
+-prediccion
+-ira
+-hay polis en el camino?
+////////////////////////// MAQUINA DE ESTADOS:
+
+if(salud<0.1){
+    //me estoy muriendo mal    
+    estado="huyendo"
+
+
+}else if( salud >0.1 && salud<0.5){
+    //ta maomeno de vida    
+    
+    if(miedo>0.9){
+        estado="huyendo"        
+    }else{
+        estado = 'retrocediendo'
+    }
+
+}else{
+    //esta bien de vida
+
+    if(miedo>0.9){
+        estado="huyendo"
+        return
+    }else if(miedo > 0.7 && miedo <0.9){
+        estado = 'retrocediendo'
+    }else {
+        if (hay polis en el camino && ira < 0.5){
+            estado = "bancando la parada/tirando piedras"
+        }
+        else{
+            estado = "yendo"
+        }
+        
+    }
+
+}
+
+
+
+
+/////////////////////////// FUNCIONES
+
+update(){
+    miedo -= prediccion *k //mis amigos me sacan el miedo
+    miedo+= (1-salud)*(1-coraje) *k //si me lastimaron, me sube el miedo
+    miedo-=enemigosBienCerca.filter(k=>estado=="huyendo").length * k
+    ira-=this.calma // constante individual de cada para bajar la ira
+    if(salud>0.1) salud+=k
+    
+}
+
+acciones(){
+    if(estado=="retrocediendo"){
+        if(no hay ningun enemigo bien cerca){
+            if(coraje < 0.5){
+                //cagon
+                tirarPiedra()
+            }
+        }
+    }
+    else if(estado=="bancando la parada" && coraje < 0.5){
+        tirarPiedra()
+    }
+}
+
+movimiento(){    
+    if(yendo) vel+=vectorDeDireccion hacia el target + promedio de los vec de velocidad de los amigos
+    if(ira<0.75){
+        vel-= vector hacia policia mas cercano
+    }
+}
+
+recibirgolpe(otro){
+    miedo+= 1-coraje
+    ira+= otro.fuerza * irascibilidad * ((otro instanceof Piedra)?1:0.5)
+    salud-=otro.fuerza
+}
+
+
+
+//////////////////////////
+
+
+estados:
+-yendo al frente
+-huyendo por tu vida
+-retrocediendo para curarme un toq
+-bancando la parada
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------
+
+POLICIAS:
+
+inputs:
+-salud
+-miedo
+-q tan cerca esta el enemigo mas cercano
+-coraje
+-prediccion
+-ira
+-violentos a la vista
+-distancia del punto inicial
+
+
+update(){
+    miedo -= prediccion *k //mis amigos me sacan el miedo
+    miedo+= (1-salud)*(1-coraje) *k //si me lastimaron, me sube el miedo
+    miedo-=enemigosBienCerca.filter(k=>estado=="huyendo").length * k
+    ira-=this.calma // constante individual de cada para bajar la ira
+    if(salud>0.1) salud+=k
+    ira+=enemigos dentro del area segura
+    
+}
+
+acciones(){
+
+    if(estado=="apaciguando"){
+        setTarget(chabonViolento)
+        
+    }
+}
+
+///////////////////
+
+if(salud<0.1){
+    //me estoy muriendo mal    
+    estado="huyendo"
+
+
+}else if( salud >0.1 && salud<0.3){
+    //ta maomeno de vida    
+    
+    if(miedo>0.9){
+        estado="huyendo"        
+    }
+
+}else{
+    //esta bien de vida
+    if(ira>0.9){        //pega le baja la ira?
+        estado="yendo"
+    }else{
+
+
+        if(estado=="apaciguando"){
+            if(distancia del punto inicial > k*coraje){
+                estado="empujando"
+            }
+            
+            if(!hay violentos cerca){
+                estado="empujando"
+            } 
+        }else{
+    
+    
+             if(ira>0.5 ){
+                estado="pegando"
+            }else{
+                //esta bien de ira 
+                if(hay violentos cerca ){
+                   estado="apaciguando" 
+                }else{
+                    estado="empujando"
+                }
+                
+                
+            }
+    
+    
+    
+        }
+
+    }
+
+
+    
+}
+
+estados:
+-empujando
+-pegando
+-yendo
+-huyendo
+-apaciguando (pegarle a los violentos)

@@ -30,7 +30,7 @@ class Rock {
       this.targetY
     );
 
-    this.velZ = this.initialDistance / 20;
+    this.velZ = this.initialDistance / 20; //velocidad inicial de la piedra
     this.z = diameter * 2;
 
     this.strength = this.particleSystem.MULTIPLIERS.ROCK_STRENGTH;
@@ -138,9 +138,9 @@ class Rock {
 
     this.pos.x += this.vel.x;
     this.pos.y += this.vel.y;
-    this.velZ -= 1;
-    if (this.velZ < -10) this.velZ = -10;
-    this.z += this.velZ;
+    this.velZ -= 1; //gravedad
+    if (this.velZ < -10) this.velZ = -10; //velocidad terminal
+    this.z += this.velZ; //aplicar la velocidad en z a la altura
 
     // this.dist2Target = dist(this.pos.x, this.pos.y, this.targetX, this.targetY);
 
@@ -158,6 +158,7 @@ class Rock {
     // console.log("###", this.id, this.ratioOfDistanceTraveled);
 
     if (this.z < 0) {
+      //la piedra cayo al piso
       this.seeWhoIKilled();
       this.remove();
     }
