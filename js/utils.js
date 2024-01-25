@@ -1,3 +1,8 @@
+function getAvg(grades) {
+  const total = grades.reduce((acc, c) => acc + c, 0);
+  return total / grades.length;
+}
+
 function findParabolaCoefficients(vertex, point1, point2) {
   // Extracting coordinates from P5 Vectors
   const x0 = vertex.x,

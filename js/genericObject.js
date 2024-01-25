@@ -1,6 +1,7 @@
 // https://codepen.io/davepvm/pen/Hhstl
 // Particle class representing each molecule
 class GenericObject {
+  states = {};
   constructor(opt) {
     // this.pepe();
     const { x, y, particleSystem, team, isStatic, diameter } = opt;
@@ -423,6 +424,14 @@ class GenericObject {
   }
   setState(state) {
     this.state = state;
+
+    let keys = Object.keys(this.states);
+    let textState;
+    for (let key of keys) {
+      if (this.states[key] == state) textState = key;
+    }
+
+    this.textState = textState;
   }
 
   createContainers() {

@@ -1,11 +1,18 @@
 // https://codepen.io/davepvm/pen/Hhstl
 // Particle class representing each molecule
 class Person extends GenericObject {
+  states = {
+    YENDO: 1,
+    RETROCEDIENDO: 2,
+    HUYENDO: 3,
+    BANCANDO: 4,
+    MUERTO: 5,
+  };
+
   constructor(opt) {
     super(opt);
     const { x, y, particleSystem, team, isStatic, diameter } = opt;
     this.diameter = diameter;
-    this.peopleICanSee = [];
     this.isStatic = isStatic;
     //PARAMS OF THIS PERSON:
 
@@ -24,6 +31,11 @@ class Person extends GenericObject {
     //initialize variables:
     this.log = [];
     this.nearPeople = [];
+    this.peopleICanSee = [];
+    this.enemiesClose = [];
+
+    this.friendsClose = [];
+
     this.vel = new p5.Vector(0, 0);
     this.lastTimeItFlipped = 0;
     this.amILookingLeft = false;
@@ -341,6 +353,13 @@ class Person extends GenericObject {
       this.seePeople();
       this.evaluateSituation();
       this.nearPeople = this.getParticlesFromCloseCells();
+      this.closeEnemies = this.nearPeople.filter(
+        (k) => k.part.team != this.team
+      ).length;
+      this.friendsClose = this.nearPeople.filter(
+        (k) => k.part.team == this.team
+      );
+
       // this.updateDebugText(this.nearPeople.length);
     }
   }
@@ -364,9 +383,9 @@ class Person extends GenericObject {
     // if (this.isItMyFrame()) this.evaluateSituation();
 
     if (!this.dead) {
-      this.updateMyStats();
-      this.finiteStateMachine();
-      this.doStuffAccordingToState();
+      if (this.isItMyFrame()) this.updateMyStats(); //feel
+      this.finiteStateMachine(); //change state/mood
+      this.doActions(); //do
       this.checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath();
     }
     this.changeSpriteAccordingToStateAndVelocity();
@@ -382,7 +401,7 @@ class Person extends GenericObject {
 
     this.saveLog();
   }
-  doStuffAccordingToState() {
+  doActions() {
     return console.warn("deberias sobreescribir este metodo");
   }
 
@@ -409,13 +428,12 @@ class Person extends GenericObject {
   evaluateSituation() {
     // let time = performance.now();
 
-    let friendsClose =
-      this.peopleICanSee.filter((k) => k.team == this.team).length + 1;
+    this.enemiesICanSee = this.peopleICanSee.filter((k) => k.team != this.team);
 
-    let enemiesClose =
-      this.peopleICanSee.filter((k) => k.team != this.team).length + 1;
+    this.friendsICanSee = this.peopleICanSee.filter((k) => k.team == this.team);
 
-    let val = friendsClose / enemiesClose;
+    let val =
+      (this.friendsICanSee.length + 1) / (this.enemiesICanSee.length + 1);
 
     this.prediction = val;
     this.mappedPrediction = mapLogExpValuesTo1(val);
@@ -430,8 +448,11 @@ class Person extends GenericObject {
 
   getNumberOfEnemiesRunningAway() {
     return this.peopleICanSee.filter(
-      (k) => k.state == "huyendo" && k.team != this.team
+      (k) => k.state == this.states.HUYENDO && k.team != this.team
     ).length;
+  }
+  getHowManyOfPeopleFromCertainTeamICanSee(team) {
+    return this.peopleICanSee.filter((k) => k.team == team).length;
   }
   updateMyStats() {
     // miedo -= prediccion *k //mis amigos me sacan el miedo
@@ -456,7 +477,7 @@ class Person extends GenericObject {
       (1 - this.courage) *
       this.particleSystem.MULTIPLIERS.FEAR_INCREASE_DUE_TO_HEALTH;
 
-    // miedo-=enemigosBienCerca.filter(k=>estado=="huyendo").length * k
+    // miedo-=enemigosBienCerca.filter(k=>estado==this.states.HUYENDO).length * k
     this.fear -=
       this.getNumberOfEnemiesRunningAway() *
       this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER;
@@ -477,11 +498,14 @@ class Person extends GenericObject {
   getInfo() {
     return {
       name: this.name,
+      state: this.textState,
+      target: (this.target || {}).name,
+
       isStatic: this.isStatic,
       diameter: this.diameter,
       team: this.team,
-      state: this.state,
-      target: (this.target || {}).name,
+      courage: this.courage,
+
       sprite: this.whichSpriteAmIShowing(),
       distanceToClosestEnemy: (this.distanceToClosestEnemy || 0).toFixed(2),
       sight: this.sightDistance.toFixed(2),
@@ -553,75 +577,83 @@ class Person extends GenericObject {
     this.removeMeAsTarget();
   }
 
-  calculateVelVectorAccordingToTarget() {
+  defineVelVectorToMove() {
     if (!("x" in this.vel) || !("x" in this.pos)) return;
 
-    if ((this.target || {}).dead) {
+    if ((this.target || {}).dead || !this.target || !this.target.pos) {
       this.target = null;
       this.vel.x = 0;
       this.vel.y = 0;
-
+      this.vectorThatAimsToTheTarget = null;
       return;
     }
 
-    if (this.target) {
-      // debugger;
-      if (this.target.pos) {
-        let targetsVel = new p5.Vector(
-          this.target.body.velocity.x,
-          this.target.body.velocity.y
-        );
+    // OK
+    let targetsPosPlusVel = this.target.pos
+      .copy()
+      .add((this.target.vel || new p5.Vector()).copy());
 
-        let vectorThatAimsToTheTarget;
-        let targetsPosPlusVel = this.target.pos.copy().add(targetsVel);
-        if (this.state == "huyendo" || this.state == "retrocediendo") {
-          vectorThatAimsToTheTarget = p5.Vector.sub(
-            this.pos,
-            targetsPosPlusVel
-          );
-        } else {
-          vectorThatAimsToTheTarget = p5.Vector.sub(
-            targetsPosPlusVel,
-            this.pos
-          );
-        }
-        // let invertedVector = p5.Vector.sub(this.pos, this.target.pos);
+    this.vectorThatAimsToTheTarget = p5.Vector.sub(targetsPosPlusVel, this.pos);
+    this.vel = this.vectorThatAimsToTheTarget.copy();
 
-        this.vel = vectorThatAimsToTheTarget.limit(1);
-        this.moveAndSubstractStamina();
-      }
+    if (
+      this.state == this.states.HUYENDO ||
+      this.state == this.states.RETROCEDIENDO
+    ) {
+      this.vel.x *= -1;
+      this.vel.y *= -1;
     }
+
+    this.vel.limit(1);
+
+    let extraSpeed =
+      this.state == this.states.HUYENDO
+        ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
+        : 1;
+
+    this.vel.x *= extraSpeed;
+    this.vel.y *= extraSpeed;
+
+    // AGREGO ACA FLOCKING BEHAVIOUR
+    this.addFlockingBehavior();
+
+    this.doTheWalk();
 
     //  this.vel.limit(this.genes.maxSpeed);
 
     //  console.log(this.vel);
   }
-  moveAndSubstractStamina() {
+  doTheWalk() {
     // let minStam = this.particleSystem.MINIMUM_STAMINA_TO_MOVE;
     if (this.isStatic) return;
-    if (this.state == "bancando") return;
+    // if (this.state == "bancando") return;
     // if (this.stamina >= minStam) {
     //SI ESTA ESCAPANDOSE VA MAS RAPIDO
-    let extraSpeed =
-      this.state == "huyendo"
-        ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
-        : 1;
+
     this.body.force.y =
-      this.vel.y *
-      this.particleSystem.MULTIPLIERS.SPEED_REDUCER *
-      this.speed *
-      extraSpeed;
+      this.vel.y * this.particleSystem.MULTIPLIERS.SPEED_REDUCER * this.speed;
 
     this.body.force.x =
-      this.vel.x *
-      this.particleSystem.MULTIPLIERS.SPEED_REDUCER *
-      this.speed *
-      extraSpeed;
+      this.vel.x * this.particleSystem.MULTIPLIERS.SPEED_REDUCER * this.speed;
 
     // this.stamina -= minStam * 0.1;
     // } else {
     //   this.stamina += minStam;
     // }
+  }
+
+  addFlockingBehavior() {
+    let avgX = getAvg(this.friendsClose.map((k) => k.part.pos.x));
+    let avgY = getAvg(this.friendsClose.map((k) => k.part.pos.y));
+
+    this.vecThatAimsToTheAvg = p5.Vector.sub(
+      new p5.Vector(avgX, avgY),
+      this.pos
+    );
+    this.vecThatAimsToTheAvg.setMag(1);
+
+    this.vel.x += this.vecThatAimsToTheAvg.x * 0.5;
+    this.vel.y += this.vecThatAimsToTheAvg.y * 0.5;
   }
 
   throwAPunch() {
@@ -712,6 +744,7 @@ class Person extends GenericObject {
     this.distanceToClosestEnemy = arr[0].dist;
 
     this.setTarget(this.closestEnemy);
+    return this.closestEnemy;
   }
 
   checkIfTheresSomeoneInTheWay(team) {
@@ -730,6 +763,8 @@ class Person extends GenericObject {
       // let cell = (this.particleSystem.grid[cellY] || [])[cellX];
       // if (!cell) return console.warn("end");
       // cell.highlight();
+
+      if (objects.length == 0) return [];
 
       let peopleFromSelectedTeam = objects.filter((k) => k.team == team);
       if (peopleFromSelectedTeam.length > 0) {

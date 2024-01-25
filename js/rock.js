@@ -10,6 +10,7 @@ class Rock {
       diameter,
       targetX,
       targetY,
+      part,
     } = opt;
     this.targetX = targetX;
     this.targetY = targetY;
@@ -17,9 +18,12 @@ class Rock {
     this.engine = engine;
     this.world = particleSystem.world;
     this.particleSystem = particleSystem;
+    this.owner = part;
 
     this.id = Math.floor(Math.random() * 9999999999999);
-    this.vel = vel.copy().setMag(this.particleSystem.MULTIPLIERS.ROCK_SPEED);
+    this.vel = (vel || new p5.Vector())
+      .copy()
+      .setMag(this.particleSystem.MULTIPLIERS.ROCK_SPEED);
 
     this.pos = new p5.Vector(x, y - diameter * 2);
 
@@ -30,7 +34,11 @@ class Rock {
       this.targetY
     );
 
-    this.velZ = this.initialDistance / 20; //velocidad inicial de la piedra
+    this.velZ =
+      this.initialDistance *
+        this.particleSystem.MULTIPLIERS.ROCK_FORCE_REDUCER +
+      part.strength; //velocidad inicial de la piedra
+
     this.z = diameter * 2;
 
     this.strength = this.particleSystem.MULTIPLIERS.ROCK_STRENGTH;

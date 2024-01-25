@@ -44,7 +44,7 @@ class Poli extends Person {
 
     //los polis se enojan si tienen gente cerca
     this.anger +=
-      this.getNumberOfEnemiesClose() *
+      this.closeEnemies *
       this.particleSystem.MULTIPLIERS.ANGER_RECOVERY_REDUCER *
       0.1 *
       this.irascibilidad;
@@ -124,7 +124,6 @@ class Poli extends Person {
     //   this.setState("idle");
     // }
 
-    let closeEnemies = this.getNumberOfEnemiesClose();
     if (this.health < 0.1) {
       //me estoy muriendo mal
       this.setState("huyendo");
@@ -170,15 +169,12 @@ class Poli extends Person {
     };
   }
 
-  getNumberOfEnemiesClose() {
-    return this.nearPeople.filter((k) => k.part.team != this.team).length;
-  }
-  doStuffAccordingToState() {
+  doActions() {
     if (this.state == "pegando" || this.state == "empujando") {
       if (this.oncePerSecond()) this.checkWhichFansAreClose();
       if (this.isItMyFrame()) {
         if (this.distanceToInitialPoint > this.particleSystem.CELL_SIZE) {
-          this.calculateVelVectorAccordingToTarget();
+          this.defineVelVectorToMove();
         }
       }
     }

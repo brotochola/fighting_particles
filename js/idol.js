@@ -22,10 +22,10 @@ class Idol extends Person {
       this.setRandomTarget();
     }
   }
-  doStuffAccordingToState() {
+  doActions() {
     if (this.state == "searching" || (this.state == "chasing" && this.target)) {
       if (this.COUNTER % 3 == 0) {
-        this.calculateVelVectorAccordingToTarget();
+        this.defineVelVectorToMove();
       }
 
       // if (this.isStatic) {

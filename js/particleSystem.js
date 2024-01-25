@@ -41,7 +41,7 @@ class ParticleSystem {
       POLI_FORCE_PUSH_MULTIPLIER: 3,
       BULLET_FORCE_REDUCER: 0.001,
       BULLETS_STRENGTH: 3,
-      ROCK_FORCE_REDUCER: 0.0001,
+      ROCK_FORCE_REDUCER: 0.06,
       ROCK_STRENGTH: 2,
       ROCK_SPEED: 8,
       ROCK_MAX_HEIGHT: 100,
@@ -849,8 +849,7 @@ class ParticleSystem {
       engine: this.engine,
       x: part.pos.x,
       y: part.pos.y,
-      vel:
-        part.state == "escaping" ? part.vel.copy().rotate(Math.PI) : part.vel,
+      vel: part.vectorThatAimsToTheTarget,
       particleSystem: this,
       Matter: this.Matter,
       diameter: part.diameter,
@@ -865,11 +864,11 @@ class ParticleSystem {
       y: part.pos.y,
       targetX: part.target.pos.x,
       targetY: part.target.pos.y,
-      vel:
-        part.state == "escaping" ? part.vel.copy().rotate(Math.PI) : part.vel,
+      vel: part.vectorThatAimsToTheTarget,
       particleSystem: this,
       Matter: this.Matter,
       diameter: part.diameter,
+      part: part,
     });
     this.bullets.push(rock);
   }
