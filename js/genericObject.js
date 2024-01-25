@@ -21,7 +21,7 @@ class GenericObject {
     this.image = null;
     this.startingFrame = randomInt(6);
     this.maxLuckyNumbers = 25;
-    this.myLuckyNumber = randomInt(this.maxLuckyNumbers);
+    this.myLuckyNumber = randomInt(this.maxLuckyNumbers - 1);
     this.drawTargetLine = false; //true;
 
     // this.createBody(10);

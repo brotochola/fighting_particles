@@ -31,8 +31,9 @@ class ParticleSystem {
       FORCE_REDUCER: 0.1,
       SPEED_REDUCER: 1.7,
       FEAR_REDUCER: 0.3,
-      HEALTH_RECOVERY_REDUCER: 0.001,
+      HEALTH_RECOVERY_REDUCER: 0.0003,
       FEAR_RECOVERY_REDUCER: 0.002,
+      FEAR_INCREASE_DUE_TO_HEALTH: 0.007,
       ANGER_RECOVERY_REDUCER: 0.0012,
       HEALTH_LIMIT_TO_ESCAPE: 0.1,
       FEAR_LIMIT_TO_ESCAPE: 0.75,
@@ -157,11 +158,11 @@ class ParticleSystem {
     this.loader.add("die_river", "img/river/dead.png");
     this.loader.add("attack_river", "img/river/attack.png");
 
-    this.loader.add("attack_bouncer", "img/poli/attack2.png");
-    this.loader.add("push_bouncer", "img/poli/attack.png");
-    this.loader.add("walk_bouncer", "img/poli/walk.png");
-    this.loader.add("idle_bouncer", "img/poli/idle.png");
-    this.loader.add("die_bouncer", "img/poli/dead.png");
+    this.loader.add("attack_poli", "img/poli/attack2.png");
+    this.loader.add("push_poli", "img/poli/attack.png");
+    this.loader.add("walk_poli", "img/poli/walk.png");
+    this.loader.add("idle_poli", "img/poli/idle.png");
+    this.loader.add("die_poli", "img/poli/dead.png");
 
     // this.loader.add("dead_2", "img/dead_2.png");
     this.loader.add("bg", "img/bg.jpg");
@@ -224,7 +225,7 @@ class ParticleSystem {
     }
     let newCell = (this.grid[cellY] || [])[cellX];
 
-    return newCell.particlesHere;
+    return (newCell || {}).particlesHere || [];
   }
 
   collisionHandler(e) {
@@ -404,6 +405,7 @@ class ParticleSystem {
     ) {
       let p = closeP[0].body;
       this.selectedPerson = p.particle;
+      window.sel = p.particle;
 
       console.log(p.particle);
       p.particle.highlighted = !p.particle.highlighted;
@@ -783,7 +785,7 @@ class ParticleSystem {
       x,
       y,
       particleSystem: this,
-      team: "bouncer",
+      team: "poli",
       isStatic,
     });
     particle.particles = this.people;

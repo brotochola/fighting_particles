@@ -1,5 +1,14 @@
 //PATOVA
 class Poli extends Person {
+  possibleStates = [
+    "empujando",
+    "pegando",
+    "yendo",
+    "huyendo",
+    "apaciguando",
+    "muerto",
+  ];
+
   constructor(opt) {
     super({ ...opt, diameter: 9 });
     this.strength = Math.random() * 0.5 + 0.5;
@@ -10,10 +19,10 @@ class Poli extends Person {
     this.minBearableDistance = this.diameter * 2;
   }
   setPointWhereIShouldHold() {
-    this.targetPoint = this.pos.copy();
+    this.initialPoint = this.pos.copy();
     setTimeout(() => {
       this.target = {
-        pos: this.targetPoint,
+        pos: this.initialPoint,
         body: { velocity: new p5.Vector(0, 0) },
       };
     }, 500);
@@ -21,6 +30,24 @@ class Poli extends Person {
 
   update(COUNTER) {
     super.update(COUNTER);
+  }
+
+  updateMyStats() {
+    super.updateMyStats();
+
+    this.distanceToInitialPoint = cheaperDist(
+      this.pos.x,
+      this.pos.y,
+      this.initialPoint.x,
+      this.initialPoint.y
+    );
+
+    //los polis se enojan si tienen gente cerca
+    this.anger +=
+      this.getNumberOfEnemiesClose() *
+      this.particleSystem.MULTIPLIERS.ANGER_RECOVERY_REDUCER *
+      0.1 *
+      this.irascibilidad;
   }
 
   checkWhichFansAreClose() {
@@ -69,49 +96,98 @@ class Poli extends Person {
     if (fan.dead || fan.health < 0) this.closestFan = null;
   }
 
-  updateStateAccordingToManyThings() {
-    super.updateStateAccordingToManyThings();
-    this.distToTarget = cheaperDist(
-      this.pos.x,
-      this.pos.y,
-      this.targetPoint.x,
-      this.targetPoint.y
-    );
+  finiteStateMachine() {
+    // if (this.health <= 0) {
+    //   this.die();
+    // } else if (
+    //   this.health < 0.1 ||
+    //   this.fear > this.particleSystem.MULTIPLIERS.FEAR_LIMIT_TO_ESCAPE
+    // ) {
+    //   this.setState("escaping");
+    // } else if (
+    //   this.fear < this.particleSystem.MULTIPLIERS.FEAR_LIMIT_TO_ESCAPE &&
+    //   this.health > this.particleSystem.MULTIPLIERS.HEALTH_LIMIT_TO_ESCAPE
+    // ) {
+    //   this.setState("idle");
+    // }
+    // if (!this.target) {
+    // }
 
-    if (
-      this.distToTarget > this.minBearableDistance &&
-      this.distToTarget < this.maxDistanceToBecomeViolent
-    ) {
-      this.setState("chasing");
-    } else if (this.distToTarget > this.maxDistanceToBecomeViolent) {
-      this.setState("attacking");
-    } else if (this.distToTarget < this.minBearableDistance) {
-      this.setState("idle");
+    // if (
+    //   this.distanceToInitialPoint > this.minBearableDistance &&
+    //   this.distanceToInitialPoint < this.maxDistanceToBecomeViolent
+    // ) {
+    //   this.setState("chasing");
+    // } else if (this.distanceToInitialPoint > this.maxDistanceToBecomeViolent) {
+    //   this.setState("attacking");
+    // } else if (this.distanceToInitialPoint < this.minBearableDistance) {
+    //   this.setState("idle");
+    // }
+
+    let closeEnemies = this.getNumberOfEnemiesClose();
+    if (this.health < 0.1) {
+      //me estoy muriendo mal
+      this.setState("huyendo");
+    } else if (this.health > 0.1 && this.health < 0.3) {
+      //ta maomeno de vida
+
+      if (this.fear > 0.9) {
+        this.setState("huyendo");
+      }
+    } else {
+      //esta bien de vida
+      if (this.anger > 0.9) {
+        this.setState("yendo");
+      } else {
+        if (this.state == "apaciguando") {
+          if (this.distanceToInitialPoint > this.sightDistance * this.courage) {
+            this.setState("empujando");
+          }
+
+          if (closeEnemies) {
+            this.setState("empujando");
+          }
+        } else {
+          if (this.anger > 0.5) {
+            this.setState("pegando");
+          } else {
+            //esta bien de ira
+            if (closeEnemies) {
+              this.setState("apaciguando");
+            } else {
+              this.setState("empujando");
+            }
+          }
+        }
+      }
     }
   }
 
   getInfo() {
     return {
       ...super.getInfo(),
-      distToTarget: (this.distToTarget || 0).toFixed(2),
+      distanceToInitialPoint: (this.distanceToInitialPoint || 0).toFixed(2),
     };
   }
+
+  getNumberOfEnemiesClose() {
+    return this.nearPeople.filter((k) => k.part.team != this.team).length;
+  }
   doStuffAccordingToState() {
-    if (!this.target) {
-      this.setState("idle");
-      return;
-    }
-
-    if (this.state == "chasing" || this.state == "attacking") {
+    if (this.state == "pegando" || this.state == "empujando") {
       if (this.oncePerSecond()) this.checkWhichFansAreClose();
-      if (this.isItMyFrame()) this.calculateVelVectorAccordingToTarget();
+      if (this.isItMyFrame()) {
+        if (this.distanceToInitialPoint > this.particleSystem.CELL_SIZE) {
+          this.calculateVelVectorAccordingToTarget();
+        }
+      }
     }
 
-    if (this.state == "attacking") {
+    if (this.state == "pegando") {
       if (this.isItMyFrame()) this.attackClosestFan();
     }
 
-    if (this.state == "chasing") {
+    if (this.state == "empujando") {
       if (this.isItMyFrame()) this.pushClosestFan();
     }
   }

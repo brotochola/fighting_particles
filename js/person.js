@@ -9,15 +9,6 @@ class Person extends GenericObject {
     this.isStatic = isStatic;
     //PARAMS OF THIS PERSON:
 
-    this.possibleStates = [
-      "idle",
-      "searching",
-      "chasing",
-      "attacking",
-      "escaping",
-      "dead",
-    ];
-
     this.initStartingAttributes();
     this.team = team;
 
@@ -26,6 +17,9 @@ class Person extends GenericObject {
     this.spriteSpeed = Math.floor(5 * this.speed);
 
     /////////////////////////////
+
+    this.prediction = 0;
+    this.mappedPrediction = 0;
 
     //initialize variables:
     this.log = [];
@@ -50,7 +44,6 @@ class Person extends GenericObject {
 
     this.updateMyPositionInCell();
     // this.addParticleEmitter();
-    this.setState("searching");
   }
   initStartingAttributes() {
     this.dead = false;
@@ -343,6 +336,15 @@ class Person extends GenericObject {
   //   this.world.add(this.engine.world, [this.body]);
   // }
 
+  lookAround() {
+    if (this.oncePerSecond()) {
+      this.seePeople();
+      this.evaluateSituation();
+      this.nearPeople = this.getParticlesFromCloseCells();
+      // this.updateDebugText(this.nearPeople.length);
+    }
+  }
+
   update(COUNTER) {
     super.update(COUNTER);
 
@@ -357,20 +359,14 @@ class Person extends GenericObject {
 
     this.updateMyPositionInCell();
 
-    if (this.oncePerSecond()) {
-      this.seePeople();
-      this.evaluateSituation();
-      this.nearPeople = this.getParticlesFromCloseCells();
-      // this.updateDebugText(this.nearPeople.length);
-      // this.getClosePeopleWithWebWorkers();
-    }
+    this.lookAround();
 
-    if (this.isItMyFrame()) this.evaluateSituation();
+    // if (this.isItMyFrame()) this.evaluateSituation();
 
     if (!this.dead) {
-      this.updateStateAccordingToManyThings();
-      this.doStuffAccordingToState();
       this.updateMyStats();
+      this.finiteStateMachine();
+      this.doStuffAccordingToState();
       this.checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath();
     }
     this.changeSpriteAccordingToStateAndVelocity();
@@ -385,6 +381,9 @@ class Person extends GenericObject {
     this.render();
 
     this.saveLog();
+  }
+  doStuffAccordingToState() {
+    return console.warn("deberias sobreescribir este metodo");
   }
 
   throwRock() {
@@ -426,15 +425,41 @@ class Person extends GenericObject {
     //     (this.anger + this.health - this.fear + this.courage)) /
     //   4;
   }
+
+  getNumberOfEnemiesRunningAway() {
+    return this.peopleICanSee.filter(
+      (k) => k.state == "huyendo" && k.team != this.team
+    ).length;
+  }
   updateMyStats() {
-    this.fear -= this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER;
-    this.anger -= this.particleSystem.MULTIPLIERS.ANGER_RECOVERY_REDUCER;
-    this.health +=
-      this.particleSystem.MULTIPLIERS.HEALTH_RECOVERY_REDUCER * this.strength;
+    // miedo -= prediccion *k //mis amigos me sacan el miedo
+    this.fear -=
+      this.mappedPrediction *
+      this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER;
+
+    // miedo+= (1-salud)*(1-coraje) *k //si me lastimaron, me sube el miedo
+    this.fear +=
+      (1 - this.health) *
+      (1 - this.courage) *
+      this.particleSystem.MULTIPLIERS.FEAR_INCREASE_DUE_TO_HEALTH;
+
+    // miedo-=enemigosBienCerca.filter(k=>estado=="huyendo").length * k
+    this.fear -=
+      this.getNumberOfEnemiesRunningAway() *
+      this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER;
+
+    this.anger -=
+      this.calma * this.particleSystem.MULTIPLIERS.ANGER_RECOVERY_REDUCER;
+
+    if (this.health > 0.1) {
+      this.health += this.particleSystem.MULTIPLIERS.HEALTH_RECOVERY_REDUCER;
+    }
 
     if (this.health > 1) this.health = 1;
     if (this.anger < 0) this.anger = 0;
+    if (this.anger > 1) this.anger = 1;
     if (this.fear < 0) this.fear = 0;
+    if (this.fear > 1) this.fear = 1;
   }
   getInfo() {
     return {
@@ -452,11 +477,7 @@ class Person extends GenericObject {
       health: this.health.toFixed(2),
       fear: this.fear.toFixed(2),
       anger: this.anger.toFixed(2),
-      prediction:
-        this.prediction == Infinity || !this.prediction
-          ? this.prediction
-          : this.prediction.toFixed(2),
-      arrogance: (this.arrogance || 0).toFixed(2), //envalentonamiento
+      prediction: (this.mappedPrediction || 0).toFixed(2),
     };
   }
   saveLog() {
@@ -526,7 +547,7 @@ class Person extends GenericObject {
       this.target = null;
       this.vel.x = 0;
       this.vel.y = 0;
-      this.setState("searching");
+
       return;
     }
 
@@ -540,7 +561,7 @@ class Person extends GenericObject {
 
         let vectorThatAimsToTheTarget;
         let targetsPosPlusVel = this.target.pos.copy().add(targetsVel);
-        if (this.state != "escaping") {
+        if (this.state != "huyendo") {
           vectorThatAimsToTheTarget = p5.Vector.sub(
             targetsPosPlusVel,
             this.pos
@@ -590,28 +611,9 @@ class Person extends GenericObject {
     }
   }
 
-  updateStateAccordingToManyThings() {
-    // // this.state = "searching";
-    if (this.health <= 0) {
-      this.die();
-    } else if (
-      this.health < 0.1 ||
-      this.fear > this.particleSystem.MULTIPLIERS.FEAR_LIMIT_TO_ESCAPE
-    ) {
-      this.setState("escaping");
-    } else if (
-      this.fear < this.particleSystem.MULTIPLIERS.FEAR_LIMIT_TO_ESCAPE &&
-      this.health > this.particleSystem.MULTIPLIERS.HEALTH_LIMIT_TO_ESCAPE
-    ) {
-      this.setState("idle");
-    }
-    if (!this.target) {
-    }
-  }
-
   throwAPunch() {
     // console.log("#", this.name, "punch");
-    this.setState("attacking");
+    // this.setState("attacking");
   }
 
   die() {
@@ -625,7 +627,7 @@ class Person extends GenericObject {
     // this.createSprite("die_1");
 
     setTimeout(() => {
-      this.setState("dead");
+      this.setState("muerto");
       this.dead = true;
     }, this.particleSystem.deltaTime * 4);
 
@@ -667,7 +669,6 @@ class Person extends GenericObject {
 
   setTarget(target) {
     this.target = target;
-    this.state = "chasing";
   }
 
   seePeople() {
@@ -698,6 +699,30 @@ class Person extends GenericObject {
     this.distanceToClosestEnemy = arr[0].dist;
 
     this.setTarget(this.closestEnemy);
+  }
+
+  checkIfTheresSomeoneInTheWay(team) {
+    let vector = this.vel.copy().setMag(particleSystem.CELL_SIZE);
+    let startingX = this.pos.x;
+    let startingY = this.pos.y;
+
+    for (let i = 0; i < 50; i++) {
+      // console.log(vector, tempPos.copy());
+      let x = startingX + vector.x * i;
+      let y = startingY + vector.y * i;
+      let objects = this.particleSystem.getObjectsAt(x, y);
+
+      // let cellX = Math.floor(x / this.particleSystem.CELL_SIZE);
+      // let cellY = Math.floor(y / this.particleSystem.CELL_SIZE);
+      // let cell = (this.particleSystem.grid[cellY] || [])[cellX];
+      // if (!cell) return console.warn("end");
+      // cell.highlight();
+
+      let peopleFromSelectedTeam = objects.filter((k) => k.team == team);
+      if (peopleFromSelectedTeam.length > 0) {
+        return peopleFromSelectedTeam;
+      }
+    }
   }
 
   // getClosePeopleWithWebWorkers() {

@@ -127,7 +127,7 @@ class Rock {
     if (people.length > 0) {
       let personWhoDies = people[0].part;
       personWhoDies.recieveDamageFrom(this);
-      console.log("roca le pego a ", personWhoDies);
+      // console.log("roca le pego a ", personWhoDies);
     }
   }
 
