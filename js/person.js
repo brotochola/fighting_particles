@@ -395,7 +395,9 @@ class Person extends GenericObject {
   }
 
   checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath() {
-    let howMany = this.cell.particlesHere.filter((k) => !k.dead).length;
+    let howMany = ((this.cell || {}).particlesHere || []).filter(
+      (k) => !k.dead
+    ).length;
     if (howMany > 11) {
       let evilSqueezingEvilness = {
         strength: 1,
@@ -433,9 +435,20 @@ class Person extends GenericObject {
   }
   updateMyStats() {
     // miedo -= prediccion *k //mis amigos me sacan el miedo
-    this.fear -=
-      this.mappedPrediction *
-      this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER;
+
+    if (this.mappedPrediction > 0) {
+      //hay mas amigos q enemigos
+      this.fear -=
+        this.mappedPrediction *
+        this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER *
+        this.courage;
+    } else if (this.mappedPrediction < 0) {
+      //hay mas enemigos
+      this.fear -=
+        this.mappedPrediction *
+        this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER *
+        (1 - this.courage);
+    }
 
     // miedo+= (1-salud)*(1-coraje) *k //si me lastimaron, me sube el miedo
     this.fear +=
@@ -561,15 +574,15 @@ class Person extends GenericObject {
 
         let vectorThatAimsToTheTarget;
         let targetsPosPlusVel = this.target.pos.copy().add(targetsVel);
-        if (this.state != "huyendo") {
-          vectorThatAimsToTheTarget = p5.Vector.sub(
-            targetsPosPlusVel,
-            this.pos
-          );
-        } else {
+        if (this.state == "huyendo" || this.state == "retrocediendo") {
           vectorThatAimsToTheTarget = p5.Vector.sub(
             this.pos,
             targetsPosPlusVel
+          );
+        } else {
+          vectorThatAimsToTheTarget = p5.Vector.sub(
+            targetsPosPlusVel,
+            this.pos
           );
         }
         // let invertedVector = p5.Vector.sub(this.pos, this.target.pos);
@@ -584,31 +597,31 @@ class Person extends GenericObject {
     //  console.log(this.vel);
   }
   moveAndSubstractStamina() {
-    let minStam = this.particleSystem.MINIMUM_STAMINA_TO_MOVE;
-    if (!this.isStatic) {
-      if (this.stamina >= minStam) {
-        //SI ESTA ESCAPANDOSE VA MAS RAPIDO
-        let extraSpeed =
-          this.state == "escaping"
-            ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
-            : 1;
-        this.body.force.y =
-          this.vel.y *
-          this.particleSystem.MULTIPLIERS.SPEED_REDUCER *
-          this.speed *
-          extraSpeed;
+    // let minStam = this.particleSystem.MINIMUM_STAMINA_TO_MOVE;
+    if (this.isStatic) return;
+    if (this.state == "bancando") return;
+    // if (this.stamina >= minStam) {
+    //SI ESTA ESCAPANDOSE VA MAS RAPIDO
+    let extraSpeed =
+      this.state == "huyendo"
+        ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
+        : 1;
+    this.body.force.y =
+      this.vel.y *
+      this.particleSystem.MULTIPLIERS.SPEED_REDUCER *
+      this.speed *
+      extraSpeed;
 
-        this.body.force.x =
-          this.vel.x *
-          this.particleSystem.MULTIPLIERS.SPEED_REDUCER *
-          this.speed *
-          extraSpeed;
+    this.body.force.x =
+      this.vel.x *
+      this.particleSystem.MULTIPLIERS.SPEED_REDUCER *
+      this.speed *
+      extraSpeed;
 
-        // this.stamina -= minStam * 0.1;
-      } else {
-        this.stamina += minStam;
-      }
-    }
+    // this.stamina -= minStam * 0.1;
+    // } else {
+    //   this.stamina += minStam;
+    // }
   }
 
   throwAPunch() {

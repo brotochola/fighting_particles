@@ -49,7 +49,7 @@ class Fan extends Person {
       this.die();
     } else if (this.health < 0.1) {
       this.setState("huyendo");
-    } else if (this.health > 0.1 && this.health < 0.9) {
+    } else if (this.health > 0.1 && this.health < 0.5) {
       if (this.fear > 0.9) {
         this.setState("huyendo");
       } else {
