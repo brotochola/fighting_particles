@@ -51,39 +51,50 @@ class Fan extends Person {
     }
 
     if (this.isItMyFrame()) {
-      if (this.distanceToClosestEnemy >= this.sightDistance) {
-        //O SI EL TARGET ESTA MUY LEJOS, LO SACO
+      if (!this.target || this.distanceToClosestEnemy >= this.sightDistance) {
         this.setTarget(null);
-        return;
-      }
-
-      if (!this.target) {
         this.vel.y = this.vel.x = 0;
-
-        this.addFlockingBehavior();
+        this.defineFlockingBehaviorTowardsFriends();
+        this.defineFlockingBehaviorAwayFromCops();
+        this.sumAllVectors(0, 1, 1);
         this.doTheWalk();
       } else {
         //TIENE TARGET
         if (this.state == this.states.YENDO) {
           if (this.distanceToClosestEnemy <= this.particleSystem.CELL_SIZE) {
-            //VEMOS SI LLEGO A SU TARGET O NO
+            //LLEGÓ!
             this.whatToDoIfIReachedMyTarget();
           } else {
-            //ESTA A UNA DISTANCIA Q PUEDE VER Y A LA VEZ NO ES TAN CERCA
+            //YENDO A UNA DISTANCIA Q PUEDE VER Y A LA VEZ NO ES TAN CERCA
             this.defineVelVectorToMove();
-            this.addFlockingBehavior();
+            this.defineFlockingBehaviorTowardsFriends();
+            this.defineFlockingBehaviorAwayFromCops();
+            this.sumAllVectors(
+              this.courage,
+              this.intelligence,
+              this.intelligence
+            ); //los mas corajudos tienden a ir solos
             this.doTheWalk();
           }
         } else if (this.state == this.states.BANCANDO) {
-          this.addFlockingBehavior();
+          this.defineFlockingBehaviorTowardsFriends();
+          this.defineFlockingBehaviorAwayFromCops();
+          this.sumAllVectors(0, 0.5, 0.5);
           this.doTheWalk();
         } else if (this.state == this.states.HUYENDO) {
           this.defineVelVectorToMove();
-          this.addExtraSpeedIfRunningAway();
+          this.defineFlockingBehaviorAwayFromCops();
+          this.sumAllVectors(0.5, 0, 0.5);
           this.doTheWalk();
         } else if (this.state == this.states.RETROCEDIENDO) {
           this.defineVelVectorToMove();
-          this.addFlockingBehavior();
+          this.defineFlockingBehaviorTowardsFriends();
+          this.defineFlockingBehaviorAwayFromCops();
+          this.sumAllVectors(
+            this.intelligence,
+            this.courage,
+            this.intelligence
+          );
           this.doTheWalk();
         }
       }

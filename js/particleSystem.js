@@ -43,10 +43,10 @@ class ParticleSystem {
       BULLET_FORCE_REDUCER: 0.001,
       BULLETS_STRENGTH: 3,
       ROCK_FORCE_REDUCER: 0.06,
-      ROCK_STRENGTH: 0.3,
+      ROCK_STRENGTH: 1,
       ROCK_SPEED: 8,
       ROCK_MAX_HEIGHT: 100,
-      LIMITE_DE_CORAJE_PARA_SER_UN_CAGON: 0.2,
+      LIMITE_DE_CORAJE_PARA_SER_UN_CAGON: 0.5,
     };
 
     //////////////////// FIN REDUCERS

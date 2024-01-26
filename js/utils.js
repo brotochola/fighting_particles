@@ -1,4 +1,6 @@
 function getAvg(grades) {
+  if (!Array.isArray(grades)) return console.warn("no es un array");
+  if (grades.length == 0) return 0;
   const total = grades.reduce((acc, c) => acc + c, 0);
   return total / grades.length;
 }
@@ -256,4 +258,8 @@ function getAngleAndPositions(a, b, c, d) {
 
 function randomInt(max) {
   return Math.floor(Math.random() * (max + 1));
+}
+
+function randomBetween(min, max) {
+  return Math.random() * (max - min) + min;
 }

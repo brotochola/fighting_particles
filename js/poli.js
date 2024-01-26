@@ -175,7 +175,7 @@ class Poli extends Person {
       if (this.isItMyFrame()) {
         if (this.distanceToInitialPoint > this.particleSystem.CELL_SIZE) {
           this.defineVelVectorToMove();
-          this.addFlockingBehavior();
+          this.defineFlockingBehaviorTowardsFriends();
           this.doTheWalk();
         }
       }

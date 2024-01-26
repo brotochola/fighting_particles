@@ -25,6 +25,9 @@ class Rock {
       .copy()
       .setMag(this.particleSystem.MULTIPLIERS.ROCK_SPEED);
 
+    this.vel.x *= randomBetween(0.9, 1.1);
+    this.vel.y *= randomBetween(0.9, 1.1);
+
     this.pos = new p5.Vector(x, y - diameter * 2);
 
     this.initialDistance = dist(
