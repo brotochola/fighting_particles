@@ -33,12 +33,18 @@ class Fan extends Person {
     if (this.oncePerSecond() && this.target) {
       if (this.state == this.states.RETROCEDIENDO) {
         if (this.enemiesClose.length == 0) {
-          if (this.courage < 0.5) {
+          if (
+            this.courage <
+            this.particleSystem.MULTIPLIERS.LIMITE_DE_CORAJE_PARA_SER_UN_CAGON
+          ) {
             this.throwRock();
           }
         }
       } else if (this.state == this.states.BANCANDO) {
-        if (this.courage < 0.5) {
+        if (
+          this.courage <
+          this.particleSystem.MULTIPLIERS.LIMITE_DE_CORAJE_PARA_SER_UN_CAGON
+        ) {
           this.throwRock();
         }
       }
@@ -184,6 +190,7 @@ class Fan extends Person {
   updateMyStats() {
     super.updateMyStats();
 
-    this.isThereACopInMyWay = !!this.checkIfTheresSomeoneInTheWay("poli");
+    this.isThereACopInMyWay =
+      this.checkIfTheresSomeoneInTheWay("poli").length > 0;
   }
 }

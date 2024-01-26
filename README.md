@@ -29,3 +29,10 @@ hacer q las celdas tengan gas
 y q el gas se pase de una celda a otra
 ponerles dibujito
 q hagan daño
+
+---
+
+COSAS SOBRE LA EL MOVIMIENTO:
+-manejar el balance entre vec y flock segun prediction!
+-this.vel.setMag(this.speed) es lo q mas sentido tiene
+-renombrar this.vel a this.directionVector

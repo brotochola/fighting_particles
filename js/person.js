@@ -645,7 +645,7 @@ class Person extends GenericObject {
       new p5.Vector(avgX, avgY),
       this.pos
     );
-    this.vecThatAimsToTheAvg.setMag(this.intelligence * 0.5);
+    this.vecThatAimsToTheAvg.setMag(this.intelligence * 0.2);
 
     // let goTowardsAvgCenterX=this.vecThatAimsToTheAvg.x * this.intelligence;
     // let goTowardsAvgCenterY=this.vecThatAimsToTheAvg.y * this.intelligence;
@@ -772,6 +772,8 @@ class Person extends GenericObject {
         return peopleFromSelectedTeam;
       }
     }
+
+    return [];
   }
 
   // getClosePeopleWithWebWorkers() {
