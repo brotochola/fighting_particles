@@ -56,7 +56,7 @@ class Fan extends Person {
         this.vel.y = this.vel.x = 0;
         this.defineFlockingBehaviorTowardsFriends();
         this.defineFlockingBehaviorAwayFromCops();
-        this.sumAllVectors(0, 1, 1);
+        this.sumAllVectors(0, 2, 1);
         this.doTheWalk();
       } else {
         //TIENE TARGET
@@ -69,11 +69,7 @@ class Fan extends Person {
             this.defineVelVectorToMove();
             this.defineFlockingBehaviorTowardsFriends();
             this.defineFlockingBehaviorAwayFromCops();
-            this.sumAllVectors(
-              this.courage,
-              this.intelligence,
-              this.intelligence
-            ); //los mas corajudos tienden a ir solos
+            this.sumAllVectors(1 + this.anger, 1 - this.fear, 1 - this.anger); //los mas corajudos tienden a ir solos
             this.doTheWalk();
           }
         } else if (this.state == this.states.BANCANDO) {
@@ -84,7 +80,7 @@ class Fan extends Person {
         } else if (this.state == this.states.HUYENDO) {
           this.defineVelVectorToMove();
           this.defineFlockingBehaviorAwayFromCops();
-          this.sumAllVectors(0.5, 0, 0.5);
+          this.sumAllVectors(1, 0, 0.1);
           this.doTheWalk();
         } else if (this.state == this.states.RETROCEDIENDO) {
           this.defineVelVectorToMove();
