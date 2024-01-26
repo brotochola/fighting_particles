@@ -30,9 +30,7 @@ class Fan extends Person {
       this.findClosestEnemy(this.contrincante);
     }
 
-    if (!this.target) return;
-
-    if (this.oncePerSecond()) {
+    if (this.oncePerSecond() && this.target) {
       if (this.state == this.states.RETROCEDIENDO) {
         if (this.enemiesClose.length == 0) {
           if (this.courage < 0.5) {
@@ -40,27 +38,47 @@ class Fan extends Person {
           }
         }
       } else if (this.state == this.states.BANCANDO) {
-        if (this.courage > 0.5) {
+        if (this.courage < 0.5) {
           this.throwRock();
         }
       }
     }
 
     if (this.isItMyFrame()) {
-      if (
-        this.state == this.states.HUYENDO ||
-        this.state == this.states.YENDO ||
-        this.state == this.states.RETROCEDIENDO
-      ) {
-        if (this.distanceToClosestEnemy <= this.particleSystem.CELL_SIZE) {
-          //VEMOS SI LLEGO A SU TARGET O NO
-          this.whatToDoIfIReachedMyTarget();
-        } else if (this.distanceToClosestEnemy >= this.sightDistance) {
-          //O SI EL TARGET ESTA MUY LEJOS, LO SACO
-          this.setTarget(null);
-        } else {
-          //ESTA A UNA DISTANCIA Q PUEDE VER Y A LA VEZ NO ES TAN CERCA
+      if (this.distanceToClosestEnemy >= this.sightDistance) {
+        //O SI EL TARGET ESTA MUY LEJOS, LO SACO
+        this.setTarget(null);
+        return;
+      }
+
+      if (!this.target) {
+        this.vel.y = this.vel.x = 0;
+
+        this.addFlockingBehavior();
+        this.doTheWalk();
+      } else {
+        //TIENE TARGET
+        if (this.state == this.states.YENDO) {
+          if (this.distanceToClosestEnemy <= this.particleSystem.CELL_SIZE) {
+            //VEMOS SI LLEGO A SU TARGET O NO
+            this.whatToDoIfIReachedMyTarget();
+          } else {
+            //ESTA A UNA DISTANCIA Q PUEDE VER Y A LA VEZ NO ES TAN CERCA
+            this.defineVelVectorToMove();
+            this.addFlockingBehavior();
+            this.doTheWalk();
+          }
+        } else if (this.state == this.states.BANCANDO) {
+          this.addFlockingBehavior();
+          this.doTheWalk();
+        } else if (this.state == this.states.HUYENDO) {
           this.defineVelVectorToMove();
+          this.addExtraSpeedIfRunningAway();
+          this.doTheWalk();
+        } else if (this.state == this.states.RETROCEDIENDO) {
+          this.defineVelVectorToMove();
+          this.addFlockingBehavior();
+          this.doTheWalk();
         }
       }
     }

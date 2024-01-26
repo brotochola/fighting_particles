@@ -143,7 +143,7 @@ class Poli extends Person {
             this.setState("empujando");
           }
 
-          if (closeEnemies) {
+          if (this.closeEnemies) {
             this.setState("empujando");
           }
         } else {
@@ -151,7 +151,7 @@ class Poli extends Person {
             this.setState("pegando");
           } else {
             //esta bien de ira
-            if (closeEnemies) {
+            if (this.closeEnemies) {
               this.setState("apaciguando");
             } else {
               this.setState("empujando");
@@ -175,6 +175,8 @@ class Poli extends Person {
       if (this.isItMyFrame()) {
         if (this.distanceToInitialPoint > this.particleSystem.CELL_SIZE) {
           this.defineVelVectorToMove();
+          this.addFlockingBehavior();
+          this.doTheWalk();
         }
       }
     }

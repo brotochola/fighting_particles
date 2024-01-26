@@ -28,6 +28,7 @@ class ParticleSystem {
     this.cameraHeight = window.innerHeight / 2;
     //LLAMO MULTIPLIERS/REDUCERS A ESTOS COEFICIENTES Q SE USAN PARA TUNEAR EL JUEGO
     this.MULTIPLIERS = {
+      DO_FLOCKING: true,
       FORCE_REDUCER: 0.1,
       SPEED_REDUCER: 1.7,
       FEAR_REDUCER: 0.3,

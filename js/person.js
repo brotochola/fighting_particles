@@ -33,6 +33,8 @@ class Person extends GenericObject {
     this.nearPeople = [];
     this.peopleICanSee = [];
     this.enemiesClose = [];
+    this.friendsICanSee = [];
+    this.enemiesICanSee = [];
 
     this.friendsClose = [];
 
@@ -594,6 +596,7 @@ class Person extends GenericObject {
       .add((this.target.vel || new p5.Vector()).copy());
 
     this.vectorThatAimsToTheTarget = p5.Vector.sub(targetsPosPlusVel, this.pos);
+
     this.vel = this.vectorThatAimsToTheTarget.copy();
 
     if (
@@ -605,24 +608,15 @@ class Person extends GenericObject {
     }
 
     this.vel.limit(1);
-
-    let extraSpeed =
-      this.state == this.states.HUYENDO
-        ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
-        : 1;
-
-    this.vel.x *= extraSpeed;
-    this.vel.y *= extraSpeed;
-
-    // AGREGO ACA FLOCKING BEHAVIOUR
-    this.addFlockingBehavior();
-
-    this.doTheWalk();
-
-    //  this.vel.limit(this.genes.maxSpeed);
-
-    //  console.log(this.vel);
   }
+
+  addExtraSpeedIfRunningAway() {
+    if (this.state == this.states.HUYENDO) {
+      this.vel.x *= this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING;
+      this.vel.y *= this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING;
+    }
+  }
+
   doTheWalk() {
     // let minStam = this.particleSystem.MINIMUM_STAMINA_TO_MOVE;
     if (this.isStatic) return;
@@ -643,6 +637,7 @@ class Person extends GenericObject {
   }
 
   addFlockingBehavior() {
+    if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
     let avgX = getAvg(this.friendsClose.map((k) => k.part.pos.x));
     let avgY = getAvg(this.friendsClose.map((k) => k.part.pos.y));
 
@@ -650,10 +645,16 @@ class Person extends GenericObject {
       new p5.Vector(avgX, avgY),
       this.pos
     );
-    this.vecThatAimsToTheAvg.setMag(1);
+    this.vecThatAimsToTheAvg.setMag(this.intelligence * 0.5);
 
-    this.vel.x += this.vecThatAimsToTheAvg.x * 0.5;
-    this.vel.y += this.vecThatAimsToTheAvg.y * 0.5;
+    // let goTowardsAvgCenterX=this.vecThatAimsToTheAvg.x * this.intelligence;
+    // let goTowardsAvgCenterY=this.vecThatAimsToTheAvg.y * this.intelligence;
+
+    this.vel.x += this.vecThatAimsToTheAvg.x; //* this.intelligence * 0.5;
+    this.vel.y += this.vecThatAimsToTheAvg.y; //* this.intelligence * 0.5;
+
+    this.vel.limit(1);
+    // this.vel.setMag(1);
   }
 
   throwAPunch() {
