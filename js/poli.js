@@ -1,14 +1,5 @@
 //PATOVA
 class Poli extends Person {
-  possibleStates = [
-    "empujando",
-    "pegando",
-    "yendo",
-    "huyendo",
-    "apaciguando",
-    "muerto",
-  ];
-
   constructor(opt) {
     super({ ...opt, diameter: 9 });
     this.strength = Math.random() * 0.5 + 0.5;
@@ -17,19 +8,44 @@ class Poli extends Person {
     this.attackDistance = this.diameter * 3;
 
     this.minBearableDistance = this.diameter * 2;
+
+    this.distanceToTargetPerson = 999999999999;
+
+    this.violentFansAround = [];
+    this.targetAtinitialPoint = {
+      pos: this.initialPoint,
+      vel: new p5.Vector(0, 0),
+      body: { velocity: new p5.Vector(0, 0) },
+    };
   }
   setPointWhereIShouldHold() {
     this.initialPoint = this.pos.copy();
     setTimeout(() => {
-      this.target = {
-        pos: this.initialPoint,
-        body: { velocity: new p5.Vector(0, 0) },
-      };
+      this.setTarget(this.targetAtinitialPoint);
     }, 500);
   }
 
   update(COUNTER) {
     super.update(COUNTER);
+  }
+
+  lookAround() {
+    super.lookAround();
+    this.getViolentEnemiesAround();
+    this.checkWhichFansAreClose();
+  }
+
+  calcDistanceToTargetPerson() {
+    if (this.target instanceof Person) {
+      this.distanceToTargetPerson = cheaperDist(
+        this.target.pos.x,
+        this.target.pos.y,
+        this.pos.x,
+        this.pos.y
+      );
+    } else {
+      this.distanceToTargetPerson = null;
+    }
   }
 
   updateMyStats() {
@@ -44,10 +60,17 @@ class Poli extends Person {
 
     //los polis se enojan si tienen gente cerca
     this.anger +=
-      this.closeEnemies *
+      (this.closeEnemies || []).length *
       this.particleSystem.MULTIPLIERS.ANGER_RECOVERY_REDUCER *
       0.1 *
       this.irascibilidad;
+
+    this.anger +=
+      this.violentFansAround.length *
+      this.particleSystem.MULTIPLIERS.ANGER_RECOVERY_REDUCER *
+      this.irascibilidad;
+
+    if (isNaN(this.anger)) debugger;
   }
 
   checkWhichFansAreClose() {
@@ -126,40 +149,42 @@ class Poli extends Person {
 
     if (this.health < 0.1) {
       //me estoy muriendo mal
-      this.setState("huyendo");
+      this.setState(this.states.HUYENDO);
     } else if (this.health > 0.1 && this.health < 0.3) {
       //ta maomeno de vida
 
       if (this.fear > 0.9) {
-        this.setState("huyendo");
+        this.setState(this.states.HUYENDO);
       }
     } else {
       //esta bien de vida
       if (this.anger > 0.9) {
-        this.setState("yendo");
+        this.setState(this.states.YENDO);
       } else {
-        if (this.state == "apaciguando") {
+        if (this.state == this.states.APACIGUANDO) {
           if (this.distanceToInitialPoint > this.sightDistance * this.courage) {
-            this.setState("empujando");
-          }
-
-          if (this.closeEnemies) {
-            this.setState("empujando");
+            this.setState(this.states.EMPUJANDO);
           }
         } else {
           if (this.anger > 0.5) {
-            this.setState("pegando");
+            this.setState(this.states.PEGANDO);
           } else {
             //esta bien de ira
-            if (this.closeEnemies) {
-              this.setState("apaciguando");
+            if (this.violentFansAround.length > 0) {
+              this.setState(this.states.APACIGUANDO);
             } else {
-              this.setState("empujando");
+              this.setState(this.states.EMPUJANDO);
             }
           }
         }
       }
     }
+  }
+
+  getViolentEnemiesAround() {
+    this.violentFansAround = this.enemiesICanSee.filter(
+      (k) => k.lastViolentAct
+    );
   }
 
   getInfo() {
@@ -170,23 +195,76 @@ class Poli extends Person {
   }
 
   doActions() {
-    if (this.state == "pegando" || this.state == "empujando") {
-      if (this.oncePerSecond()) this.checkWhichFansAreClose();
+    if (
+      this.state == this.states.PEGANDO ||
+      this.state == this.states.EMPUJANDO
+    ) {
       if (this.isItMyFrame()) {
+        this.setTarget(this.targetAtinitialPoint);
         if (this.distanceToInitialPoint > this.particleSystem.CELL_SIZE) {
           this.defineVelVectorToMove();
           this.defineFlockingBehaviorTowardsFriends();
+          this.sumAllVectors(1, 0.5, 0);
+
           this.doTheWalk();
         }
       }
     }
 
-    if (this.state == "pegando") {
+    if (this.state == this.states.PEGANDO) {
       if (this.isItMyFrame()) this.attackClosestFan();
     }
 
-    if (this.state == "empujando") {
+    if (this.state == this.states.EMPUJANDO) {
       if (this.isItMyFrame()) this.pushClosestFan();
+    }
+
+    if (this.state == this.states.APACIGUANDO) {
+      //SI ESTA APACIGUANDO
+      if (this.isItMyFrame()) {
+        //3 VECES POR SEGUNDO BUSCA UN HINCHA VIOLENTO
+        if (
+          !(this.target instanceof Person && this.violentFansAround.length > 0)
+        ) {
+          this.setTarget(this.violentFansAround[0]);
+        }
+
+        //SI EST ALEJOS
+        this.calcDistanceToTargetPerson();
+
+        if (this.distanceToTargetPerson > this.attackDistance) {
+          //VE PARA DONDE IR
+          this.defineVelVectorToMove();
+          //SE FIJA DE NO QUEDARSE LEJOS DE LOS OTROS RATIS
+          this.defineFlockingBehaviorTowardsFriends();
+          this.sumAllVectors(1, 0, 0);
+          this.doTheWalk();
+        } else {
+          //SI LLEGÓ, LO FAJA
+          this.attackClosestFan();
+        }
+      }
+    } else if (this.state == this.states.YENDO) {
+      if (this.isItMyFrame()) {
+        if (!(this.target instanceof Person)) {
+          if (this.closeEnemies.length > 0) {
+            this.setTarget(this.closeEnemies[0].part);
+          } else if (this.enemiesICanSee.length > 0) {
+            this.setTarget(this.enemiesICanSee[0]);
+          }
+        }
+
+        this.calcDistanceToTargetPerson();
+        if (this.distanceToTargetPerson > this.attackDistance) {
+          this.defineVelVectorToMove();
+          // this.defineFlockingBehaviorTowardsFriends();
+          this.sumAllVectors(1, 0, 0);
+
+          this.doTheWalk();
+        } else {
+          this.attackClosestFan();
+        }
+      }
     }
   }
 

@@ -315,7 +315,8 @@ class GenericObject {
         k.cellX > this.cellX - xMargin &&
         k.cellX < this.cellX + xMargin &&
         k.cellY > this.cellY - yMargin &&
-        k.cellY < this.cellY + yMargin
+        k.cellY < this.cellY + yMargin &&
+        !k.dead
     );
 
     // console.log("###", performance.now() - tiempo);
@@ -326,7 +327,13 @@ class GenericObject {
     // console.log("line", obj.pos.x, obj.pos.y);
     if (this.targetLine) this.container.removeChild(this.targetLine);
 
-    if (!this.drawTargetLine || !this.target || this.dead) {
+    if (
+      !this.drawTargetLine ||
+      !this.target ||
+      this.dead ||
+      !this.target.pos ||
+      !(this.target.pos || {}).x
+    ) {
       return;
     }
 
@@ -372,7 +379,7 @@ class GenericObject {
         };
       })
       .sort((a, b) => (a.dist > b.dist ? 1 : -1))
-      .filter((k) => k.part != this);
+      .filter((k) => k.part != this && !k.part.dead);
 
     // console.log("###", performance.now() - tiempo);
     return ret;

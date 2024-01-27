@@ -47,6 +47,7 @@ class ParticleSystem {
       ROCK_SPEED: 8,
       ROCK_MAX_HEIGHT: 100,
       LIMITE_DE_CORAJE_PARA_SER_UN_CAGON: 0.5,
+      CANTIDAD_DE_FRAMES_PARA_DEJAR_DE_SER_UN_VIOLENTO: 300,
     };
 
     //////////////////// FIN REDUCERS
@@ -215,6 +216,15 @@ class ParticleSystem {
     this.people.forEach((k) => {
       Matter.Body.scale(k.body, 1, howMuch);
     });
+  }
+
+  getCellAt(x, y) {
+    let cellX = Math.floor(x / this.CELL_SIZE);
+    let cellY = Math.floor(y / this.CELL_SIZE);
+    if (isNaN(cellY) || isNaN(cellX)) {
+      return console.warn("getCellAt x or y wrong");
+    }
+    return (this.grid[cellY] || [])[cellX];
   }
 
   getObjectsAt(x, y) {

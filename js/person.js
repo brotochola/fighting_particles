@@ -1,12 +1,15 @@
-// https://codepen.io/davepvm/pen/Hhstl
-// Particle class representing each molecule
 class Person extends GenericObject {
   states = {
+    //de todes
     YENDO: 1,
     RETROCEDIENDO: 2,
     HUYENDO: 3,
     BANCANDO: 4,
     MUERTO: 5,
+    //del poli
+    EMPUJANDO: 6,
+    PEGANDO: 7,
+    APACIGUANDO: 8,
   };
 
   constructor(opt) {
@@ -35,8 +38,9 @@ class Person extends GenericObject {
     this.enemiesClose = [];
     this.friendsICanSee = [];
     this.enemiesICanSee = [];
-
     this.friendsClose = [];
+
+    this.lastViolentAct = null;
 
     this.vel = new p5.Vector(0, 0);
     this.lastTimeItFlipped = 0;
@@ -273,6 +277,7 @@ class Person extends GenericObject {
     this.particleSystem.addBullet(this);
   }
   recieveDamageFrom(part, coeficient = 1) {
+    this.makeMeFlash();
     if (!part || part.dead) return;
     // console.log(this.team, part.team, this.health);
 
@@ -357,7 +362,7 @@ class Person extends GenericObject {
       this.nearPeople = this.getParticlesFromCloseCells();
       this.closeEnemies = this.nearPeople.filter(
         (k) => k.part.team != this.team
-      ).length;
+      );
       this.friendsClose = this.nearPeople.filter(
         (k) => k.part.team == this.team
       );
@@ -365,7 +370,16 @@ class Person extends GenericObject {
       // this.updateDebugText(this.nearPeople.length);
     }
   }
-
+  checkIfImNotConsideredViolentAnyMore() {
+    if (this.lastViolentAct == null) return;
+    if (
+      this.COUNTER - this.lastViolentAct >
+      this.particleSystem.MULTIPLIERS
+        .CANTIDAD_DE_FRAMES_PARA_DEJAR_DE_SER_UN_VIOLENTO
+    ) {
+      this.lastViolentAct = null;
+    }
+  }
   update(COUNTER) {
     super.update(COUNTER);
 
@@ -376,7 +390,9 @@ class Person extends GenericObject {
 
     this.pos.x = this.body.position.x;
     this.pos.y = this.body.position.y;
-    this.container.zIndex = Math.floor(this.pos.y);
+    this.container.zIndex = Math.floor(this.pos.y - (this.z || 0));
+
+    this.checkIfImNotConsideredViolentAnyMore();
 
     this.updateMyPositionInCell();
 
@@ -408,6 +424,7 @@ class Person extends GenericObject {
   }
 
   throwRock() {
+    this.lastViolentAct = this.COUNTER;
     if (!this.target) return;
 
     //HERE WE CAN EVALUATE WHAT TYPE OF BULLET, HOW OFTEN, RELOD, ETC
@@ -619,16 +636,19 @@ class Person extends GenericObject {
     } else {
       whereToMoveRegardingTarget = { x: 0, y: 0 };
     }
+    // console.log(whereToMoveRegardingTarget);
 
     //FLOCKING PART WITH FRIENDS
 
     this.vel.x =
       whereToMoveRegardingTarget.x * magnitudOfTarget +
-      this.vecThatAimsToTheAvg.x * magnitudOfFlockingTowardsFriends +
+      ((this.vecThatAimsToTheAvg || {}).x || 0) *
+        magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).x || 0) * magnitudOfCops;
     this.vel.y =
       whereToMoveRegardingTarget.y * magnitudOfTarget +
-      this.vecThatAimsToTheAvg.y * magnitudOfFlockingTowardsFriends +
+      ((this.vecThatAimsToTheAvg || {}).y || 0) *
+        magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).y || 0) * magnitudOfCops;
 
     //LIMITAR LA VELOCIDA A LA VELOCIDAD DEL CHABON, Y SI SE ESTA RAJANDO, UN TOQ MAS
@@ -638,6 +658,8 @@ class Person extends GenericObject {
           ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
           : 1)
     );
+
+    if (isNaN(this.vel.x)) debugger;
   }
 
   doTheWalk() {
@@ -646,12 +668,14 @@ class Person extends GenericObject {
     // if (this.state == "bancando") return;
     // if (this.stamina >= minStam) {
     //SI ESTA ESCAPANDOSE VA MAS RAPIDO
-
-    this.body.force.y =
+    let forceToApplyInX =
+      this.vel.x * this.particleSystem.MULTIPLIERS.SPEED_REDUCER;
+    let forceToApplyInY =
       this.vel.y * this.particleSystem.MULTIPLIERS.SPEED_REDUCER;
 
-    this.body.force.x =
-      this.vel.x * this.particleSystem.MULTIPLIERS.SPEED_REDUCER;
+    // console.log("##", forceToApplyInX, forceToApplyInY);
+    this.body.force.x = forceToApplyInX;
+    this.body.force.y = forceToApplyInY;
 
     // this.stamina -= minStam * 0.1;
     // } else {
@@ -661,6 +685,10 @@ class Person extends GenericObject {
   defineFlockingBehaviorAwayFromCops() {
     if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
     this.copsClose = this.nearPeople.filter((k) => k.part.team == "poli");
+    if (this.copsClose.length == 0) {
+      this.vecAwayFromCops = new p5.Vector(0, 0);
+      return;
+    }
     let avgX = getAvg(this.copsClose.map((k) => k.part.pos.x));
     let avgY = getAvg(this.copsClose.map((k) => k.part.pos.y));
 
@@ -686,22 +714,21 @@ class Person extends GenericObject {
 
   defineFlockingBehaviorTowardsFriends() {
     if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
-    let avgX = getAvg(this.friendsClose.map((k) => k.part.pos.x));
-    let avgY = getAvg(this.friendsClose.map((k) => k.part.pos.y));
+    let avgX = getAvg(this.friendsICanSee.map((k) => k.pos.x));
+    let avgY = getAvg(this.friendsICanSee.map((k) => k.pos.y));
 
     this.vecThatAimsToTheAvg = p5.Vector.sub(
       new p5.Vector(avgX, avgY),
       this.pos
     );
 
-    // let dist = cheaperDist(
-    //   this.vecThatAimsToTheAvg.x,
-    //   this.vecThatAimsToTheAvg.y,
-    //   this.pos.x,
-    //   this.pos.y
-    // );
+    if (this.friendsClose.length > 3 || this.cell.particlesHere > 2) {
+      this.vecThatAimsToTheAvg.setMag(0);
+    } else {
+      this.vecThatAimsToTheAvg.setMag(1);
+    }
 
-    this.vecThatAimsToTheAvg.setMag(1);
+    // if(this.pos.copy().add(this.vel))
 
     // let goTowardsAvgCenterX=this.vecThatAimsToTheAvg.x * this.intelligence;
     // let goTowardsAvgCenterY=this.vecThatAimsToTheAvg.y * this.intelligence;
@@ -712,6 +739,8 @@ class Person extends GenericObject {
   throwAPunch() {
     // console.log("#", this.name, "punch");
     // this.setState("attacking");
+    this.lastViolentAct = this.COUNTER;
+    this.target.recieveDamageFrom(this);
   }
 
   die() {
@@ -830,6 +859,18 @@ class Person extends GenericObject {
     }
 
     return [];
+  }
+
+  getNextCellAccordingToMyDirection(numberOfCells) {
+    let vector = this.vel
+      .copy()
+      .setMag(particleSystem.CELL_SIZE * numberOfCells);
+    let startingX = this.pos.x;
+    let startingY = this.pos.y;
+    let x = Math.floor(startingX + vector.x);
+    let y = Math.floor(startingY + vector.y);
+
+    return this.particleSystem.getCellAt(x, y);
   }
 
   // getClosePeopleWithWebWorkers() {

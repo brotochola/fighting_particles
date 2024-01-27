@@ -37,7 +37,7 @@ class Fan extends Person {
             this.courage <
             this.particleSystem.MULTIPLIERS.LIMITE_DE_CORAJE_PARA_SER_UN_CAGON
           ) {
-            this.throwRock();
+            if (this.isItMyFrame()) this.throwRock();
           }
         }
       } else if (this.state == this.states.BANCANDO) {
@@ -45,7 +45,7 @@ class Fan extends Person {
           this.courage <
           this.particleSystem.MULTIPLIERS.LIMITE_DE_CORAJE_PARA_SER_UN_CAGON
         ) {
-          this.throwRock();
+          if (this.isItMyFrame()) this.throwRock();
         }
       }
     }
@@ -56,7 +56,7 @@ class Fan extends Person {
         this.vel.y = this.vel.x = 0;
         this.defineFlockingBehaviorTowardsFriends();
         this.defineFlockingBehaviorAwayFromCops();
-        this.sumAllVectors(0, 2, 1);
+        this.sumAllVectors(0, 1, 1);
         this.doTheWalk();
       } else {
         //TIENE TARGET
