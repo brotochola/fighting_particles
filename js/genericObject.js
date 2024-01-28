@@ -17,7 +17,7 @@ class GenericObject {
     //INIT STUFF:
     this.pos = new p5.Vector(parseInt(x), parseInt(y));
     this.visible = true;
-    this.scale = 2;
+    this.initialScale = this.scale = 2;
     this.direction = 1;
     this.image = null;
     this.startingFrame = randomInt(6);
@@ -211,6 +211,7 @@ class GenericObject {
       this.image.scale.y = this.scale;
       this.image.scale.x = this.direction * this.scale;
     } else {
+      this.scale = this.initialScale;
       this.image.scale.x = this.direction * this.scale;
       this.image.scale.y = this.scale;
     }
@@ -305,6 +306,25 @@ class GenericObject {
   getParticlesFromCell() {
     if (!this.cell) return;
     return this.cell.particlesHere;
+  }
+
+  findCloseObjects(xMargin, yMargin) {
+    let offset = Math.floor(this.sightDistance / this.particleSystem.CELL_SIZE);
+
+    if (!yMargin) yMargin = offset;
+    if (!xMargin) xMargin = offset;
+    // let tiempo = performance.now();
+
+    let ret = this.particleSystem.fixedObjects.filter(
+      (k) =>
+        k.cellX > this.cellX - xMargin &&
+        k.cellX < this.cellX + xMargin &&
+        k.cellY > this.cellY - yMargin &&
+        k.cellY < this.cellY + yMargin
+    );
+
+    // console.log("###", performance.now() - tiempo);
+    return ret;
   }
 
   findClosePeople(xMargin, yMargin) {

@@ -65,10 +65,13 @@ class Poli extends Person {
       0.1 *
       this.irascibilidad;
 
-    // this.anger +=
-    //   this.violentFansAround.length *
-    //   this.particleSystem.MULTIPLIERS.POLICE_ANGER_MULTIPLIER *
-    //   this.irascibilidad;
+    let howMuchAngerIncrement =
+      this.violentFansAround.length *
+      this.particleSystem.MULTIPLIERS.POLICE_ANGER_MULTIPLIER *
+      this.irascibilidad;
+    this.anger += howMuchAngerIncrement;
+
+    this.fear += howMuchAngerIncrement;
 
     if (isNaN(this.anger)) debugger;
   }
@@ -146,7 +149,7 @@ class Poli extends Person {
     // } else if (this.distanceToInitialPoint < this.minBearableDistance) {
     //   this.setState("idle");
     // }
-
+    let minDistanceToGo = this.sightDistance * this.courage;
     if (this.health < 0.1) {
       //me estoy muriendo mal
       this.setState(this.states.HUYENDO);
@@ -162,7 +165,10 @@ class Poli extends Person {
         this.setState(this.states.YENDO);
       } else {
         if (this.state == this.states.APACIGUANDO) {
-          if (this.distanceToInitialPoint > this.sightDistance * this.courage) {
+          if (
+            this.distanceToInitialPoint > minDistanceToGo ||
+            this.violentFansAround.length == 0
+          ) {
             this.setState(this.states.EMPUJANDO);
           }
         } else {
@@ -170,7 +176,10 @@ class Poli extends Person {
             this.setState(this.states.PEGANDO);
           } else {
             //esta bien de ira
-            if (this.violentFansAround.length > 0) {
+            if (
+              this.violentFansAround.length > 0 &&
+              this.violentFansAround[0].dist < minDistanceToGo
+            ) {
               this.setState(this.states.APACIGUANDO);
             } else {
               this.setState(this.states.EMPUJANDO);
@@ -182,9 +191,16 @@ class Poli extends Person {
   }
 
   getViolentEnemiesAround() {
-    this.violentFansAround = this.enemiesICanSee.filter(
-      (k) => k.lastViolentAct
-    );
+    this.violentFansAround = this.enemiesICanSee
+      .filter((k) => k.lastViolentAct)
+      .map((k) => {
+        return {
+          dist: cheaperDist(this.pos.x, this.pos.y, k.pos.x, k.pos.y),
+          part: k,
+        };
+      })
+      .sort((a, b) => (a.dist > b.dist ? 1 : -1))
+      .filter((k) => k.part != this && !k.part.dead);
   }
 
   getInfo() {
@@ -228,7 +244,8 @@ class Poli extends Person {
         if (
           !(this.target instanceof Person && this.violentFansAround.length > 0)
         ) {
-          this.setTarget(this.violentFansAround[0]);
+          if ((this.violentFansAround[0] || {}).part)
+            this.setTarget(this.violentFansAround[0].part);
         }
 
         //SI EST ALEJOS

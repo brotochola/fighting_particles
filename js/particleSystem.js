@@ -48,7 +48,7 @@ class ParticleSystem {
       ROCK_SPEED: 8,
       ROCK_MAX_HEIGHT: 100,
       LIMITE_DE_CORAJE_PARA_SER_UN_CAGON: 0.5,
-      CANTIDAD_DE_FRAMES_PARA_DEJAR_DE_SER_UN_VIOLENTO: 300,
+      CANTIDAD_DE_FRAMES_PARA_DEJAR_DE_SER_UN_VIOLENTO: 180,
     };
 
     //////////////////// FIN REDUCERS
@@ -329,7 +329,7 @@ class ParticleSystem {
     }
   }
 
-  createBoxOfParticles(x, y, lines, rows, substance) { }
+  createBoxOfParticles(x, y, lines, rows, substance) {}
 
   runEngine() {
     this.render = Matter.Render.create({
@@ -826,6 +826,8 @@ class ParticleSystem {
   addPole(poleData) {
     const p = new Pole({ ...poleData, particleSystem: this });
     this.poles.push(p);
+
+    this.fixedObjects.push(p);
     window.lastPole = p;
   }
   addFan(x, y, isStatic, team) {

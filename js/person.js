@@ -39,6 +39,7 @@ class Person extends GenericObject {
     this.friendsICanSee = [];
     this.enemiesICanSee = [];
     this.friendsClose = [];
+    this.closeFixedObjects = [];
 
     this.lastViolentAct = null;
 
@@ -359,6 +360,9 @@ class Person extends GenericObject {
     if (this.oncePerSecond()) {
       this.seePeople();
       this.evaluateSituation();
+
+      this.closeFixedObjects = this.findCloseObjects(2, 2);
+
       this.nearPeople = this.getParticlesFromCloseCells();
       this.enemiesClose = this.nearPeople.filter(
         (k) => k.part.team != this.team
@@ -620,6 +624,8 @@ class Person extends GenericObject {
     magnitudOfFlockingTowardsFriends = 0.25,
     magnitudOfCops = 0.5
   ) {
+    // Calculate vector to repel objects, like houses and such
+    this.repelHouses();
     //MOVE OR REPEL TARGET
     let whereToMoveRegardingTarget;
     if ((this.vectorThatAimsToTheTarget || {}).x) {
@@ -643,20 +649,23 @@ class Person extends GenericObject {
     this.vel.x =
       whereToMoveRegardingTarget.x * magnitudOfTarget +
       ((this.vecThatAimsToTheAvg || {}).x || 0) *
-      magnitudOfFlockingTowardsFriends +
-      ((this.vecAwayFromCops || {}).x || 0) * magnitudOfCops;
+        magnitudOfFlockingTowardsFriends +
+      ((this.vecAwayFromCops || {}).x || 0) * magnitudOfCops +
+      ((this.vecAwayFromObjects || {}).x || 0);
+
     this.vel.y =
       whereToMoveRegardingTarget.y * magnitudOfTarget +
       ((this.vecThatAimsToTheAvg || {}).y || 0) *
-      magnitudOfFlockingTowardsFriends +
-      ((this.vecAwayFromCops || {}).y || 0) * magnitudOfCops;
+        magnitudOfFlockingTowardsFriends +
+      ((this.vecAwayFromCops || {}).y || 0) * magnitudOfCops +
+      ((this.vecAwayFromObjects || {}).y || 0);
 
     //LIMITAR LA VELOCIDA A LA VELOCIDAD DEL CHABON, Y SI SE ESTA RAJANDO, UN TOQ MAS
     this.vel.limit(
       this.speed *
-      (this.state == this.states.HUYENDO
-        ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
-        : 1)
+        (this.state == this.states.HUYENDO
+          ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
+          : 1)
     );
 
     if (isNaN(this.vel.x)) debugger;
@@ -682,6 +691,41 @@ class Person extends GenericObject {
     //   this.stamina += minStam;
     // }
   }
+
+  repelHouses() {
+    if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
+
+    if (this.closeFixedObjects.length == 0) {
+      this.vecAwayFromObjects = new p5.Vector(0, 0);
+      return;
+    }
+
+    let avgX = getAvg(this.closeFixedObjects.map((k) => k.pos.x));
+    let avgY = getAvg(this.closeFixedObjects.map((k) => k.pos.y));
+
+    this.vecAwayFromObjects = p5.Vector.sub(
+      new p5.Vector(avgX, avgY),
+      this.pos
+    );
+
+    // let dist = cheaperDist(
+    //   this.vecAwayFromCops.x,
+    //   this.vecAwayFromCops.y,
+    //   this.pos.x,
+    //   this.pos.y
+    // );
+
+    this.vecAwayFromObjects.setMag(1);
+
+    this.vecAwayFromObjects.x *= -1;
+    this.vecAwayFromObjects.y *= -1;
+
+    // let goTowardsAvgCenterX=this.vecThatAimsToTheAvg.x * this.intelligence;
+    // let goTowardsAvgCenterY=this.vecThatAimsToTheAvg.y * this.intelligence;
+
+    // this.vel.setMag(1);
+  }
+
   defineFlockingBehaviorAwayFromCops() {
     if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
     this.copsClose = this.nearPeople.filter((k) => k.part.team == "poli");

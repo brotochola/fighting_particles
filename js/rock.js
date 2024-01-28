@@ -118,7 +118,7 @@ class Rock {
   createCircleInPixi() {
     this.graphics = new PIXI.Graphics();
     this.graphics.beginFill("0x331100");
-    this.graphics.drawCircle(0, 0, 2);
+    this.graphics.drawCircle(0, 0, 4);
     this.graphics.endFill();
     this.particleSystem.mainContainer.addChild(this.graphics);
   }

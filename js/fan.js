@@ -1,12 +1,4 @@
 class Fan extends Person {
-  states = {
-    YENDO: 1,
-    RETROCEDIENDO: 2,
-    HUYENDO: 3,
-    BANCANDO: 4,
-    MUERTO: 5,
-  };
-
   constructor(opt) {
     super({ ...opt, diameter: 8 });
 
@@ -14,6 +6,8 @@ class Fan extends Person {
     this.isThereACopInMyWay = false;
 
     this.contrincante = this.team == "boca" ? "river" : "boca";
+
+    this.polisApaciguandoCerca = [];
 
     //OPT DEBERIA TENER VALORES MINIMOS Y MAXIMOS PARA GENERAR FANS DE DIFERENTES TIPOS
   }
@@ -24,6 +18,12 @@ class Fan extends Person {
   //     this.setTarget(idols[0]);
   //   }
   // }
+
+  getPolisApaciguando() {
+    this.polisApaciguandoCerca = this.enemiesClose.filter(
+      (k) => k.part.state == this.states.APACIGUANDO
+    );
+  }
 
   doActions() {
     if (this.oncePerSecond()) {
@@ -37,7 +37,9 @@ class Fan extends Person {
             this.courage <
             this.particleSystem.MULTIPLIERS.LIMITE_DE_CORAJE_PARA_SER_UN_CAGON
           ) {
-            if (this.isItMyFrame()) this.throwRock();
+            if (this.isItMyFrame()) {
+              if (this.polisApaciguandoCerca.length == 0) this.throwRock();
+            }
           }
         }
       } else if (this.state == this.states.BANCANDO) {
@@ -45,7 +47,9 @@ class Fan extends Person {
           this.courage <
           this.particleSystem.MULTIPLIERS.LIMITE_DE_CORAJE_PARA_SER_UN_CAGON
         ) {
-          if (this.isItMyFrame()) this.throwRock();
+          if (this.isItMyFrame()) {
+            if (this.polisApaciguandoCerca.length == 0) this.throwRock();
+          }
         }
       }
     }
@@ -86,11 +90,7 @@ class Fan extends Person {
           this.defineVelVectorToMove();
           this.defineFlockingBehaviorTowardsFriends();
           this.defineFlockingBehaviorAwayFromCops();
-          this.sumAllVectors(
-            this.intelligence,
-            this.courage,
-            this.intelligence
-          );
+          this.sumAllVectors(1, 1, 1.25);
           this.doTheWalk();
         }
       }
@@ -199,5 +199,7 @@ class Fan extends Person {
 
     this.isThereACopInMyWay =
       this.checkIfTheresSomeoneInTheWay("poli").length > 0;
+
+    this.getPolisApaciguando();
   }
 }
