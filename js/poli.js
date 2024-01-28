@@ -60,15 +60,15 @@ class Poli extends Person {
 
     //los polis se enojan si tienen gente cerca
     this.anger +=
-      (this.closeEnemies || []).length *
-      this.particleSystem.MULTIPLIERS.ANGER_RECOVERY_REDUCER *
+      (this.enemiesClose || []).length *
+      this.particleSystem.MULTIPLIERS.POLICE_ANGER_MULTIPLIER *
       0.1 *
       this.irascibilidad;
 
-    this.anger +=
-      this.violentFansAround.length *
-      this.particleSystem.MULTIPLIERS.ANGER_RECOVERY_REDUCER *
-      this.irascibilidad;
+    // this.anger +=
+    //   this.violentFansAround.length *
+    //   this.particleSystem.MULTIPLIERS.POLICE_ANGER_MULTIPLIER *
+    //   this.irascibilidad;
 
     if (isNaN(this.anger)) debugger;
   }
@@ -191,6 +191,8 @@ class Poli extends Person {
     return {
       ...super.getInfo(),
       distanceToInitialPoint: (this.distanceToInitialPoint || 0).toFixed(2),
+      violentosCerca: this.violentFansAround.length,
+      distanceToTarget: this.distanceToTargetPerson,
     };
   }
 
@@ -247,8 +249,8 @@ class Poli extends Person {
     } else if (this.state == this.states.YENDO) {
       if (this.isItMyFrame()) {
         if (!(this.target instanceof Person)) {
-          if (this.closeEnemies.length > 0) {
-            this.setTarget(this.closeEnemies[0].part);
+          if (this.enemiesClose.length > 0) {
+            this.setTarget(this.enemiesClose[0].part);
           } else if (this.enemiesICanSee.length > 0) {
             this.setTarget(this.enemiesICanSee[0]);
           }

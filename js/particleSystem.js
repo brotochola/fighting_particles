@@ -35,7 +35,8 @@ class ParticleSystem {
       HEALTH_RECOVERY_REDUCER: 0.0003,
       FEAR_RECOVERY_REDUCER: 0.002,
       FEAR_INCREASE_DUE_TO_HEALTH: 0.007,
-      ANGER_RECOVERY_REDUCER: 0.0012,
+      ANGER_RECOVERY_REDUCER: 0.01,
+      POLICE_ANGER_MULTIPLIER: 0.001,
       HEALTH_LIMIT_TO_ESCAPE: 0.1,
       FEAR_LIMIT_TO_ESCAPE: 0.75,
       EXTRA_SPEED_WHEN_ESCAPING: 1.3,
@@ -328,7 +329,7 @@ class ParticleSystem {
     }
   }
 
-  createBoxOfParticles(x, y, lines, rows, substance) {}
+  createBoxOfParticles(x, y, lines, rows, substance) { }
 
   runEngine() {
     this.render = Matter.Render.create({

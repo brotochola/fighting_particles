@@ -360,7 +360,7 @@ class Person extends GenericObject {
       this.seePeople();
       this.evaluateSituation();
       this.nearPeople = this.getParticlesFromCloseCells();
-      this.closeEnemies = this.nearPeople.filter(
+      this.enemiesClose = this.nearPeople.filter(
         (k) => k.part.team != this.team
       );
       this.friendsClose = this.nearPeople.filter(
@@ -643,20 +643,20 @@ class Person extends GenericObject {
     this.vel.x =
       whereToMoveRegardingTarget.x * magnitudOfTarget +
       ((this.vecThatAimsToTheAvg || {}).x || 0) *
-        magnitudOfFlockingTowardsFriends +
+      magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).x || 0) * magnitudOfCops;
     this.vel.y =
       whereToMoveRegardingTarget.y * magnitudOfTarget +
       ((this.vecThatAimsToTheAvg || {}).y || 0) *
-        magnitudOfFlockingTowardsFriends +
+      magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).y || 0) * magnitudOfCops;
 
     //LIMITAR LA VELOCIDA A LA VELOCIDAD DEL CHABON, Y SI SE ESTA RAJANDO, UN TOQ MAS
     this.vel.limit(
       this.speed *
-        (this.state == this.states.HUYENDO
-          ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
-          : 1)
+      (this.state == this.states.HUYENDO
+        ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
+        : 1)
     );
 
     if (isNaN(this.vel.x)) debugger;
