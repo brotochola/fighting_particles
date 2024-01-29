@@ -32,7 +32,4 @@ q hagan daño
 
 ---
 
-COSAS SOBRE LA EL MOVIMIENTO:
--manejar el balance entre vec y flock segun prediction!
--this.vel.setMag(this.speed) es lo q mas sentido tiene
--renombrar this.vel a this.directionVector
+https://opengameart.org/content/agent-character
