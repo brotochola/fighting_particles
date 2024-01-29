@@ -59,15 +59,16 @@ class Poli extends Person {
     );
 
     //los polis se enojan si tienen gente cerca
-    this.anger +=
-      (this.enemiesClose || []).length *
-      this.particleSystem.MULTIPLIERS.POLICE_ANGER_MULTIPLIER *
-      0.1 *
-      this.irascibilidad;
+    // this.anger +=
+    //   (this.enemiesClose || []).length *
+    //   this.particleSystem.MULTIPLIERS.POLICE_ANGER_MULTIPLIER *
+    //   0.1 *
+    //   this.irascibilidad;
 
     let howMuchAngerIncrement =
       this.violentFansAround.length *
       this.particleSystem.MULTIPLIERS.POLICE_ANGER_MULTIPLIER *
+      0.1 *
       this.irascibilidad;
     this.anger += howMuchAngerIncrement;
 

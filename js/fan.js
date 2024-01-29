@@ -151,14 +151,14 @@ class Fan extends Person {
         this.setState(this.states.RETROCEDIENDO);
       }
     } else {
-      //salud >90%
+      //salud >50%
       if (this.isThereACopInMyWay) {
         if (this.anger < 0.5) this.setState(this.states.BANCANDO);
         else this.setState(this.states.YENDO);
       } else {
         //no hay polis en el camino
         if (this.fear <= 0.5) this.setState(this.states.YENDO);
-        else if (this.fear < 0.5 && this.fear > 0.9)
+        else if (this.fear > 0.5 && this.fear < 0.9)
           this.setState(this.states.BANCANDO);
         else if (this.fear >= 0.9) this.setState(this.states.RETROCEDIENDO);
       }
@@ -201,5 +201,12 @@ class Fan extends Person {
       this.checkIfTheresSomeoneInTheWay("poli").length > 0;
 
     this.getPolisApaciguando();
+  }
+
+  getInfo() {
+    return {
+      ...super.getInfo(),
+      copOnTheWay: this.isThereACopInMyWay,
+    };
   }
 }

@@ -85,7 +85,7 @@ class Person extends GenericObject {
     this.happiness = 1;
 
     //que tan rapido le baja la ira
-    this.calma = Math.random();
+    this.calma = Math.random() + 0.01;
     //que tan rapido acumula ira ante diferente eventos
     this.irascibilidad = 1 - this.calma;
   }
@@ -649,23 +649,23 @@ class Person extends GenericObject {
     this.vel.x =
       whereToMoveRegardingTarget.x * magnitudOfTarget +
       ((this.vecThatAimsToTheAvg || {}).x || 0) *
-        magnitudOfFlockingTowardsFriends +
+      magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).x || 0) * magnitudOfCops +
       ((this.vecAwayFromObjects || {}).x || 0);
 
     this.vel.y =
       whereToMoveRegardingTarget.y * magnitudOfTarget +
       ((this.vecThatAimsToTheAvg || {}).y || 0) *
-        magnitudOfFlockingTowardsFriends +
+      magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).y || 0) * magnitudOfCops +
       ((this.vecAwayFromObjects || {}).y || 0);
 
     //LIMITAR LA VELOCIDA A LA VELOCIDAD DEL CHABON, Y SI SE ESTA RAJANDO, UN TOQ MAS
     this.vel.limit(
       this.speed *
-        (this.state == this.states.HUYENDO
-          ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
-          : 1)
+      (this.state == this.states.HUYENDO
+        ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
+        : 1)
     );
 
     if (isNaN(this.vel.x)) debugger;
