@@ -59,7 +59,10 @@ class Person extends GenericObject {
     );
     this.createContainers();
     this.createDebugContainer();
-    this.createSprite("idle_" + this.team);
+
+    this.createAnimatedSprite();
+
+    // this.createSprite("idle_" + this.team);
 
     this.updateMyPositionInCell();
     // this.addParticleEmitter();
@@ -413,7 +416,7 @@ class Person extends GenericObject {
     this.changeSpriteAccordingToStateAndVelocity();
     // }
 
-    this.animateSprite();
+    // this.animateSprite();
     this.animateGravityToParticles();
 
     // this.emitBlood();
@@ -649,23 +652,23 @@ class Person extends GenericObject {
     this.vel.x =
       whereToMoveRegardingTarget.x * magnitudOfTarget +
       ((this.vecThatAimsToTheAvg || {}).x || 0) *
-      magnitudOfFlockingTowardsFriends +
+        magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).x || 0) * magnitudOfCops +
       ((this.vecAwayFromObjects || {}).x || 0);
 
     this.vel.y =
       whereToMoveRegardingTarget.y * magnitudOfTarget +
       ((this.vecThatAimsToTheAvg || {}).y || 0) *
-      magnitudOfFlockingTowardsFriends +
+        magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).y || 0) * magnitudOfCops +
       ((this.vecAwayFromObjects || {}).y || 0);
 
     //LIMITAR LA VELOCIDA A LA VELOCIDAD DEL CHABON, Y SI SE ESTA RAJANDO, UN TOQ MAS
     this.vel.limit(
       this.speed *
-      (this.state == this.states.HUYENDO
-        ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
-        : 1)
+        (this.state == this.states.HUYENDO
+          ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
+          : 1)
     );
 
     if (isNaN(this.vel.x)) debugger;

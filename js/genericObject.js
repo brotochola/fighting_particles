@@ -42,6 +42,7 @@ class GenericObject {
   }
 
   whichSpriteAmIShowing() {
+    // return this.currentAnimation;
     return (
       ((((this.image || {}).texture || {}).baseTexture || {}).textureCacheIds ||
         [])[0] || ""
@@ -408,6 +409,24 @@ class GenericObject {
   makeMeFlash() {
     this.highlight();
     setTimeout(() => this.unHighlight(), this.particleSystem.deltaTime);
+  }
+
+  createAnimatedSprite() {
+    this.spritesheet = this.particleSystem.res["agent_spritesheet"].spritesheet;
+    console.log(this.spritesheet);
+    this.image = new PIXI.AnimatedSprite(this.spritesheet.animations.parado);
+    this.container.addChild(this.image);
+    this.image.x = -32;
+    this.image.y = 64;
+    this.image.animationSpeed = this.speed * 0.2;
+  }
+
+  changeAnimation(which) {
+    var newAnim = this.spritesheet.animations[which];
+    this.image.stop();
+    this.image.textures = newAnim;
+    this.image.play();
+    this.currentAnimation = which;
   }
 
   createSprite(which, stopsAtEnd) {

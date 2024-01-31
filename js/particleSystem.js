@@ -152,6 +152,13 @@ class ParticleSystem {
     //DEBUG
     globalThis.__PIXI_APP__ = this.pixiApp;
 
+    ///
+
+    this.spritesheet = this.loader.add(
+      "agent_spritesheet",
+      "img/agent_spritesheet/agent.json"
+    );
+
     this.loader.add("walk_boca", "img/boca/walk.png");
     this.loader.add("idle_boca", "img/boca/idle.png");
     this.loader.add("die_boca", "img/boca/dead.png");
