@@ -67,6 +67,8 @@ class ParticleSystem {
     this.worldHeight = height;
     this.worldWidth = width;
 
+    this.spritesheets = {};
+
     // this.canvas = document.getElementById(canvasId);
     // this.context = this.canvas.getContext("2d");
     // this.canvas.width = width;
@@ -154,10 +156,10 @@ class ParticleSystem {
 
     ///
 
-    this.spritesheet = this.loader.add(
-      "agent_spritesheet",
-      "img/agent_spritesheet/agent.json"
-    );
+    this.loader.add("boca_ss", "img/boca_ss/agent.json");
+    this.loader.add("river_ss", "img/river_ss/agent.json");
+
+    this.loader.add("poli_ss", "img/poli_ss/agent.json");
 
     this.loader.add("walk_boca", "img/boca/walk.png");
     this.loader.add("idle_boca", "img/boca/idle.png");

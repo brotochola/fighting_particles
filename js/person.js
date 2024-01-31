@@ -22,8 +22,8 @@ class Person extends GenericObject {
     this.initStartingAttributes();
     this.team = team;
 
-    this.spriteWidth = 12;
-    this.spriteHeight = 21;
+    this.spriteWidth = 32;
+    this.spriteHeight = 32;
     this.spriteSpeed = Math.floor(5 * this.speed);
 
     /////////////////////////////
@@ -553,22 +553,25 @@ class Person extends GenericObject {
 
     if (this.state == "dead" || this.dead) {
       //EMPIEZA A MORIR
-      this.createSprite("die_" + this.team, true);
+      // this.createSprite("die_" + this.team, true);
+      this.changeAnimation("muerte", true);
       //Y MUERE
       // setTimeout(
       //   () => this.createSprite("dead_1"),
       //   this.particleSystem.getDurationOfOneFrame() * 7
       // );
     } else if (this.state == "attacking") {
-      this.createSprite("attack_" + this.team);
+      // this.createSprite("attack_" + this.team);
+      this.changeAnimation("golpe", true);
     } else if (
       this.state == "searching" ||
       this.state == "chasing" ||
       this.state == "escaping" ||
       this.state == "idle"
     ) {
-      if (this.whichSpriteAmIShowing().startsWith("attack")) {
-        this.createSprite("idle_" + this.team);
+      if (this.whichSpriteAmIShowing().startsWith("golpe")) {
+        // this.createSprite("idle_" + this.team);
+        this.changeAnimation("parado", true);
       }
     }
 
@@ -577,16 +580,18 @@ class Person extends GenericObject {
     if (Math.abs(vel.mag()) > 0.05) {
       //IT'S IDLE AND STARTS TO WALK
       if (
-        this.whichSpriteAmIShowing().startsWith("idle")
+        this.whichSpriteAmIShowing().startsWith("parado")
         //|| this.whichSpriteAmIShowing().startsWith("attack")
       ) {
-        this.createSprite("walk_" + this.team);
+        // this.createSprite("walk_" + this.team);
+        this.changeAnimation("camina", true);
       }
     } else if (Math.abs(vel.mag()) < 0.05) {
       //it's not moving
-      if (this.whichSpriteAmIShowing().startsWith("walk")) {
+      if (this.whichSpriteAmIShowing().startsWith("camina")) {
         //and the sprite is still walking
-        this.createSprite("idle_" + this.team);
+        // this.createSprite("idle_" + this.team);
+        this.changeAnimation("parado", true);
       }
     }
   }
@@ -812,7 +817,7 @@ class Person extends GenericObject {
     // if (this.COUNTER - this.lastTimeItFlipped < this.spriteSpeed) return;
     this.direction = -1;
 
-    // this.image.x = 6;
+    // this.image.x = ;
 
     if (!this.amILookingLeft) {
       this.lastTimeItFlipped = this.COUNTER;
@@ -825,7 +830,7 @@ class Person extends GenericObject {
     this.direction = 1;
     // if (this.COUNTER - this.lastTimeItFlipped < this.spriteSpeed) return;
 
-    // this.image.x = -9;
+    // this.image.x = -32;
 
     if (this.amILookingLeft) {
       this.lastTimeItFlipped = this.COUNTER;

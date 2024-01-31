@@ -25,6 +25,8 @@ class GenericObject {
     this.myLuckyNumber = randomInt(this.maxLuckyNumbers - 1);
     this.drawTargetLine = false; //true;
 
+    this.currentAnimation = "parado";
+
     // this.createBody(10);
   }
 
@@ -43,10 +45,12 @@ class GenericObject {
 
   whichSpriteAmIShowing() {
     // return this.currentAnimation;
-    return (
-      ((((this.image || {}).texture || {}).baseTexture || {}).textureCacheIds ||
-        [])[0] || ""
-    );
+    // return (
+    //   ((((this.image || {}).texture || {}).baseTexture || {}).textureCacheIds ||
+    //     [])[0] || ""
+    // );
+
+    return this.currentAnimation;
   }
 
   createBody(
@@ -412,7 +416,7 @@ class GenericObject {
   }
 
   createAnimatedSprite() {
-    this.spritesheet = this.particleSystem.res["agent_spritesheet"].spritesheet;
+    this.spritesheet = this.particleSystem.res[this.team + "_ss"].spritesheet;
     console.log(this.spritesheet);
     this.image = new PIXI.AnimatedSprite(this.spritesheet.animations.parado);
     this.container.addChild(this.image);
