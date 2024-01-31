@@ -220,6 +220,13 @@ class GenericObject {
       this.image.scale.x = this.direction * this.scale;
       this.image.scale.y = this.scale;
     }
+
+    if (this.direction == -1) {
+      this.image.x = 15;
+    } else {
+      this.image.x = -15;
+    }
+
     //SI ESTA HIGHLIGHTED
     try {
       if (this.highlighted) {
@@ -417,17 +424,19 @@ class GenericObject {
 
   createAnimatedSprite() {
     this.spritesheet = this.particleSystem.res[this.team + "_ss"].spritesheet;
-    console.log(this.spritesheet);
+    // console.log(this.spritesheet);
     this.image = new PIXI.AnimatedSprite(this.spritesheet.animations.parado);
     this.container.addChild(this.image);
-    this.image.x = -32;
     this.image.y = 64;
     this.image.animationSpeed = this.speed * 0.2;
+    this.image.pivot.x = 0;
   }
 
-  changeAnimation(which) {
+  changeAnimation(which, stopAtEnd = false) {
+    if (this.currentAnimation === which) return;
     var newAnim = this.spritesheet.animations[which];
     this.image.stop();
+    this.image.loop = !stopAtEnd;
     this.image.textures = newAnim;
     this.image.play();
     this.currentAnimation = which;
@@ -460,7 +469,7 @@ class GenericObject {
     );
 
     this.image.pivot.y = 0;
-    this.image.pivot.x = this.spriteWidth * 0.5;
+    this.image.pivot.x = 32;
 
     this.image.texture.frame = frame1;
 

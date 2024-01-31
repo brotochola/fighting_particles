@@ -24,7 +24,7 @@ class Person extends GenericObject {
 
     this.spriteWidth = 32;
     this.spriteHeight = 32;
-    this.spriteSpeed = Math.floor(5 * this.speed);
+    this.spriteSpeed = Math.floor(4 * this.speed);
 
     /////////////////////////////
 
@@ -551,7 +551,7 @@ class Person extends GenericObject {
   changeSpriteAccordingToStateAndVelocity() {
     let vel = new p5.Vector(this.body.velocity.x, this.body.velocity.y);
 
-    if (this.state == "dead" || this.dead) {
+    if (this.state == this.states.MUERTO || this.dead) {
       //EMPIEZA A MORIR
       // this.createSprite("die_" + this.team, true);
       this.changeAnimation("muerte", true);
@@ -560,19 +560,8 @@ class Person extends GenericObject {
       //   () => this.createSprite("dead_1"),
       //   this.particleSystem.getDurationOfOneFrame() * 7
       // );
-    } else if (this.state == "attacking") {
-      // this.createSprite("attack_" + this.team);
-      this.changeAnimation("golpe", true);
-    } else if (
-      this.state == "searching" ||
-      this.state == "chasing" ||
-      this.state == "escaping" ||
-      this.state == "idle"
-    ) {
-      if (this.whichSpriteAmIShowing().startsWith("golpe")) {
-        // this.createSprite("idle_" + this.team);
-        this.changeAnimation("parado", true);
-      }
+    } else if (this.state == this.states.HUYENDO) {
+      this.changeAnimation("corre", false);
     }
 
     ///ABOUT MOVEMENT:
@@ -584,7 +573,7 @@ class Person extends GenericObject {
         //|| this.whichSpriteAmIShowing().startsWith("attack")
       ) {
         // this.createSprite("walk_" + this.team);
-        this.changeAnimation("camina", true);
+        this.changeAnimation("camina", false);
       }
     } else if (Math.abs(vel.mag()) < 0.05) {
       //it's not moving
