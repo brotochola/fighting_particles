@@ -210,7 +210,7 @@ class ParticleSystem {
     this.bg = new PIXI.TilingSprite(this.res["bg"].texture.clone());
     this.bg.width = this.worldWidth;
     this.bg.height = this.worldHeight;
-    this.mainContainer.addChild(this.bg);
+    // this.mainContainer.addChild(this.bg);
   }
 
   changeHeightForAllBoxes(howMuch) {
@@ -579,6 +579,11 @@ class ParticleSystem {
     document.querySelector("#bg").style.transform = stringToPass;
   }
 
+  addGas(x,y){
+    let cell=this.getCellAt(x,y)
+    cell.gas=30
+  }
+
   addClickListenerToCanvas() {
     let canvas = this.canvas;
 
@@ -594,7 +599,10 @@ class ParticleSystem {
       let box = canvas.getBoundingClientRect();
       let x = e.x - box.x - this.mainContainer.x;
       let y = e.y - box.y - this.mainContainer.y;
-      if (e.which == 1) this.indicateWhichParticleItIs(x, y);
+      if (e.which == 1) {
+        this.indicateWhichParticleItIs(x, y);
+        window.tempCell=this.getCellAt(x,y)
+      }
       else if (e.which == 3) {
         // if (this.checkIfAPointCollidesWithTheGrounds(x, y)) {
         //   this.addFan(x, y);
@@ -717,6 +725,9 @@ class ParticleSystem {
         particleSystem: this,
         type: "casa" + (randomInt(5) + 1),
       });
+    }else if(key==71){
+      //G DE GAS
+      this.addGas(x,y)
     }
   }
   saveLevel() {
@@ -911,11 +922,11 @@ class ParticleSystem {
     });
     this.UI.update(this.COUNTER);
 
-    // this.grid.forEach((k) => {
-    //   k.forEach((v) => {
-    //     v.render(this.COUNTER);
-    //   });
-    // });
+    this.grid.forEach((k) => {
+      k.forEach((v) => {
+        v.update(this.COUNTER);
+      });
+    });
 
     // this.drawInSmallerCanvas();
   }

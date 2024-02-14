@@ -626,6 +626,7 @@ class Person extends GenericObject {
   ) {
     // Calculate vector to repel objects, like houses and such
     this.repelHouses();
+    this.avoidGas()
     //MOVE OR REPEL TARGET
     let whereToMoveRegardingTarget;
     if ((this.vectorThatAimsToTheTarget || {}).x) {
@@ -651,14 +652,14 @@ class Person extends GenericObject {
       ((this.vecThatAimsToTheAvg || {}).x || 0) *
       magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).x || 0) * magnitudOfCops +
-      ((this.vecAwayFromObjects || {}).x || 0);
+      ((this.vecAwayFromObjects || {}).x || 0)+ ((this.vecAwayFromGas||{}).x||0)
 
     this.vel.y =
       whereToMoveRegardingTarget.y * magnitudOfTarget +
       ((this.vecThatAimsToTheAvg || {}).y || 0) *
       magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).y || 0) * magnitudOfCops +
-      ((this.vecAwayFromObjects || {}).y || 0);
+      ((this.vecAwayFromObjects || {}).y || 0) + ((this.vecAwayFromGas||{}).y||0)
 
     //LIMITAR LA VELOCIDA A LA VELOCIDAD DEL CHABON, Y SI SE ESTA RAJANDO, UN TOQ MAS
     this.vel.limit(
@@ -691,6 +692,36 @@ class Person extends GenericObject {
     //   this.stamina += minStam;
     // }
   }
+
+
+
+  avoidGas() {
+    
+    let cellWithMostGas=this.cell.getNeighbours().sort((a,b)=>a.gas>b.gas?-1:1)[0]
+
+  if(cellWithMostGas.gas<0.1) {
+    this.vecAwayFromGas= new p5.Vector(0,0)
+    return
+  }
+
+    this.vecAwayFromGas = p5.Vector.sub(
+      new p5.Vector(cellWithMostGas.x* this.particleSystem.CELL_SIZE,  cellWithMostGas.y*this.particleSystem.CELL_SIZE),
+      this.pos
+    );
+
+
+
+    this.vecAwayFromGas.setMag(2);
+
+    this.vecAwayFromGas.x *= -1;
+    this.vecAwayFromGas.y *= -1;
+
+    // let goTowardsAvgCenterX=this.vecThatAimsToTheAvg.x * this.intelligence;
+    // let goTowardsAvgCenterY=this.vecThatAimsToTheAvg.y * this.intelligence;
+
+    // this.vel.setMag(1);
+  }
+
 
   repelHouses() {
     if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;

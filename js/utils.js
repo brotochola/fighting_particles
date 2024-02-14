@@ -69,6 +69,19 @@ function getRandomBrownishColor(minA, maxA) {
   //   return "rgba(" + r + "," + g + "," + b + "," + a + ")";
 }
 
+function generateRandomGrassColor() {
+  // Random values for RGB components within a certain range
+  var red = Math.floor(Math.random() * 50);
+  var green = Math.floor(Math.random() * 100) + 100; // Higher green values for grass-like appearance
+  var blue = Math.floor(Math.random() * 50);
+
+  // Constructing the hexadecimal color string with the "0x" prefix
+  var colorHex = '0x' + ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1);
+  
+  return colorHex;
+}
+
+
 const getRandomColor = () => Math.floor(Math.random() * 16777215).toString(16);
 
 const generateID = () => {
@@ -137,6 +150,65 @@ function colorMixer(rgbA, rgbB, amountToMix) {
   var g = colorChannelMixer(rgbA[1], rgbB[1], amountToMix);
   var b = colorChannelMixer(rgbA[2], rgbB[2], amountToMix);
   return { r, g, b };
+}
+function invertGrayscaleColor(color) {
+  // Extracting the brightness level from the hexadecimal color string
+  var brightness = parseInt(color.substring(2, 4), 16);
+  
+  // Inverting the brightness level
+  var invertedBrightness = 255 - brightness;
+  
+  // Converting the inverted brightness level back to hexadecimal format
+  var invertedColor = '0x' + ('0' + invertedBrightness.toString(16)).slice(-2).repeat(3);
+  
+  return invertedColor;
+}
+function screenBlend(color1, color2) {
+  // Extracting the RGB components from the hexadecimal color strings of color1 and color2
+  var red1 = parseInt(color1.substring(2, 4), 16) / 255;
+  var green1 = parseInt(color1.substring(4, 6), 16) / 255;
+  var blue1 = parseInt(color1.substring(6, 8), 16) / 255;
+  
+  var red2 = parseInt(color2.substring(2, 4), 16) / 255;
+  var green2 = parseInt(color2.substring(4, 6), 16) / 255;
+  var blue2 = parseInt(color2.substring(6, 8), 16) / 255;
+  
+  // Calculating the screen blending
+  var resultRed = 1 - (1 - red1) * (1 - red2);
+  var resultGreen = 1 - (1 - green1) * (1 - green2);
+  var resultBlue = 1 - (1 - blue1) * (1 - blue2);
+  
+  // Converting the blended RGB components back to hexadecimal format
+  var resultColor = '0x' + 
+                    ('0' + Math.round(resultRed * 255).toString(16)).slice(-2) + 
+                    ('0' + Math.round(resultGreen * 255).toString(16)).slice(-2) + 
+                    ('0' + Math.round(resultBlue * 255).toString(16)).slice(-2);
+  
+  return resultColor;
+}
+
+
+
+function generateGrayscaleColorHex(value) {
+  // Ensure the value is within the range [0, 100]
+
+  if(value>1) value=1
+  
+  // Convert the value to a brightness level between 0 and 255
+  var brightness = Math.round((value ) * 255);
+  
+  // Convert the brightness level to hexadecimal format
+  var brightnessHex = brightness.toString(16);
+  
+  // Pad the brightnessHex with zeros if needed
+  if (brightnessHex.length < 2) {
+    brightnessHex = '0' + brightnessHex;
+  }
+
+  // Construct the grayscale color string in the format 0xRRGGBB
+  var colorHex = '0x' + brightnessHex + brightnessHex + brightnessHex;
+  
+  return colorHex;
 }
 
 function rgba2hex(orig) {
@@ -263,3 +335,29 @@ function randomInt(max) {
 function randomBetween(min, max) {
   return Math.random() * (max - min) + min;
 }
+
+
+function combineColors(color1, color2) {
+  // Extracting the RGB components from the hexadecimal color strings
+  var red1 = parseInt(color1.substring(2, 4), 16);
+  var green1 = parseInt(color1.substring(4, 6), 16);
+  var blue1 = parseInt(color1.substring(6, 8), 16);
+  
+  var red2 = parseInt(color2.substring(2, 4), 16);
+  var green2 = parseInt(color2.substring(4, 6), 16);
+  var blue2 = parseInt(color2.substring(6, 8), 16);
+  
+  // Combining the RGB components
+  var combinedRed = Math.round((red1 + red2) / 2);
+  var combinedGreen = Math.round((green1 + green2) / 2);
+  var combinedBlue = Math.round((blue1 + blue2) / 2);
+  
+  // Converting the combined RGB components back to hexadecimal format
+  var combinedColor = '0x' + 
+                      ('0' + combinedRed.toString(16)).slice(-2) + 
+                      ('0' + combinedGreen.toString(16)).slice(-2) + 
+                      ('0' + combinedBlue.toString(16)).slice(-2);
+  
+  return combinedColor;
+}
+

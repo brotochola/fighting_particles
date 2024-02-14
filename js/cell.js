@@ -6,9 +6,15 @@ class Cell {
     this.pos = { x: x * cellWidth, y: y * cellWidth };
     this.x = x;
     this.y = y;
-
+    this.gas=0
+    this.graphics
+    this.maxLuckyNumbers = 25;
+    this.myLuckyNumber = randomInt(this.maxLuckyNumbers - 1);
     // this.container = elem;
     this.particlesHere = [];
+    this.color=generateRandomGrassColor()
+    this.createRectInPixi()
+    this.startingFrame = randomInt(8);
   }
 
   removeMe(who) {
@@ -37,22 +43,10 @@ class Cell {
     }
   }
   unHighlight() {
-    this.graphics.visible = false;
+    this.highlighted = false;
   }
   highlight() {
-    if (!this.graphics) {
-      this.graphics = new PIXI.Graphics();
-      this.graphics.beginFill("0xffffff");
-      this.graphics.drawRect(
-        this.pos.x,
-        this.pos.y,
-        this.cellWidth,
-        this.cellWidth
-      );
-      this.graphics.endFill();
-      this.particleSystem.mainContainer.addChild(this.graphics);
-    }
-    this.graphics.visible = true;
+    this.highlighted = true
   }
 
   getNeighbours() {
@@ -147,6 +141,45 @@ class Cell {
   // color(col) {
   //   this.elem.style.backgroundColor = col;
   // }
+  isItMyFrame() {
+    return this.COUNTER % 9 == this.startingFrame;
+  }
+  update(FRAMENUM){
+    this.COUNTER=FRAMENUM
+    // console.log(this.isItMyFrame())
+    if(!this.isItMyFrame()) return
 
-  render(FRAMENUM) {}
+    if(this.gas>0.01){
+      this.getNeighbours().forEach(k=>{
+        k.gas+=this.gas*0.06
+        this.gas=this.gas* 0.94-0.005
+      })   
+
+      
+      
+    }
+
+    if(this.gas<0)this.gas=0
+
+    this.render()
+    
+  }
+  createRectInPixi() {
+    // this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);
+
+    //CIRCLE
+    this.graphics = new PIXI.Graphics();
+    // this.graphics.beginFill(this.color);
+    // this.graphics.drawRect(this.x*this.cellWidth, this.y*this.cellWidth, this.cellWidth, this.cellWidth);
+    // this.graphics.endFill();
+    this.particleSystem.mainContainer.addChild(this.graphics);
+  }
+  render(FRAMENUM) {
+    let  color=this.highlighted?0xffffff:screenBlend(generateGrayscaleColorHex(this.gas), this.color)
+    this.graphics.clear()
+    this.graphics.beginFill(color);
+
+    this.graphics.drawRect(this.x*this.cellWidth, this.y*this.cellWidth, this.cellWidth, this.cellWidth);
+    this.graphics.endFill();
+  }
 }
