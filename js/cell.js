@@ -151,15 +151,20 @@ class Cell {
 
     if(this.gas>0.01){
       this.getNeighbours().forEach(k=>{
-        k.gas+=this.gas*0.06
-        this.gas=this.gas* 0.94-0.005
+        if(this.gas>k.gas){
+          k.gas+=this.gas*0.06
+          this.gas=this.gas* 0.94-0.005
+        }
+        
       })   
 
       
       
+    }else{
+      this.gas=0
     }
 
-    if(this.gas<0)this.gas=0
+    
 
     this.render()
     
