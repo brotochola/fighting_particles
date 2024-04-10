@@ -1,5 +1,13 @@
 # fighting_particles
 
+https://brotochola.github.io/fighting_particles/
+Press 'B' and 'R' to add fans/hooligans, P to add police, G to throw tear gas
+
+\n
+
+
+
+------------
 -agregar altura (z?) y terminar de armar la funcion de la perspectiva
 https://gameofbombs.github.io/pixi-bin/index.html
 
