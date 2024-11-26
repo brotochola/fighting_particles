@@ -177,7 +177,7 @@ class Cell {
     // this.graphics.beginFill(this.color);
     // this.graphics.drawRect(this.x*this.cellWidth, this.y*this.cellWidth, this.cellWidth, this.cellWidth);
     // this.graphics.endFill();
-    this.particleSystem.mainContainer.addChild(this.graphics);
+    // this.particleSystem.mainContainer.addChild(this.graphics);
   }
   render(FRAMENUM) {
     let  color=this.highlighted?0xffffff:screenBlend(generateGrayscaleColorHex(this.gas), this.color)
