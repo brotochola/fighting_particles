@@ -22,9 +22,9 @@ class Person extends GenericObject {
     this.initStartingAttributes();
     this.team = team;
 
-    this.spriteWidth = 12;
-    this.spriteHeight = 21;
-    this.spriteSpeed = Math.floor(5 * this.speed);
+    this.spriteWidth = 32;
+    this.spriteHeight = 32;
+    this.spriteSpeed = Math.floor(4 * this.speed);
 
     /////////////////////////////
 
@@ -59,7 +59,10 @@ class Person extends GenericObject {
     );
     this.createContainers();
     this.createDebugContainer();
-    this.createSprite("idle_" + this.team);
+
+    this.createAnimatedSprite();
+
+    // this.createSprite("idle_" + this.team);
 
     this.updateMyPositionInCell();
     // this.addParticleEmitter();
@@ -413,7 +416,7 @@ class Person extends GenericObject {
     this.changeSpriteAccordingToStateAndVelocity();
     // }
 
-    this.animateSprite();
+    // this.animateSprite();
     this.animateGravityToParticles();
 
     // this.emitBlood();
@@ -548,25 +551,17 @@ class Person extends GenericObject {
   changeSpriteAccordingToStateAndVelocity() {
     let vel = new p5.Vector(this.body.velocity.x, this.body.velocity.y);
 
-    if (this.state == "dead" || this.dead) {
+    if (this.state == this.states.MUERTO || this.dead) {
       //EMPIEZA A MORIR
-      this.createSprite("die_" + this.team, true);
+      // this.createSprite("die_" + this.team, true);
+      this.changeAnimation("muerte", true);
       //Y MUERE
       // setTimeout(
       //   () => this.createSprite("dead_1"),
       //   this.particleSystem.getDurationOfOneFrame() * 7
       // );
-    } else if (this.state == "attacking") {
-      this.createSprite("attack_" + this.team);
-    } else if (
-      this.state == "searching" ||
-      this.state == "chasing" ||
-      this.state == "escaping" ||
-      this.state == "idle"
-    ) {
-      if (this.whichSpriteAmIShowing().startsWith("attack")) {
-        this.createSprite("idle_" + this.team);
-      }
+    } else if (this.state == this.states.HUYENDO) {
+      this.changeAnimation("corre", false);
     }
 
     ///ABOUT MOVEMENT:
@@ -574,16 +569,18 @@ class Person extends GenericObject {
     if (Math.abs(vel.mag()) > 0.05) {
       //IT'S IDLE AND STARTS TO WALK
       if (
-        this.whichSpriteAmIShowing().startsWith("idle")
+        this.whichSpriteAmIShowing().startsWith("parado")
         //|| this.whichSpriteAmIShowing().startsWith("attack")
       ) {
-        this.createSprite("walk_" + this.team);
+        // this.createSprite("walk_" + this.team);
+        this.changeAnimation("camina", false);
       }
     } else if (Math.abs(vel.mag()) < 0.05) {
       //it's not moving
-      if (this.whichSpriteAmIShowing().startsWith("walk")) {
+      if (this.whichSpriteAmIShowing().startsWith("camina")) {
         //and the sprite is still walking
-        this.createSprite("idle_" + this.team);
+        // this.createSprite("idle_" + this.team);
+        this.changeAnimation("parado", true);
       }
     }
   }
@@ -650,23 +647,23 @@ class Person extends GenericObject {
     this.vel.x =
       whereToMoveRegardingTarget.x * magnitudOfTarget +
       ((this.vecThatAimsToTheAvg || {}).x || 0) *
-      magnitudOfFlockingTowardsFriends +
+        magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).x || 0) * magnitudOfCops +
       ((this.vecAwayFromObjects || {}).x || 0)+ ((this.vecAwayFromGas||{}).x||0)
 
     this.vel.y =
       whereToMoveRegardingTarget.y * magnitudOfTarget +
       ((this.vecThatAimsToTheAvg || {}).y || 0) *
-      magnitudOfFlockingTowardsFriends +
+        magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).y || 0) * magnitudOfCops +
       ((this.vecAwayFromObjects || {}).y || 0) + ((this.vecAwayFromGas||{}).y||0)
 
     //LIMITAR LA VELOCIDA A LA VELOCIDAD DEL CHABON, Y SI SE ESTA RAJANDO, UN TOQ MAS
     this.vel.limit(
       this.speed *
-      (this.state == this.states.HUYENDO
-        ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
-        : 1)
+        (this.state == this.states.HUYENDO
+          ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
+          : 1)
     );
 
     if (isNaN(this.vel.x)) debugger;
@@ -840,7 +837,7 @@ class Person extends GenericObject {
     // if (this.COUNTER - this.lastTimeItFlipped < this.spriteSpeed) return;
     this.direction = -1;
 
-    // this.image.x = 6;
+    // this.image.x = ;
 
     if (!this.amILookingLeft) {
       this.lastTimeItFlipped = this.COUNTER;
@@ -853,7 +850,7 @@ class Person extends GenericObject {
     this.direction = 1;
     // if (this.COUNTER - this.lastTimeItFlipped < this.spriteSpeed) return;
 
-    // this.image.x = -9;
+    // this.image.x = -32;
 
     if (this.amILookingLeft) {
       this.lastTimeItFlipped = this.COUNTER;

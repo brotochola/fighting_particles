@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMBitmapInstance selected="true" libraryItemName="Bitmap 7">
+                <DOMBitmapInstance libraryItemName="Bitmap 7">
                   <matrix>
                     <Matrix tx="-52.5" ty="-124"/>
                   </matrix>

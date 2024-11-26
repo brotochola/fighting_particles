@@ -25,6 +25,8 @@ class GenericObject {
     this.myLuckyNumber = randomInt(this.maxLuckyNumbers - 1);
     this.drawTargetLine = false; //true;
 
+    this.currentAnimation = "parado";
+
     // this.createBody(10);
   }
 
@@ -42,10 +44,13 @@ class GenericObject {
   }
 
   whichSpriteAmIShowing() {
-    return (
-      ((((this.image || {}).texture || {}).baseTexture || {}).textureCacheIds ||
-        [])[0] || ""
-    );
+    // return this.currentAnimation;
+    // return (
+    //   ((((this.image || {}).texture || {}).baseTexture || {}).textureCacheIds ||
+    //     [])[0] || ""
+    // );
+
+    return this.currentAnimation;
   }
 
   createBody(
@@ -112,12 +117,12 @@ class GenericObject {
       );
     }
 
-    this.body.angle = angle;
-
     this.body.constraints = []; //i need to keep track which constraints each body has
     this.body.particle = this;
 
     this.world.add(this.engine.world, [this.body]);
+
+    Matter.Body.setAngle(this.body, degreesToRadians(angle));
   }
 
   getMyAbsolutePosition() {
@@ -215,6 +220,13 @@ class GenericObject {
       this.image.scale.x = this.direction * this.scale;
       this.image.scale.y = this.scale;
     }
+
+    if (this.direction == -1) {
+      this.image.x = 15;
+    } else {
+      this.image.x = -15;
+    }
+
     //SI ESTA HIGHLIGHTED
     try {
       if (this.highlighted) {
@@ -410,6 +422,26 @@ class GenericObject {
     setTimeout(() => this.unHighlight(), this.particleSystem.deltaTime);
   }
 
+  createAnimatedSprite() {
+    this.spritesheet = this.particleSystem.res[this.team + "_ss"].spritesheet;
+    // console.log(this.spritesheet);
+    this.image = new PIXI.AnimatedSprite(this.spritesheet.animations.parado);
+    this.container.addChild(this.image);
+    this.image.y = 64;
+    this.image.animationSpeed = this.speed * 0.2;
+    this.image.pivot.x = 0;
+  }
+
+  changeAnimation(which, stopAtEnd = false) {
+    if (this.currentAnimation === which) return;
+    var newAnim = this.spritesheet.animations[which];
+    this.image.stop();
+    this.image.loop = !stopAtEnd;
+    this.image.textures = newAnim;
+    this.image.play();
+    this.currentAnimation = which;
+  }
+
   createSprite(which, stopsAtEnd) {
     if (
       this.whichSpriteAmIShowing().startsWith(which.substr(0, which.length - 2))
@@ -437,7 +469,7 @@ class GenericObject {
     );
 
     this.image.pivot.y = 0;
-    this.image.pivot.x = this.spriteWidth * 0.5;
+    this.image.pivot.x = 32;
 
     this.image.texture.frame = frame1;
 
@@ -464,8 +496,10 @@ class GenericObject {
   createContainers() {
     this.container = new PIXI.Container();
 
-    this.container.pivot.set(this.spriteWidth / 2, this.spriteHeight / 2);
-
+    this.container.pivot.set(
+      this.spriteWidth/2,
+      -this.spriteHeight + this.spriteWidth
+    );
     // this.particleContainer.zIndex = 1;
 
     // this.container.addChild(this.particleContainer);

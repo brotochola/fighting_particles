@@ -67,6 +67,8 @@ class ParticleSystem {
     this.worldHeight = height;
     this.worldWidth = width;
 
+    this.spritesheets = {};
+
     // this.canvas = document.getElementById(canvasId);
     // this.context = this.canvas.getContext("2d");
     // this.canvas.width = width;
@@ -152,6 +154,13 @@ class ParticleSystem {
     //DEBUG
     globalThis.__PIXI_APP__ = this.pixiApp;
 
+    ///
+
+    this.loader.add("boca_ss", "img/boca_ss/agent.json");
+    this.loader.add("river_ss", "img/river_ss/agent.json");
+
+    this.loader.add("poli_ss", "img/poli_ss/agent.json");
+
     this.loader.add("walk_boca", "img/boca/walk.png");
     this.loader.add("idle_boca", "img/boca/idle.png");
     this.loader.add("die_boca", "img/boca/dead.png");
@@ -184,6 +193,11 @@ class ParticleSystem {
     this.loader.add("casa4", "img/casas/casa4.png");
     this.loader.add("casa5", "img/casas/casa5.png");
     this.loader.add("casa6", "img/casas/casa6.png");
+
+    //ESTAS SON LAS ISOMETRICAS
+    this.loader.add("casa7", "img/casas/casa7.png");
+    this.loader.add("casa8", "img/casas/casa8.png");
+
 
     this.loader.load((loader, resources) => {
       this.res = resources;
@@ -723,7 +737,7 @@ class ParticleSystem {
         x,
         y,
         particleSystem: this,
-        type: "casa" + (randomInt(5) + 1),
+        type: Math.random()>0.5?"casa7":"casa8",
       });
     }else if(key==71){
       //G DE GAS
@@ -1152,7 +1166,7 @@ class ParticleSystem {
     let xml = parseXmlToJSON(res);
     console.log(xml);
     let itemsOfLevel = getMovieClipsFromFlashSymbolXML(xml);
-    // console.log(itemsOfLevel);
+    console.log(itemsOfLevel);
     this.restartLevel(itemsOfLevel);
   }
   getAllObjects() {
