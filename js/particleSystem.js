@@ -194,6 +194,11 @@ class ParticleSystem {
     this.loader.add("casa5", "img/casas/casa5.png");
     this.loader.add("casa6", "img/casas/casa6.png");
 
+    //ESTAS SON LAS ISOMETRICAS
+    this.loader.add("casa7", "img/casas/casa7.png");
+    this.loader.add("casa8", "img/casas/casa8.png");
+
+
     this.loader.load((loader, resources) => {
       this.res = resources;
 
@@ -724,7 +729,7 @@ class ParticleSystem {
         x,
         y,
         particleSystem: this,
-        type: "casa" + (randomInt(5) + 1),
+        type: Math.random()>0.5?"casa7":"casa8",
       });
     }
   }
@@ -1150,7 +1155,7 @@ class ParticleSystem {
     let xml = parseXmlToJSON(res);
     console.log(xml);
     let itemsOfLevel = getMovieClipsFromFlashSymbolXML(xml);
-    // console.log(itemsOfLevel);
+    console.log(itemsOfLevel);
     this.restartLevel(itemsOfLevel);
   }
   getAllObjects() {

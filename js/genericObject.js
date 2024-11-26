@@ -117,12 +117,12 @@ class GenericObject {
       );
     }
 
-    this.body.angle = angle;
-
     this.body.constraints = []; //i need to keep track which constraints each body has
     this.body.particle = this;
 
     this.world.add(this.engine.world, [this.body]);
+
+    Matter.Body.setAngle(this.body, degreesToRadians(angle));
   }
 
   getMyAbsolutePosition() {
@@ -496,8 +496,10 @@ class GenericObject {
   createContainers() {
     this.container = new PIXI.Container();
 
-    this.container.pivot.set(this.spriteWidth / 2, this.spriteHeight / 2);
-
+    this.container.pivot.set(
+      this.spriteWidth/2,
+      -this.spriteHeight + this.spriteWidth
+    );
     // this.particleContainer.zIndex = 1;
 
     // this.container.addChild(this.particleContainer);
