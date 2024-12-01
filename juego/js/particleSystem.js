@@ -1199,6 +1199,8 @@ class ParticleSystem {
   restartLevel(data) {
     this.getAllObjects().forEach((k) => k.remove());
 
+    this.grounds.forEach((k) => k.remove());
+
     data.forEach((k) => {
       if (k.type == "boca" || k.type == "river") {
         this.addFan(Math.floor(k.x), Math.floor(k.y), false, k.type);

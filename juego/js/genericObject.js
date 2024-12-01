@@ -5,7 +5,7 @@ class GenericObject {
   constructor(opt) {
     // this.pepe();
     const { x, y, particleSystem, team, isStatic, diameter, scaleX } = opt;
-    this.opt=opt
+    this.opt = opt;
 
     this.particleSystem = particleSystem;
     this.Matter = particleSystem.Matter;
@@ -289,34 +289,38 @@ class GenericObject {
 
     // return ret;
   }
-  removeImage() {
-    if (this.image && this.image.parent)
-      this.image.parent.removeChild(this.image);
-  }
 
   remove(opt) {
-    // console.log("removing");
+    // console.log("removing", this);
 
-    try {
-      this.cell.removeMe(this);
-    } catch (e) {
-      console.warn("no cell");
-    }
+    if (this.cell) this.cell.removeMe(this);
+
+    this.removeMeAsTarget();
 
     // for (let constr of this.body.constraints) {
     //   this.world.remove(this.engine.world, constr);
     // }
 
     this.particleSystem.mainContainer.removeChild(this.graphics);
+    this.particleSystem.mainContainer.removeChild(this.container);
 
-    this.world.remove(this.engine.world, this.body);
-    this.removeImage();
+    if (this.body) {
+      this.world.remove(this.engine.world, this.body);
+    }
+
+    if (this.image) this.image.destroy();
 
     this.particleSystem.people = this.particleSystem.people.filter(
-      (k) => k.body.id != this.body.id
+      (k) => k.id != this.id
     );
 
-    this.removeMeAsTarget();
+    this.particleSystem.fixedObjects = this.particleSystem.fixedObjects.filter(
+      (k) => k.id != this.id
+    );
+
+    this.particleSystem.grounds = this.particleSystem.grounds.filter(
+      (k) => k.id != this.id
+    );
 
     // if ((opt || {}).leaveAshes) {
     // }

@@ -2,7 +2,7 @@ class House extends GenericObject {
   constructor(opt) {
     
     super(opt);
-    console.log("house", opt)
+    
     const { x, y, particleSystem, width, height, sprite } = opt;
     this.sprite = sprite;
 
