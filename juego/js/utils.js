@@ -5,6 +5,10 @@ function getAvg(grades) {
   return total / grades.length;
 }
 
+function lerp( a, b, alpha ) {
+  return a + alpha * ( b - a )
+ }
+
 function findParabolaCoefficients(vertex, point1, point2) {
   // Extracting coordinates from P5 Vectors
   const x0 = vertex.x,

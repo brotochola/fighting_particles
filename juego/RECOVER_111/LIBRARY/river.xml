@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="river" itemID="65a007d5-0000041c" lastModified="1704991073">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="river" itemID="65a007d5-0000041c" lastModified="1733090303">
   <timeline>
     <DOMTimeline name="river" layerDepthEnabled="true">
       <layers>
@@ -8,10 +8,10 @@
               <elements>
                 <DOMBitmapInstance libraryItemName="idle - copia.png">
                   <matrix>
-                    <Matrix a="2" d="2" tx="-12" ty="-42"/>
+                    <Matrix tx="-6" ty="-31"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="6" y="10.75"/>
+                    <Point x="6" y="10.5"/>
                   </transformationPoint>
                 </DOMBitmapInstance>
               </elements>

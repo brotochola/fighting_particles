@@ -1,6 +1,6 @@
 class Fan extends Person {
   constructor(opt) {
-    super({ ...opt, diameter: 8 });
+    super({ ...opt, diameter: 6 });
 
     this.strength = Math.random() * 0.4 + 0.1;
     this.isThereACopInMyWay = false;

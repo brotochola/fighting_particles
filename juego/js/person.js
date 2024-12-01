@@ -22,7 +22,6 @@ class Person extends GenericObject {
     this.initStartingAttributes();
     this.team = team;
 
-
     this.spriteSpeed = Math.floor(4 * this.speed);
 
     /////////////////////////////
@@ -61,7 +60,6 @@ class Person extends GenericObject {
 
     this.createAnimatedSprite();
     this.alignSpriteMiddleBottom();
-
 
     // this.createSprite("idle_" + this.team);
 
@@ -116,7 +114,7 @@ class Person extends GenericObject {
   createContainers() {
     this.container = new PIXI.Container();
 
-    this.container.name=this.constructor.name
+    this.container.name = this.constructor.name;
 
     this.particleContainer = new PIXI.ParticleContainer();
     this.particleContainer.zIndex = 1;
@@ -284,7 +282,7 @@ class Person extends GenericObject {
     this.particleSystem.addBullet(this);
   }
   recieveDamageFrom(part, coeficient = 1) {
-    this.makeMeFlash();
+    // this.makeMeFlash();
     if (!part || part.dead) return;
     // console.log(this.team, part.team, this.health);
 
@@ -419,7 +417,6 @@ class Person extends GenericObject {
     this.changeSpriteAccordingToStateAndVelocity();
     // }
 
-    
     this.animateGravityToParticles();
 
     // this.emitBlood();
@@ -556,13 +553,7 @@ class Person extends GenericObject {
 
     if (this.state == this.states.MUERTO || this.dead) {
       //EMPIEZA A MORIR
-      // this.createSprite("die_" + this.team, true);
       this.changeAnimation("muerte", true);
-      //Y MUERE
-      // setTimeout(
-      //   () => this.createSprite("dead_1"),
-      //   this.particleSystem.getDurationOfOneFrame() * 7
-      // );
     } else if (this.state == this.states.HUYENDO) {
       this.changeAnimation("corre", false);
     }
@@ -571,19 +562,22 @@ class Person extends GenericObject {
 
     if (Math.abs(vel.mag()) > 0.05) {
       //IT'S IDLE AND STARTS TO WALK
-      if (
-        this.whichSpriteAmIShowing().startsWith("parado")
-        //|| this.whichSpriteAmIShowing().startsWith("attack")
-      ) {
-        // this.createSprite("walk_" + this.team);
+      if (this.whichSpriteAmIShowing().startsWith("parado")) {
         this.changeAnimation("camina", false);
       }
     } else if (Math.abs(vel.mag()) < 0.05) {
       //it's not moving
       if (this.whichSpriteAmIShowing().startsWith("camina")) {
-        //and the sprite is still walking
-        // this.createSprite("idle_" + this.team);
         this.changeAnimation("parado", true);
+      } else if (
+        this.state == this.states.YENDO &&
+        !this.target &&
+        this.fear < 0.5 &&
+        this.health > 0.9
+      ) {
+        //si esta en estado YENDO, o sea q esta bien de salud y todo
+        //y no se esta moviendo, y no tiene target, se pone a saltar
+        this.changeAnimation("salto", false);
       }
     }
   }
@@ -626,7 +620,7 @@ class Person extends GenericObject {
   ) {
     // Calculate vector to repel objects, like houses and such
     this.repelHouses();
-    this.avoidGas()
+    this.avoidGas();
     //MOVE OR REPEL TARGET
     let whereToMoveRegardingTarget;
     if ((this.vectorThatAimsToTheTarget || {}).x) {
@@ -652,14 +646,16 @@ class Person extends GenericObject {
       ((this.vecThatAimsToTheAvg || {}).x || 0) *
         magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).x || 0) * magnitudOfCops +
-      ((this.vecAwayFromObjects || {}).x || 0)+ ((this.vecAwayFromGas||{}).x||0)
+      ((this.vecAwayFromObjects || {}).x || 0) +
+      ((this.vecAwayFromGas || {}).x || 0);
 
     this.vel.y =
       whereToMoveRegardingTarget.y * magnitudOfTarget +
       ((this.vecThatAimsToTheAvg || {}).y || 0) *
         magnitudOfFlockingTowardsFriends +
       ((this.vecAwayFromCops || {}).y || 0) * magnitudOfCops +
-      ((this.vecAwayFromObjects || {}).y || 0) + ((this.vecAwayFromGas||{}).y||0)
+      ((this.vecAwayFromObjects || {}).y || 0) +
+      ((this.vecAwayFromGas || {}).y || 0);
 
     //LIMITAR LA VELOCIDA A LA VELOCIDAD DEL CHABON, Y SI SE ESTA RAJANDO, UN TOQ MAS
     this.vel.limit(
@@ -693,23 +689,23 @@ class Person extends GenericObject {
     // }
   }
 
-
-
   avoidGas() {
-    
-    let cellWithMostGas=this.cell.getNeighbours().sort((a,b)=>a.gas>b.gas?-1:1)[0]
+    let cellWithMostGas = this.cell
+      .getNeighbours()
+      .sort((a, b) => (a.gas > b.gas ? -1 : 1))[0];
 
-  if(cellWithMostGas.gas<0.1) {
-    this.vecAwayFromGas= new p5.Vector(0,0)
-    return
-  }
+    if (cellWithMostGas.gas < 0.1) {
+      this.vecAwayFromGas = new p5.Vector(0, 0);
+      return;
+    }
 
     this.vecAwayFromGas = p5.Vector.sub(
-      new p5.Vector(cellWithMostGas.x* this.particleSystem.CELL_SIZE,  cellWithMostGas.y*this.particleSystem.CELL_SIZE),
+      new p5.Vector(
+        cellWithMostGas.x * this.particleSystem.CELL_SIZE,
+        cellWithMostGas.y * this.particleSystem.CELL_SIZE
+      ),
       this.pos
     );
-
-
 
     this.vecAwayFromGas.setMag(2);
 
@@ -721,7 +717,6 @@ class Person extends GenericObject {
 
     // this.vel.setMag(1);
   }
-
 
   repelHouses() {
     if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;

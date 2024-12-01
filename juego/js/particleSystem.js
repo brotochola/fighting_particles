@@ -157,29 +157,29 @@ class ParticleSystem {
 
     ///
 
-    this.loader.add("boca_ss", "img/boca_ss/agent.json");
+    this.loader.add("boca_ss", "img/boca_ss/boca.json");
     this.loader.add("river_ss", "img/river_ss/agent.json");
 
     this.loader.add("poli_ss", "img/poli_ss/agent.json");
 
-    this.loader.add("walk_boca", "img/boca/walk.png");
-    this.loader.add("idle_boca", "img/boca/idle.png");
-    this.loader.add("die_boca", "img/boca/dead.png");
-    this.loader.add("attack_boca", "img/boca/attack.png");
+    // this.loader.add("walk_boca", "img/boca/walk.png");
+    // this.loader.add("idle_boca", "img/boca/idle.png");
+    // this.loader.add("die_boca", "img/boca/dead.png");
+    // this.loader.add("attack_boca", "img/boca/attack.png");
 
-    this.loader.add("walk_river", "img/river/walk.png");
-    this.loader.add("idle_river", "img/river/idle.png");
-    this.loader.add("die_river", "img/river/dead.png");
-    this.loader.add("attack_river", "img/river/attack.png");
+    // this.loader.add("walk_river", "img/river/walk.png");
+    // this.loader.add("idle_river", "img/river/idle.png");
+    // this.loader.add("die_river", "img/river/dead.png");
+    // this.loader.add("attack_river", "img/river/attack.png");
 
-    this.loader.add("attack_poli", "img/poli/attack2.png");
-    this.loader.add("push_poli", "img/poli/attack.png");
-    this.loader.add("walk_poli", "img/poli/walk.png");
-    this.loader.add("idle_poli", "img/poli/idle.png");
-    this.loader.add("die_poli", "img/poli/dead.png");
+    // this.loader.add("attack_poli", "img/poli/attack2.png");
+    // this.loader.add("push_poli", "img/poli/attack.png");
+    // this.loader.add("walk_poli", "img/poli/walk.png");
+    // this.loader.add("idle_poli", "img/poli/idle.png");
+    // this.loader.add("die_poli", "img/poli/dead.png");
 
     // this.loader.add("dead_2", "img/dead_2.png");
-    this.loader.add("bg", "img/bg.jpg");
+    this.loader.add("bg", "img/bg3.jpg");
     this.loader.add("blood", "img/blood.png");
     // this.loader.add("fence", "img/fence.png");
 
@@ -219,16 +219,25 @@ class ParticleSystem {
     // this.canvas.onmousemove = (e) => this.handleMouseMoveOnCanvas(e);
     document.body.appendChild(this.canvas);
     this.mainContainer = new PIXI.Container();
+    this.mainContainer.name="Main Container"
     this.pixiApp.stage.addChild(this.mainContainer);
     this.pixiApp.stage.sortableChildren = true;
     this.mainContainer.sortableChildren = true;
+
+
+
   }
 
   createBG() {
-    this.bg = new PIXI.TilingSprite(this.res["bg"].texture.clone());
+    console.log("#create bg")
+    let tex=this.res["bg"].texture.clone()
+    
+    this.bg = new PIXI.TilingSprite(tex);
+    this.bg.name="BG"
     this.bg.width = this.worldWidth;
     this.bg.height = this.worldHeight;
-    // this.mainContainer.addChild(this.bg);
+    this.bg.scale.set(0.666)
+    this.mainContainer.addChild(this.bg);
   }
 
   changeHeightForAllBoxes(howMuch) {
@@ -526,6 +535,7 @@ class ParticleSystem {
   doScreenCameraMove() {
     if (this.mouseLeft) return;
     let margin = 50;
+    let move=50
     // console.log(
     //   this.screenX,
     //   this.screenY,
@@ -538,18 +548,18 @@ class ParticleSystem {
       this.screenX > this.viewportWidth - margin ||
       window.keyIsDown.includes(68)
     ) {
-      this.mainContainer.x -= 10;
+      this.mainContainer.x -= move;
     } else if (this.screenX < margin || window.keyIsDown.includes(65)) {
-      this.mainContainer.x += 10;
+      this.mainContainer.x += move;
     }
 
     if (
       this.screenY > window.innerHeight - this.buttonPanelHeight - margin ||
       window.keyIsDown.includes(83)
     ) {
-      this.mainContainer.y -= 10;
+      this.mainContainer.y -= move;
     } else if (this.screenY < margin || window.keyIsDown.includes(87)) {
-      this.mainContainer.y += 10;
+      this.mainContainer.y += move;
     }
 
     if (this.mainContainer.x > leftLimit) this.mainContainer.x = leftLimit;
@@ -563,7 +573,7 @@ class ParticleSystem {
     let bottomEnd = -this.worldHeight + window.innerHeight - leftLimit;
     if (this.mainContainer.y < bottomEnd) this.mainContainer.y = bottomEnd;
 
-    this.movePerspectiveCSSBackground();
+    // this.movePerspectiveCSSBackground();
   }
 
   getRatioOfBGX() {
@@ -574,28 +584,28 @@ class ParticleSystem {
     return -this.mainContainer.y / (this.worldHeight - this.viewPortHeight);
   }
 
-  movePerspectiveCSSBackground() {
-    let rotationX = 40;
+  // movePerspectiveCSSBackground() {
+  //   let rotationX = 40;
 
-    let ratioOfXForBG = this.getRatioOfBGX();
-    let ratioOfYForBG = this.getRatioOfBGY();
+  //   let ratioOfXForBG = this.getRatioOfBGX();
+  //   let ratioOfYForBG = this.getRatioOfBGY();
 
-    let xOffset = (ratioOfXForBG * -30).toFixed(3);
-    let yOffset = (-30 * ratioOfYForBG).toFixed(3);
+  //   let xOffset = (ratioOfXForBG * -30).toFixed(3);
+  //   let yOffset = (-30 * ratioOfYForBG).toFixed(3);
 
-    // console.log(yOffset);
-    let stringToPass =
-      "rotateX(" +
-      rotationX +
-      "deg) translate3d(calc(-100vw + " +
-      xOffset +
-      "%), " +
-      yOffset +
-      "%, 105vw)";
+  //   // console.log(yOffset);
+  //   let stringToPass =
+  //     "rotateX(" +
+  //     rotationX +
+  //     "deg) translate3d(calc(-100vw + " +
+  //     xOffset +
+  //     "%), " +
+  //     yOffset +
+  //     "%, 105vw)";
 
-    // console.log(stringToPass);
-    document.querySelector("#bg").style.transform = stringToPass;
-  }
+  //   // console.log(stringToPass);
+  //   document.querySelector("#bg").style.transform = stringToPass;
+  // }
 
   addGas(x, y) {
     let cell = this.getCellAt(x, y);

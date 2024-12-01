@@ -1,43 +1,34 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="1920" height="1080" currentTimeline="1" xflVersion="2.980" creatorInfo="Adobe Animate" platform="Windows" versionInfo="Saved by Animate Windows 21.0 build 35450" majorVersion="21" buildNumber="35450" viewAngle3D="122.353661987282" vanishingPoint3DX="960" vanishingPoint3DY="540" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" filetypeGUID="3CE50BB6-55CF-47A6-B591-01286DDDC64C" fileGUID="B15F70A61ED86E4FA49C498F1F6D4412">
+     <folders>
+          <DOMFolderItem name="casas" itemID="674ce68c-000003fc"/>
+     </folders>
      <media>
-          <DOMBitmapItem name="Bitmap 1" itemID="67460e03-00000412" sourceExternalFilepath="Bitmap 1.png" sourceLastImported="1732644355" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 1.png" bitmapDataHRef="M 15 1732644355.dat" frameRight="3560" frameBottom="4220"/>
-          <DOMBitmapItem name="Bitmap 10" itemID="65a00767-000003e4" sourceExternalFilepath="Bitmap 10.png" sourceLastImported="1704986471" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 10.png" bitmapDataHRef="M 13 1704986471.dat" frameRight="2280" frameBottom="3260"/>
-          <DOMBitmapItem name="Bitmap 11" itemID="65a0076b-000003ea" sourceExternalFilepath="Bitmap 11.png" sourceLastImported="1704986475" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 11.png" bitmapDataHRef="M 14 1704986475.dat" frameRight="2280" frameBottom="3200"/>
           <DOMBitmapItem name="Bitmap 2" itemID="67460f0f-00000426" sourceExternalFilepath="Bitmap 2.png" sourceLastImported="1732644623" externalFileSize="42130" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 2.png" bitmapDataHRef="M 16 1732644623.dat" frameRight="2680" frameBottom="3160"/>
+          <DOMBitmapItem name="Bitmap 21" itemID="674ce42d-0000038c" sourceExternalFilepath="C:/Users/Facundo/AppData/Local/Temp/flash0.png" sourceLastImported="1733092397" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 21.png" bitmapDataHRef="M 21 1733092397.dat" frameRight="7900" frameBottom="7680"/>
           <DOMBitmapItem name="Bitmap 3" itemID="6591e798-000003b6" sourceExternalFilepath="../xfl/LIBRARY/Bitmap 3.png" sourceLastImported="1704145987" externalFileSize="246" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 3.png" bitmapDataHRef="M 4 1704052094.dat" frameRight="10000" frameBottom="700"/>
-          <DOMBitmapItem name="Bitmap 5" itemID="67460df1-00000409" sourceExternalFilepath="../xfl/LIBRARY/Bitmap 5.png" sourceLastImported="1732642052" externalFileSize="43980" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 5.png" bitmapDataHRef="M 9 1704986464.dat" frameRight="2780" frameBottom="3860"/>
           <DOMBitmapItem name="Bitmap 5.png" itemID="67460504-000003ed" sourceExternalFilepath="../xfl/LIBRARY/Bitmap 5.png" sourceLastImported="1732642052" externalFileSize="43980" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 5.png" bitmapDataHRef="M 13 1732642426.dat" frameRight="2780" frameBottom="3860"/>
           <DOMBitmapItem name="Bitmap 6" itemID="65a00761-000003d2" sourceExternalFilepath="Bitmap 6.png" sourceLastImported="1704986465" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 6.png" bitmapDataHRef="M 10 1704986465.dat" frameRight="2320" frameBottom="2900"/>
-          <DOMBitmapItem name="Bitmap 7" itemID="65a00763-000003d8" sourceExternalFilepath="Bitmap 7.png" sourceLastImported="1704986467" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 7.png" bitmapDataHRef="M 11 1704986467.dat" frameRight="2100" frameBottom="2480"/>
-          <DOMBitmapItem name="Bitmap 9" itemID="65a00766-000003de" sourceExternalFilepath="Bitmap 9.png" sourceLastImported="1704986470" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 9.png" bitmapDataHRef="M 12 1704986470.dat" frameRight="2640" frameBottom="3240"/>
           <DOMBitmapItem name="calle1_img" itemID="6749f0fb-00000235" sourceExternalFilepath="Bitmap 4.png" sourceLastImported="1733083368" externalFileSize="3074" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="calle1_img.png" bitmapDataHRef="M 18 1732899007.dat" frameRight="2560" frameBottom="1300"/>
           <DOMBitmapItem name="calle_esquina" itemID="6749f0e9-00000231" sourceExternalFilepath="Bitmap 8.png" sourceLastImported="1733083368" externalFileSize="6604" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="calle_esquina.png" bitmapDataHRef="M 19 1732899028.dat" frameRight="3200" frameBottom="1640"/>
-          <DOMBitmapItem name="favpng_building-isometric-projection-isometric-graphics-in-video-games-and-pixel-art.png" itemID="6744a7bb-0000019e" sourceExternalFilepath="../xfl/favpng_building-isometric-projection-isometric-graphics-in-video-games-and-pixel-art.png" sourceLastImported="1732510202" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="favpng_building-isometric-projection-isometric-graphics-in-video-games-and-pixel-art.png" bitmapDataHRef="M 14 1732644339.dat" frameRight="17660" frameBottom="33900"/>
+          <DOMBitmapItem name="casas/casa1" itemID="674cea8b-00000427" sourceExternalFilepath="D:/xampp/htdocs/chaboncitos/juego/xfl/LIBRARY/casas/casa1.png" sourceLastImported="1733093015" externalFileSize="156366" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="casas/casa1.png" bitmapDataHRef="M 24 1733092826.dat" frameRight="7440" frameBottom="7800"/>
+          <DOMBitmapItem name="casas/casa2" itemID="674cea8b-00000428" sourceExternalFilepath="D:/xampp/htdocs/chaboncitos/juego/xfl/LIBRARY/casas/casa2.png" sourceLastImported="1733093015" externalFileSize="354624" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="casas/casa2.png" bitmapDataHRef="M 23 1733092789.dat" frameRight="8840" frameBottom="15480"/>
           <DOMBitmapItem name="idle - copia.png" itemID="65a01953-00000513" sourceExternalFilepath="../img/river/idle - copia.png" sourceLastImported="1704738308" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="idle - copia.png" bitmapDataHRef="M 12 1704991059.dat" frameRight="240" frameBottom="420"/>
-          <DOMBitmapItem name="idle.png copy" itemID="65a007dc-00000421" sourceExternalFilepath="../xfl/LIBRARY/idle.png" sourceLastImported="1732641293" externalFileSize="248" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="idle.png" bitmapDataHRef="M 16 1704986586.dat" frameRight="240" frameBottom="420"/>
           <DOMBitmapItem name="idle.png copy 2" itemID="65a008dd-00000496" sourceExternalFilepath="../xfl/LIBRARY/idle.png" sourceLastImported="1732641293" externalFileSize="248" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="idle.png" bitmapDataHRef="M 17 1704986841.dat" frameRight="240" frameBottom="420"/>
-          <DOMBitmapItem name="isometric street tiles 1.png" itemID="6744b777-000002eb" sourceExternalFilepath="../xfl/pack/isometric street tiles 1.png" sourceLastImported="1732556623" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="isometric street tiles 1.png" bitmapDataHRef="M 17 1732898965.dat" frameRight="8000" frameBottom="8000"/>
-          <DOMBitmapItem name="m_idle.png" itemID="65933464-000001b0" sourceExternalFilepath="../xfl/LIBRARY/m_idle.png" sourceLastImported="1732641293" externalFileSize="200" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="m_idle.png" bitmapDataHRef="M 7 1704146020.dat" frameRight="240" frameBottom="420"/>
+          <DOMBitmapItem name="piso1" itemID="674cea7f-00000426" sourceExternalFilepath="Bitmap 13.png" sourceLastImported="1733094015" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="piso1.png" bitmapDataHRef="M 25 1733094029.dat" frameRight="9860" frameBottom="5000"/>
           <DOMBitmapItem name="pole.png" itemID="6593345a-000001ac" sourceExternalFilepath="../xfl/LIBRARY/pole.png" sourceLastImported="1704060528" externalFileSize="386" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="pole.png" bitmapDataHRef="M 6 1704146010.dat" frameRight="100" frameBottom="680"/>
      </media>
      <symbols>
-          <Include href="boca.xml" loadImmediate="false" itemID="65a007ce-00000413" lastModified="1704986853"/>
+          <Include href="boca.xml" loadImmediate="false" itemID="65a007ce-00000413" lastModified="1733090298"/>
           <Include href="calle0.xml" loadImmediate="false" itemID="6749f0a3-00000218" lastModified="1733084068"/>
           <Include href="calle1.xml" loadImmediate="false" itemID="674ccef6-0000028c" lastModified="1733086966"/>
-          <Include href="calle2.xml" loadImmediate="false" itemID="674ccf01-00000291" lastModified="1733086984"/>
-          <Include href="casa1.xml" loadImmediate="false" itemID="65a00774-000003ec" lastModified="1704986484"/>
-          <Include href="casa2.xml" loadImmediate="false" itemID="65a00777-000003f2" lastModified="1704986487"/>
-          <Include href="casa3.xml" loadImmediate="false" itemID="65a0077a-000003f7" lastModified="1704986490"/>
-          <Include href="casa4.xml" loadImmediate="false" itemID="65a0077d-000003fc" lastModified="1704986493"/>
-          <Include href="casa5.xml" loadImmediate="false" itemID="65a0077f-00000401" lastModified="1704986495"/>
-          <Include href="casa6.xml" loadImmediate="false" itemID="65a00782-00000406" lastModified="1704986498"/>
-          <Include href="casa7.xml" loadImmediate="false" itemID="67460682-000003f8" lastModified="1733084053"/>
-          <Include href="casa8.xml" loadImmediate="false" itemID="67460e0c-00000414" lastModified="1733084063"/>
-          <Include href="fence.xml" loadImmediate="false" itemID="6591c68a-00000368" lastModified="1704061286"/>
-          <Include href="level1.xml" loadImmediate="false" itemID="65a008ae-0000048f" lastModified="1704986865"/>
-          <Include href="level2.xml" loadImmediate="false" itemID="65776f63-00000273" lastModified="1733088101"/>
-          <Include href="pole.xml" loadImmediate="false" itemID="659334a3-000001bc" lastModified="1733086907"/>
-          <Include href="river.xml" loadImmediate="false" itemID="65a007d5-0000041c" lastModified="1704991073"/>
+          <Include href="casa1.xml" loadImmediate="false" itemID="674ce695-000003ff" lastModified="1733093250"/>
+          <Include href="casa2.xml" loadImmediate="false" itemID="674ce639-000003eb" lastModified="1733092921"/>
+          <Include href="casa7.xml" loadImmediate="false" itemID="67460682-000003f8" lastModified="1733091113"/>
+          <Include href="casa8.xml" loadImmediate="false" itemID="67460e0c-00000414" lastModified="1733091108"/>
+          <Include href="level1.xml" loadImmediate="false" itemID="65a008ae-0000048f" lastModified="1733091505"/>
+          <Include href="level2.xml" loadImmediate="false" itemID="65776f63-00000273" lastModified="1733094067"/>
+          <Include href="piso.xml" loadImmediate="false" itemID="674cea4e-00000409" lastModified="1733094006"/>
+          <Include href="river.xml" loadImmediate="false" itemID="65a007d5-0000041c" lastModified="1733090303"/>
      </symbols>
      <timelines>
           <DOMTimeline name="Scene 1" layerDepthEnabled="true">
@@ -64,7 +55,7 @@
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="level2" selected="true">
                                              <matrix>
-                                                  <Matrix tx="-206" ty="317.15"/>
+                                                  <Matrix tx="367.75" ty="360.3"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="1732.05" y="706.15"/>

@@ -99,7 +99,7 @@ class Poli extends Person {
   pushClosestFan() {
     let fan = this.closestFan;
     if (!fan) return;
-    fan.makeMeFlash();
+    // fan.makeMeFlash();
     // console.log("###", this.name, "pushing ", fan.name, fan.team);
     fan.recieveDamageFrom(this, 0.1);
 
