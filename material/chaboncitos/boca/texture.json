@@ -1,0 +1,1287 @@
+{
+  "frames": {
+    "boca/texture.png": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 20,
+        "h": 650
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 20,
+        "h": 650
+      },
+      "sourceSize": {
+        "w": 20,
+        "h": 650
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/birra/10.png": {
+      "frame": {
+        "x": 0,
+        "y": 650,
+        "w": 10,
+        "h": 19
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
+        "h": 19
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/birra/11.png": {
+      "frame": {
+        "x": 0,
+        "y": 669,
+        "w": 10,
+        "h": 19
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
+        "h": 19
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/tirapiedra/1.png": {
+      "frame": {
+        "x": 0,
+        "y": 688,
+        "w": 7,
+        "h": 19
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 1,
+        "w": 7,
+        "h": 19
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/tirapiedra/2.png": {
+      "frame": {
+        "x": 0,
+        "y": 707,
+        "w": 11,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 2,
+        "w": 11,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/atacar/3.png": {
+      "frame": {
+        "x": 7,
+        "y": 688,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/birra/01.png": {
+      "frame": {
+        "x": 10,
+        "y": 650,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/birra/03.png": {
+      "frame": {
+        "x": 10,
+        "y": 668,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/birra/05.png": {
+      "frame": {
+        "x": 0,
+        "y": 725,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/birra/07.png": {
+      "frame": {
+        "x": 0,
+        "y": 743,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/birra/08.png": {
+      "frame": {
+        "x": 0,
+        "y": 761,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/birra/09.png": {
+      "frame": {
+        "x": 0,
+        "y": 779,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/10.png": {
+      "frame": {
+        "x": 0,
+        "y": 797,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/11.png": {
+      "frame": {
+        "x": 0,
+        "y": 815,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/12.png": {
+      "frame": {
+        "x": 0,
+        "y": 833,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/tirapiedra/3.png": {
+      "frame": {
+        "x": 0,
+        "y": 851,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/atacar/1.png": {
+      "frame": {
+        "x": 0,
+        "y": 869,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/atacar/2.png": {
+      "frame": {
+        "x": 0,
+        "y": 887,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/atacar/4.png": {
+      "frame": {
+        "x": 0,
+        "y": 905,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/birra/00.png": {
+      "frame": {
+        "x": 0,
+        "y": 923,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/birra/02.png": {
+      "frame": {
+        "x": 0,
+        "y": 941,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/08.png": {
+      "frame": {
+        "x": 0,
+        "y": 959,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/09.png": {
+      "frame": {
+        "x": 0,
+        "y": 977,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/atacar/0.png": {
+      "frame": {
+        "x": 0,
+        "y": 995,
+        "w": 8,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 8,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/atacar/5.png": {
+      "frame": {
+        "x": 0,
+        "y": 1013,
+        "w": 8,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 8,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/07.png": {
+      "frame": {
+        "x": 0,
+        "y": 1031,
+        "w": 8,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 8,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/muerte/0.png": {
+      "frame": {
+        "x": 0,
+        "y": 1049,
+        "w": 8,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 8,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/atacar/6.png": {
+      "frame": {
+        "x": 0,
+        "y": 1067,
+        "w": 7,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 7,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/00.png": {
+      "frame": {
+        "x": 0,
+        "y": 1085,
+        "w": 7,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 7,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/01.png": {
+      "frame": {
+        "x": 0,
+        "y": 1103,
+        "w": 7,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 7,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/02.png": {
+      "frame": {
+        "x": 0,
+        "y": 1121,
+        "w": 7,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 7,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/04.png": {
+      "frame": {
+        "x": 0,
+        "y": 1139,
+        "w": 7,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 7,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/05.png": {
+      "frame": {
+        "x": 0,
+        "y": 1157,
+        "w": 7,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 7,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/06.png": {
+      "frame": {
+        "x": 0,
+        "y": 1175,
+        "w": 7,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 7,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/tirapiedra/4.png": {
+      "frame": {
+        "x": 0,
+        "y": 1193,
+        "w": 7,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 2,
+        "w": 7,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/idle.png": {
+      "frame": {
+        "x": 0,
+        "y": 1211,
+        "w": 6,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 6,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/13.png": {
+      "frame": {
+        "x": 0,
+        "y": 1229,
+        "w": 6,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 6,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/tirapiedra/0.png": {
+      "frame": {
+        "x": 0,
+        "y": 1247,
+        "w": 6,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 2,
+        "w": 6,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/tirapiedra/5.png": {
+      "frame": {
+        "x": 0,
+        "y": 1265,
+        "w": 6,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 6,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/muerte/1.png": {
+      "frame": {
+        "x": 0,
+        "y": 1283,
+        "w": 8,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 8,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/salto/0.png": {
+      "frame": {
+        "x": 6,
+        "y": 1211,
+        "w": 8,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 3,
+        "w": 8,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/salto/1.png": {
+      "frame": {
+        "x": 6,
+        "y": 1228,
+        "w": 8,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 2,
+        "w": 8,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/salto/3.png": {
+      "frame": {
+        "x": 6,
+        "y": 1245,
+        "w": 8,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 0,
+        "w": 8,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/salto/5.png": {
+      "frame": {
+        "x": 6,
+        "y": 1262,
+        "w": 8,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 8,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/salto/6.png": {
+      "frame": {
+        "x": 7,
+        "y": 1067,
+        "w": 8,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 8,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/muerte/2.png": {
+      "frame": {
+        "x": 8,
+        "y": 995,
+        "w": 9,
+        "h": 14
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 6,
+        "w": 9,
+        "h": 14
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/muerte/3.png": {
+      "frame": {
+        "x": 8,
+        "y": 1009,
+        "w": 9,
+        "h": 12
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 9,
+        "w": 9,
+        "h": 12
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/muerte/5.png": {
+      "frame": {
+        "x": 8,
+        "y": 1021,
+        "w": 12,
+        "h": 8
+      },
+      "rotated": true,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 13,
+        "w": 12,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/muerte/6.png": {
+      "frame": {
+        "x": 8,
+        "y": 1033,
+        "w": 12,
+        "h": 8
+      },
+      "rotated": true,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 13,
+        "w": 12,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/muerte/4.png": {
+      "frame": {
+        "x": 8,
+        "y": 1045,
+        "w": 11,
+        "h": 11
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 10,
+        "w": 11,
+        "h": 11
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/birra/06.png": {
+      "frame": {
+        "x": 10,
+        "y": 650,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/birra/04.png": {
+      "frame": {
+        "x": 0,
+        "y": 941,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/meo/03.png": {
+      "frame": {
+        "x": 0,
+        "y": 1121,
+        "w": 7,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 7,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "texture.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 20,
+      "h": 1300
+    },
+    "scale": 1
+  }
+}

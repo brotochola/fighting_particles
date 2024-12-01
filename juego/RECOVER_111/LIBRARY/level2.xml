@@ -1,0 +1,96 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="level2" itemID="65776f63-00000273" lastModified="1733088101">
+  <timeline>
+    <DOMTimeline name="level2" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="fence" color="#FF0000" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="river" centerPoint3DX="1020.95" centerPoint3DY="357.25">
+                  <matrix>
+                    <Matrix tx="1020.95" ty="380.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa7">
+                  <matrix>
+                    <Matrix tx="563.3" ty="543.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa7" selected="true">
+                  <matrix>
+                    <Matrix a="-1" tx="503.25" ty="574.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="boca" centerPoint3DX="1176.2" centerPoint3DY="608.9">
+                  <matrix>
+                    <Matrix tx="1176.2" ty="632.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="boca" centerPoint3DX="1176.2" centerPoint3DY="626.9">
+                  <matrix>
+                    <Matrix tx="1176.2" ty="650.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="boca" centerPoint3DX="1176.2" centerPoint3DY="650.9">
+                  <matrix>
+                    <Matrix tx="1176.2" ty="674.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="boca" centerPoint3DX="1176.2" centerPoint3DY="668.9">
+                  <matrix>
+                    <Matrix tx="1176.2" ty="692.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="1019" centerPoint3DY="593.95">
+                  <matrix>
+                    <Matrix tx="1018.95" ty="593.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle0">
+                  <matrix>
+                    <Matrix tx="946.2" ty="563.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="869" centerPoint3DY="593.95">
+                  <matrix>
+                    <Matrix a="-1" tx="869.05" ty="593.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
