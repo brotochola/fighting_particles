@@ -406,13 +406,15 @@ class Person extends GenericObject {
 
     this.lookAround();
 
-    // if (this.isItMyFrame()) this.evaluateSituation();
-
     if (!this.dead) {
       if (this.isItMyFrame()) this.updateMyStats(); //feel
       this.finiteStateMachine(); //change state/mood
       this.doActions(); //do
       this.checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath();
+    } else {
+      //MUERTE!
+      this.removeMatterBodyAfterIDied();
+      this.removeMeFromArray();
     }
     this.changeSpriteAccordingToStateAndVelocity();
     // }
@@ -425,6 +427,16 @@ class Person extends GenericObject {
     this.render();
 
     this.saveLog();
+  }
+
+  removeMeFromArray() {
+    this.particleSystem.people = this.particleSystem.people.filter(
+      (k) => k.id != this.id
+    );
+  }
+  removeMatterBodyAfterIDied() {
+    this.world.remove(this.engine.world, this.body);
+    this.removeMeAsTarget();
   }
   doActions() {
     return console.warn("deberias sobreescribir este metodo");
@@ -569,15 +581,6 @@ class Person extends GenericObject {
       //it's not moving
       if (this.whichSpriteAmIShowing().startsWith("camina")) {
         this.changeAnimation("parado", true);
-      } else if (
-        this.state == this.states.YENDO &&
-        !this.target &&
-        this.fear < 0.5 &&
-        this.health > 0.9
-      ) {
-        //si esta en estado YENDO, o sea q esta bien de salud y todo
-        //y no se esta moviendo, y no tiene target, se pone a saltar
-        this.changeAnimation("salto", false);
       }
     }
   }
@@ -815,6 +818,7 @@ class Person extends GenericObject {
 
   die() {
     if (this.dead) return;
+  
     this.unHighlight();
 
     this.body.isStatic = true;
@@ -824,11 +828,10 @@ class Person extends GenericObject {
     // this.createSprite("die_1");
 
     setTimeout(() => {
+      console.log(this.name + " murió");
       this.setState("muerto");
       this.dead = true;
     }, this.particleSystem.deltaTime * 4);
-
-    // setTimeout(() => this.remove(), 1000);
   }
 
   makeMeLookLeft() {

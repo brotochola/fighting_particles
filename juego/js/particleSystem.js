@@ -158,7 +158,7 @@ class ParticleSystem {
     ///
 
     this.loader.add("boca_ss", "img/boca_ss/boca.json");
-    this.loader.add("river_ss", "img/river_ss/agent.json");
+    this.loader.add("river_ss", "img/river_ss/river.json");
 
     this.loader.add("poli_ss", "img/poli_ss/agent.json");
 
