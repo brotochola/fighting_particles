@@ -41,6 +41,14 @@
             <input type="checkbox" id="bypass">
 
         </div>
+        <div class="slider-container">
+            <label for="canvas1Antialias">CANVAS 1 ANTIALIAS</label>
+            <input type="checkbox" id="canvas1Antialias"><br>
+            <label for="canvas2Antialias">CANVAS 2 ANTIALIAS</label>
+            <input type="checkbox" id="canvas2Antialias" checked>
+
+        </div>
+
 
         <div class="slider-container">
             <label for="pixelationRange">Pixelation:</label>
@@ -135,7 +143,8 @@
         ]
 
 
-
+        const canvas1Antialias = document.getElementById('canvas1Antialias');
+        const canvas2Antialias = document.getElementById('canvas2Antialias');
         const bypass = document.getElementById('bypass');
         const imageLoader = document.getElementById('imageLoader');
         const paletteSelect = document.getElementById('palette');
@@ -172,6 +181,8 @@
 
         let img = new Image();
 
+        canvas1Antialias.addEventListener('change', applyEffects, false);
+        canvas2Antialias.addEventListener('change', applyEffects, false);
         imageLoader.addEventListener('change', handleImage, false);
         pixelationRange.addEventListener('input', applyEffects, false);
         contrastRange.addEventListener('input', applyEffects, false);
@@ -267,8 +278,8 @@
             // Scale down and then up to create pixelation
             const scaledWidth = Math.floor(canvas.width / pixelation);
             const scaledHeight = Math.floor(canvas.height / pixelation);
-            ctx.imageSmoothingEnabled = false
-            tempCtx.imageSmoothingEnabled = false; // Disable anti-aliasing
+            ctx.imageSmoothingEnabled = canvas1Antialias.checked
+            tempCtx.imageSmoothingEnabled = canvas2Antialias.checked; // Disable anti-aliasing
             tempCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, scaledWidth, scaledHeight);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
