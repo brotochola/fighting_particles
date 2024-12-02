@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixelate, Contrast, and Border Darkening</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        canvas {
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            image-rendering: pixelated;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        .slider-container {
+            margin-top: 10px;
+        }
+
+        #hueRange {
+            width: 360px
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pixelate, Adjust Contrast, and Darken Borders</h1>
+    <div class="controls">
+        <input type="file" id="imageLoader" accept="image/*">
+        <div class="slider-container">
+            <label for="bypass">BYPASS</label>
+            <input type="checkbox" id="bypass">
+
+        </div>
+
+        <div class="slider-container">
+            <label for="pixelationRange">Pixelation:</label>
+            <input type="range" id="pixelationRange" min="1" max="16" value="4">
+        </div>
+        <div class="slider-container">
+            <label for="contrastRange">Contrast:</label>
+            <input type="range" id="contrastRange" min="0" max="200" value="0">
+        </div>
+
+        <div class="slider-container">
+            <input type="checkbox" id="shouldRemoveColor">
+            <label for="colorRemover">Remove Color:</label>
+
+            <input type="color" id="colorRemover" value="#ffffff">
+        </div>
+
+        <div class="slider-container">
+            <label for="hueRange">Hue (Matiz):</label>
+            <input type="range" id="hueRange" min="0" max="360" value="0">
+        </div>
+        <div class="slider-container">
+            <label for="saturationRange">Saturation:</label>
+            <input type="range" id="saturationRange" min="0" max="200" value="100">
+        </div>
+
+
+        <div class="slider-container">
+            <label for="darkenRange">Border Darkening (%):</label>
+            <input type="range" id="darkenRange" min="0" max="100" value="20">
+        </div>
+
+
+        <div class="slider-container">
+            <label for="paletteBlend">COLOR PALETTE:</label>
+            <select id="palette"></select>
+            <input type="range" id="paletteBlend" min="0" max="1" value="0" step="0.01">
+
+        </div>
+    </div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+
+
+        const colorPalettes = [
+            {
+                "name": "Forest Adventure",
+                "colors": ["#3b5323", "#6b8e23", "#a2d149", "#324631", "#202b24"]
+            },
+            {
+                "name": "Desert Sands",
+                "colors": ["#e4a672", "#c68642", "#a65f38", "#5c3c25", "#2b1f14"]
+            },
+            {
+                "name": "Ocean Breeze",
+                "colors": ["#4682b4", "#5f9ea0", "#87cefa", "#2f4f4f", "#1e3f3f"]
+            },
+            {
+                "name": "Retro Sunset",
+                "colors": ["#ff4500", "#ff6347", "#ffa07a", "#f08080", "#800000"]
+            },
+            {
+                "name": "Neon Nights",
+                "colors": ["#ff00ff", "#8a2be2", "#4b0082", "#0000ff", "#00ffff"]
+            },
+            {
+                "name": "Snowy Peaks",
+                "colors": ["#ffffff", "#d3d3d3", "#a9a9a9", "#696969", "#2f4f4f"]
+            },
+            {
+                "name": "Cave Depths",
+                "colors": ["#2c3e50", "#34495e", "#1c2833", "#566573", "#17202a"]
+            },
+            {
+                "name": "Candy Land",
+                "colors": ["#ff69b4", "#ff1493", "#ffa07a", "#ffb6c1", "#ff00ff"]
+            },
+            {
+                "name": "Tropical Paradise",
+                "colors": ["#20b2aa", "#2e8b57", "#3cb371", "#00fa9a", "#adff2f"]
+            },
+            {
+                "name": "Haunted Mansion",
+                "colors": ["#4b0082", "#8b008b", "#483d8b", "#2e2e2e", "#1c1c1c"]
+            },
+            { "name": "Apollo", "colors": ['#172038', '#253a5e', '#3c5e8b', '#4f8fba', '#73bed3', '#a4dddb', '#19332d', '#25562e', '#468232', '#75a743', '#a8ca58', '#d0da91', '#4d2b32', '#7a4841', '#ad7757', '#c09473', '#d7b594', '#e7d5b3', '#341c27', '#602c2c', '#884b2b', '#be772b', '#de9e41', '#e8c170', '#241527', '#411d31', '#752438', '#a53030', '#cf573c', '#da863e', '#1e1d39', '#402751', '#7a367b', '#a23e8c', '#c65197', '#df84a5', '#090a14', '#10141f', '#151d28', '#202e37', '#394a50', '#577277', '#819796', '#a8b5b2', '#c7cfcc', '#ebede9'] },
+            { "name": "Sweetie 16", "colors": ['#1a1c2c', '#5d275d', '#b13e53', '#ef7d57', '#ffcd75', '#a7f070', '#38b764', '#257179', '#29366f', '#3b5dc9', '#41a6f6', '#73eff7', '#f4f4f4', '#94b0c2', '#566c86', '#333c57'] },
+            { "name": "Journey", "colors": ['#050914', '#110524', '#3b063a', '#691749', '#9c3247', '#d46453', '#f5a15d', '#ffcf8e', '#ff7a7d', '#ff417d', '#d61a88', '#94007a', '#42004e', '#220029', '#100726', '#25082c', '#3d1132', '#73263d', '#bd4035', '#ed7b39', '#ffb84a', '#fff540', '#c6d831', '#77b02a', '#429058', '#2c645e', '#153c4a', '#052137', '#0e0421', '#0c0b42', '#032769', '#144491', '#488bd4', '#78d7ff', '#b0fff1', '#faffff', '#c7d4e1', '#928fb8', '#5b537d', '#392946', '#24142c', '#0e0f2c', '#132243', '#1a466b', '#10908e', '#28c074', '#3dff6e', '#f8ffb8', '#f0c297', '#cf968c', '#8f5765', '#52294b', '#0f022e', '#35003b', '#64004c', '#9b0e3e', '#d41e3c', '#ed4c40', '#ff9757', '#d4662f', '#9c341a', '#691b22', '#450c28', '#2d002e'] },
+            { "name": "IslandJoy 16", "colors": ['#ffffff', '#6df7c1', '#11adc1', '#606c81', '#393457', '#1e8875', '#5bb361', '#a1e55a', '#f7e476', '#f99252', '#cb4d68', '#6a3771', '#c92464', '#f48cb6', '#f7b69e', '#9b9c82'] },
+            { "name": "Dramescape Hex 8", "colors": ['#c9cca1', '#caa05a', '#ae6a47', '#8b4049', '#543344', '#515262', '#63787d', '#8ea091'] }
+        ]
+
+
+
+        const bypass = document.getElementById('bypass');
+        const imageLoader = document.getElementById('imageLoader');
+        const paletteSelect = document.getElementById('palette');
+        const pixelationRange = document.getElementById('pixelationRange');
+        const contrastRange = document.getElementById('contrastRange');
+        const darkenRange = document.getElementById('darkenRange');
+        const paletteBlend = document.getElementById('paletteBlend');
+
+        const shouldRemoveColor = document.getElementById('shouldRemoveColor')
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        const hueRange = document.getElementById('hueRange');
+        const saturationRange = document.getElementById('saturationRange');
+
+
+        function putPalettesInSelect() {
+            let option = document.createElement('option');
+            option.value = "none"
+            option.innerHTML = "none"
+            paletteSelect.appendChild(option)
+
+            for (let p of colorPalettes) {
+                let option = document.createElement('option');
+                option.value = p.name
+                option.innerHTML = p.name
+                paletteSelect.appendChild(option)
+            }
+        }
+
+        putPalettesInSelect()
+
+
+
+        let img = new Image();
+
+        imageLoader.addEventListener('change', handleImage, false);
+        pixelationRange.addEventListener('input', applyEffects, false);
+        contrastRange.addEventListener('input', applyEffects, false);
+        darkenRange.addEventListener('input', applyEffects, false);
+        paletteBlend.addEventListener('input', applyEffects, false);
+        shouldRemoveColor.addEventListener('change', applyEffects, false);
+        bypass.addEventListener('change', applyEffects, false);
+
+
+        paletteSelect.addEventListener('input', handlePaletteChange, false);
+
+        hueRange.addEventListener('input', applyEffects, false);
+        saturationRange.addEventListener('input', applyEffects, false);
+
+        function handleImage(event) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                img.onload = function () {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    applyEffects();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function handlePaletteChange() {
+
+
+            applyEffects()
+
+        }
+        function applyEffects() {
+            if (!img.src) return;
+
+
+            const pixelation = parseInt(pixelationRange.value, 10);
+            const contrast = parseInt(contrastRange.value, 10);
+            const darken = parseInt(darkenRange.value, 10);
+            const hue = parseInt(hueRange.value, 10);
+            const saturation = parseInt(saturationRange.value, 10);
+
+            // Clear the main canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the original image
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            if (bypass.checked) return
+
+
+
+            // Apply contrast adjustment
+            let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            const contrastFactor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+
+            for (let i = 0; i < data.length; i += 4) {
+                data[i] = clamp(contrastFactor * (data[i] - 128) + 128);     // Red
+                data[i + 1] = clamp(contrastFactor * (data[i + 1] - 128) + 128); // Green
+                data[i + 2] = clamp(contrastFactor * (data[i + 2] - 128) + 128); // Blue
+            }
+
+            //DESPUES DEL CONTRASTE, SACAMOS UN COLOR
+            if (shouldRemoveColor.checked) removeColor(imageData, "#ffffff")
+
+            // ctx.putImageData(imageData, 0, 0);
+
+            adjustHueSaturation(imageData, hue, saturation);
+
+
+            ctx.putImageData(imageData, 0, 0);
+
+
+
+            // Apply Hue and Saturation adjustments
+
+
+
+
+
+            // Use a temporary canvas for pixelation
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+
+            // Draw the current state onto the temporary canvas
+            //   tempCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+
+            // Scale down and then up to create pixelation
+            const scaledWidth = Math.floor(canvas.width / pixelation);
+            const scaledHeight = Math.floor(canvas.height / pixelation);
+            ctx.imageSmoothingEnabled = false
+            tempCtx.imageSmoothingEnabled = false; // Disable anti-aliasing
+            tempCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, scaledWidth, scaledHeight);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Darken border pixels of the smaller image
+            imageData = darkenBorders(tempCtx, darken, canvas.width, canvas.height);
+
+            //apply color pallete to smaller image
+            imageData = applyColorPaletteIfAnySelected(imageData)
+            
+            //draw the new image in temp canvas
+            tempCtx.putImageData(imageData, 0, 0);
+            
+            //draw smaller canvas y visible canvas
+            ctx.drawImage(tempCanvas, 0, 0, scaledWidth, scaledHeight, 0, 0, canvas.width, canvas.height);
+
+
+        }
+
+        function applyColorPaletteIfAnySelected(imageData) {
+
+            if (paletteSelect.value == "none") {
+                return imageData
+            }
+            let colors = colorPalettes.filter(k => k.name == paletteSelect.value)[0].colors
+            return applyPalette(imageData, colors, Number(paletteBlend.value))
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255;
+            g /= 255;
+            b /= 255;
+
+            let max = Math.max(r, g, b);
+            let min = Math.min(r, g, b);
+            let h = (max + min) / 2;
+            let s = h;
+            let l = h;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                let d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                if (max === r) {
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                } else if (max === g) {
+                    h = (b - r) / d + 2;
+                } else {
+                    h = (r - g) / d + 4;
+                }
+                h /= 6;
+            }
+
+            return [h, s, l];
+        }
+
+        function hslToRgb(h, s, l) {
+            let r, g, b;
+            if (s === 0) {
+                r = g = b = l; // achromatic
+            } else {
+                function hue2rgb(p, q, t) {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1 / 6) return p + (q - p) * 6 * t;
+                    if (t < 1 / 2) return q;
+                    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                    return p;
+                }
+
+                let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                let p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1 / 3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1 / 3);
+            }
+
+            return [r * 255, g * 255, b * 255];
+        }
+
+        function adjustHueSaturation(imageData, hue, saturation) {
+
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                let r = data[i];
+                let g = data[i + 1];
+                let b = data[i + 2];
+                let a = data[i + 3];
+
+                // Convert RGB to HSL
+                let [h, s, l] = rgbToHsl(r, g, b);
+
+                // Adjust Hue and Saturation
+                h = (h + hue / 360) % 1; // Hue adjustment
+                s = clamp(s * (saturation / 100)); // Saturation adjustment
+
+                // Convert HSL back to RGB
+                [r, g, b] = hslToRgb(h, s, l);
+
+                // Update pixel data
+                data[i] = r;
+                data[i + 1] = g;
+                data[i + 2] = b;
+                data[i + 3] = a;
+            }
+            // ctx.putImageData(imageData, 0, 0);
+        }
+
+
+        function darkenBorders(ct, darkenPercentage, width, height) {
+            const imgdata = ct.getImageData(0, 0, width, height);
+            const data = imgdata.data;
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const index = (y * width + x) * 4;
+
+                    if (data[index + 3] === 0) continue; // Skip transparent pixels
+
+                    if (isBorderPixel(data, x, y)) {
+                        data[index] = darkenPixel(data[index], darkenPercentage);       // Red
+                        data[index + 1] = darkenPixel(data[index + 1], darkenPercentage); // Green
+                        data[index + 2] = darkenPixel(data[index + 2], darkenPercentage); // Blue
+                    }
+                }
+            }
+
+            // ct.putImageData(imgdata, 0, 0);
+            return imgdata
+        }
+
+        function isBorderPixel(data, x, y) {
+            const width = canvas.width;
+            const height = canvas.height;
+
+            const neighbors = [
+                [x - 1, y], [x + 1, y], // Left, Right
+                [x, y - 1], [x, y + 1], // Top, Bottom
+            ];
+
+            for (const [nx, ny] of neighbors) {
+                if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                    const index = (ny * width + nx) * 4;
+                    if (data[index + 3] === 0) return true; // Transparent neighbor
+                }
+            }
+
+            return false;
+        }
+
+        /**
+    * Aplica una paleta de colores a una imagen con un factor de mezcla.
+    * 
+    * @param {ImageData} imageData - Datos de la imagen original.
+    * @param {Array<string>} palette - Paleta de colores en formato hexadecimal.
+    * @param {number} blendFactor - Factor de mezcla (0.0 a 1.0). 
+    *                                0.0 = colores originales,
+    *                                1.0 = colores de la paleta,
+    *                                valores intermedios = mezcla.
+    * @returns {ImageData} Datos de la imagen con la paleta aplicada.
+    */
+        function applyPalette(imageData, palette, blendFactor) {
+            // console.log("applyPalette", palette, blendFactor)
+
+
+
+
+            const paletteColors = palette.map(hexToRgb);
+            const { data, width, height } = imageData;
+
+            for (let i = 0; i < data.length; i += 4) {
+                const originalColor = { r: data[i], g: data[i + 1], b: data[i + 2] };
+                const closestColor = findClosestColor(originalColor, paletteColors);
+
+                const blendedColor = {
+                    r: lerp(originalColor.r, closestColor.r, blendFactor),
+                    g: lerp(originalColor.g, closestColor.g, blendFactor),
+                    b: lerp(originalColor.b, closestColor.b, blendFactor)
+                };
+
+                data[i] = blendedColor.r;
+                data[i + 1] = blendedColor.g;
+                data[i + 2] = blendedColor.b;
+
+            }
+
+            let newimgDAta = new ImageData(data, width, height)
+            return newimgDAta
+
+        }
+
+        // Función auxiliar para convertir hex a rgb
+        function hexToRgb(hex) {
+            const bigint = parseInt(hex.replace('#', ''), 16);
+            return {
+                r: (bigint >> 16) & 255,
+                g: (bigint >> 8) & 255,
+                b: bigint & 255
+            };
+        }
+
+        // Encuentra el color más cercano en la paleta usando la distancia euclidiana
+        function findClosestColor(color, palette) {
+            let closest = palette[0];
+            let minDistance = Infinity;
+            for (const palColor of palette) {
+                const distance = Math.sqrt(
+                    (color.r - palColor.r) ** 2 +
+                    (color.g - palColor.g) ** 2 +
+                    (color.b - palColor.b) ** 2
+                );
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closest = palColor;
+                }
+            }
+            return closest;
+        }
+
+        // Interpolación lineal entre dos valores
+        function lerp(a, b, t) {
+            return Math.round(a + (b - a) * t);
+        }
+
+
+
+
+        function darkenPixel(value, percentage) {
+            return Math.max(0, value - (value * (percentage / 100)));
+        }
+
+        function clamp(value) {
+            return Math.max(0, Math.min(255, value));
+        }
+
+        function hexFile2arr(hex) {
+            return hex.trim().split('\n').map(color => `#${color}`);
+        }
+
+
+        function hexToRgbArr(hex) {
+            const cleanHex = hex.replace("#", "");
+            return [
+                parseInt(cleanHex.slice(0, 2), 16),
+                parseInt(cleanHex.slice(2, 4), 16),
+                parseInt(cleanHex.slice(4, 6), 16)
+            ];
+        }
+
+
+        /**
+ * Set alpha to 0 for pixels matching a specific color in the imageData.
+ * @param {ImageData} imageData - The ImageData object to modify.
+ * @param {string} targetColor - The color to make transparent in hex format (e.g., "#ffffff").
+ */
+        function removeColor(imageData, targetColor) {
+
+
+            const [rTarget, gTarget, bTarget] = hexToRgbArr(targetColor);
+
+            for (let i = 0; i < imageData.data.length; i += 4) {
+                const r = imageData.data[i];
+                const g = imageData.data[i + 1];
+                const b = imageData.data[i + 2];
+
+                if (r === rTarget && g === gTarget && b === bTarget) {
+                    imageData.data[i + 3] = 0; // Set alpha to 0
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>
