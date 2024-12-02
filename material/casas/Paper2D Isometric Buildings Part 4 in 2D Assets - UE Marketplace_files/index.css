@@ -1,0 +1,31 @@
+@font-face {
+	font-family: "Inter";
+	font-display: swap;
+	font-weight: 400;
+	src: local("Inter Regular"), local("Inter-Regular"),
+		url("https://components.unrealengine.com/fonts/inter/Inter-Regular.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Inter";
+	font-display: swap;
+	font-weight: 500;
+	src: local("Inter Medium"), local("Inter-Medium"),
+		url("https://components.unrealengine.com/fonts/inter/Inter-Medium.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Inter Tight";
+	font-display: swap;
+	font-weight: 700;
+	src: local("Inter Tight Bold"), local("InterTight-Bold"),
+		url("https://components.unrealengine.com/fonts/inter/InterTight-Bold.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Inter Tight";
+	font-display: swap;
+	font-weight: 900;
+	src: local("Inter Tight Black"), local("InterTight-Black"),
+		url("https://components.unrealengine.com/fonts/inter/InterTight-Black.woff2") format("woff2");
+}

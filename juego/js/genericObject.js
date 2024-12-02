@@ -222,7 +222,7 @@ class GenericObject {
       this.image.scale.y = this.scale;
       this.image.scale.x = this.direction * this.scale;
     } else {*/
-    this.scale = this.initialScale;
+    // this.scale = this.initialScale;
     this.image.scale.x = this.direction * this.scale;
     this.image.scale.y = this.scale;
     //}

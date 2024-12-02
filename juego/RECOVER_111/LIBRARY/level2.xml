@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="level2" itemID="65776f63-00000273" lastModified="1733094067">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="level2" itemID="65776f63-00000273" lastModified="1733099922">
   <timeline>
     <DOMTimeline name="level2" layerDepthEnabled="true">
       <layers>
@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="piso" selected="true">
+                <DOMSymbolInstance libraryItemName="piso">
                   <matrix>
                     <Matrix tx="975.45" ty="602.05"/>
                   </matrix>
