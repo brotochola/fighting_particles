@@ -143,6 +143,7 @@
         ]
 
 
+        const colorRemover = document.getElementById('colorRemover');
         const canvas1Antialias = document.getElementById('canvas1Antialias');
         const canvas2Antialias = document.getElementById('canvas2Antialias');
         const bypass = document.getElementById('bypass');
@@ -181,6 +182,7 @@
 
         let img = new Image();
 
+        colorRemover.addEventListener('change', applyEffects, false);
         canvas1Antialias.addEventListener('change', applyEffects, false);
         canvas2Antialias.addEventListener('change', applyEffects, false);
         imageLoader.addEventListener('change', handleImage, false);
@@ -217,6 +219,7 @@
 
         }
         function applyEffects() {
+            console.log("re applying...")
             if (!img.src) return;
 
 
@@ -249,7 +252,7 @@
             }
 
             //DESPUES DEL CONTRASTE, SACAMOS UN COLOR
-            if (shouldRemoveColor.checked) removeColor(imageData, "#ffffff")
+            if (shouldRemoveColor.checked) removeColor(imageData,colorRemover.value)
 
             // ctx.putImageData(imageData, 0, 0);
 
@@ -288,10 +291,10 @@
 
             //apply color pallete to smaller image
             imageData = applyColorPaletteIfAnySelected(imageData)
-            
+
             //draw the new image in temp canvas
             tempCtx.putImageData(imageData, 0, 0);
-            
+
             //draw smaller canvas y visible canvas
             ctx.drawImage(tempCanvas, 0, 0, scaledWidth, scaledHeight, 0, 0, canvas.width, canvas.height);
 
@@ -537,7 +540,7 @@
  */
         function removeColor(imageData, targetColor) {
 
-
+            // console.log("Removing color",targetColor)
             const [rTarget, gTarget, bTarget] = hexToRgbArr(targetColor);
 
             for (let i = 0; i < imageData.data.length; i += 4) {
