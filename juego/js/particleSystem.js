@@ -236,7 +236,7 @@ class ParticleSystem {
     this.bg.name="BG"
     this.bg.width = this.worldWidth;
     this.bg.height = this.worldHeight;
-    this.bg.scale.set(0.666)
+    this.bg.tileScale.set(0.666)
     this.mainContainer.addChild(this.bg);
   }
 

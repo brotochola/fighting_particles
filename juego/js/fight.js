@@ -18,8 +18,8 @@ var particleSystem;
 document.body.onload = (e) => {
   particleSystem = new ParticleSystem(
     "canvas",
-    window.innerWidth*4,
-    window.innerHeight*4,
+    window.innerWidth*1.3,
+    window.innerHeight*1.3,
     Matter,
     document.querySelector("panelInfo"),
     document.querySelector("config")
