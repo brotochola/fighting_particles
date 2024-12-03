@@ -440,7 +440,7 @@ class GenericObject {
   }
 
   createAnimatedSprite() {
-    this.spritesheet = this.particleSystem.res[this.team + "_ss"].spritesheet;
+    this.spritesheet = this.particleSystem.res[this.team + "_ss"];
     // console.log(this.spritesheet);
     this.image = new PIXI.AnimatedSprite(this.spritesheet.animations.parado);
     this.container.addChild(this.image);

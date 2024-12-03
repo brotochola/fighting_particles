@@ -1,13 +1,12 @@
 class House extends GenericObject {
   constructor(opt) {
-    
     super(opt);
-    
+
     const { x, y, particleSystem, width, height, sprite } = opt;
     this.sprite = sprite;
 
-    this.spriteWidth = particleSystem.res[sprite].texture.width;
-    this.spriteHeight = particleSystem.res[sprite].texture.height;
+    this.spriteWidth = particleSystem.res[sprite].baseTexture.width;
+    this.spriteHeight = particleSystem.res[sprite].baseTexture.height;
 
     /////////////////////////////
 
@@ -25,8 +24,6 @@ class House extends GenericObject {
       0.5
     );
 
-    
-
     this.createSprite();
 
     // debugger
@@ -37,18 +34,12 @@ class House extends GenericObject {
     // this.addParticleEmitter();
   }
 
-
   createSprite() {
-    this.image = new PIXI.Sprite(
-      this.particleSystem.res[this.sprite].texture.clone()
-    );
+    this.image = new PIXI.Sprite(this.particleSystem.res[this.sprite]);
     this.alignSpriteForIsometricView();
 
     this.container.addChildAt(this.image, 0);
-  
   }
-
-
 
   update(COUNTER) {
     super.update(COUNTER);

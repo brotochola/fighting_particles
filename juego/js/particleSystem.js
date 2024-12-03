@@ -82,34 +82,34 @@ class ParticleSystem {
     this.grounds = [];
     this.poles = [];
     this.bullets = [];
-    this.createPixiStage();
+    this.createPixiStage(() => {
+      this.createGrid();
 
-    this.createGrid();
+      this.addFloor();
 
-    this.addFloor();
+      this.runEngine();
 
-    this.runEngine();
+      // // Add event listener to resize canvas when window size changes
+      // window.addEventListener('resize', () => {
+      //     this.canvas.width = width;
+      //     this.canvas.height = height;
+      // });
 
-    // // Add event listener to resize canvas when window size changes
-    // window.addEventListener('resize', () => {
-    //     this.canvas.width = width;
-    //     this.canvas.height = height;
-    // });
+      // this.addEventListenerToMouse();
+      this.addClickListenerToCanvas();
 
-    // this.addEventListenerToMouse();
-    this.addClickListenerToCanvas();
+      // this.addExtraCanvasForFire();
 
-    // this.addExtraCanvasForFire();
+      this.addShortCuts();
 
-    this.addShortCuts();
+      // Matter.Events.on(this.engine, "collisionActive", (e) => {
+      //   this.collisionHandler(e);
+      // });
 
-    // Matter.Events.on(this.engine, "collisionActive", (e) => {
-    //   this.collisionHandler(e);
-    // });
+      // this.createSmallerCanvas();
 
-    // this.createSmallerCanvas();
-
-    this.createUI();
+      this.createUI();
+    });
   }
   createUI() {
     this.UI = new UI({
@@ -134,6 +134,60 @@ class ParticleSystem {
     return 1000 / PIXI.ticker.shared.FPS;
   }
 
+  async cargarAssets() {
+    const assetsToLoad = {
+      boca_ss: "img/boca_ss/boca.json",
+      river_ss: "img/river_ss/river.json",
+      poli_ss: "img/poli_ss/agent.json",
+      bg: "img/bg3.jpg",
+      blood: "img/blood.png",
+      pole: "img/pole.png",
+      casa1: "img/casas/casa1.png",
+      casa2: "img/casas/casa2.png",
+      casa3: "img/casas/casa3.png",
+      casa4: "img/casas/casa4.png",
+      casa5: "img/casas/casa5.png",
+      casa6: "img/casas/casa6.png",
+      casa7: "img/casas/casa7.png",
+      casa8: "img/casas/casa8.png",
+      casa10: "img/casas/casa10.png",
+      casa11: "img/casas/casa11.png",
+      casa12: "img/casas/casa12.png",
+      casa13: "img/casas/casa13.png", // //CALLES
+      calle0: "img/casas/calle0.png",
+      calle1: "img/casas/calle1.png",
+    };
+
+    for (const [alias, src] of Object.entries(assetsToLoad)) {
+      console.log(alias, src);     
+      PIXI.Assets.add({ alias, src });
+    }
+
+    // Cargar todos los assets registrados
+
+    const loadedAssets = await PIXI.Assets.load(Object.keys(assetsToLoad));
+
+    console.log("Assets cargados:", loadedAssets);
+
+    this.res = loadedAssets;
+
+    this.createBG();
+  }
+
+  async createBG() {
+    console.log("#create bg");
+    let tex = await PIXI.Assets.load("bg");
+
+    console.log("##", tex);
+
+    this.bg = new PIXI.TilingSprite(tex);
+    this.bg.name = "BG";
+    this.bg.width = this.worldWidth;
+    this.bg.height = this.worldHeight;
+    this.bg.tileScale.set(0.666);
+    this.mainContainer.addChild(this.bg);
+  }
+
   createPixiStage(cb) {
     this.renderer = PIXI.autoDetectRenderer(
       this.viewportWidth,
@@ -147,91 +201,45 @@ class ParticleSystem {
         autoresize: false,
       }
     );
-    this.loader = PIXI.Loader.shared;
-    this.pixiApp = new PIXI.Application({
-      backgroundAlpha: 0,
-      transparent: true,
-      width: this.viewportWidth,
-      height: this.viewPortHeight,
-      resolution: 1, // Renderiza a la mitad de resolución
-      autoDensity: true // Escala automáticamente el canvas para que se vea bien
-    });
+
+    this.pixiApp = new PIXI.Application();
+
+    this.pixiApp
+      .init({
+        backgroundAlpha: 0,
+        transparent: true,
+        width: this.viewportWidth,
+        height: this.viewPortHeight,
+        resolution: 1, // Renderiza a la mitad de resolución
+        autoDensity: true, // Escala automáticamente el canvas para que se vea bien
+      })
+      .then((e) => {
+        globalThis.__PIXI_APP__ = this.pixiApp;
+        document.body.appendChild(this.pixiApp.canvas);
+        this.canvas = this.pixiApp.canvas;
+
+        this.cargarAssets().then((e) => {
+          this.canvas.oncontextmenu = () => false;
+
+          this.canvas.id = "pixiCanvas";
+          // this.canvas.onclick = (e) => this.handleClickOnCanvas(e);
+          // this.canvas.onmousemove = (e) => this.handleMouseMoveOnCanvas(e);
+          document.body.appendChild(this.canvas);
+          this.mainContainer = new PIXI.Container();
+          this.mainContainer.name = "Main Container";
+          this.pixiApp.stage.addChild(this.mainContainer);
+          this.pixiApp.stage.sortableChildren = true;
+          this.mainContainer.sortableChildren = true;
+
+          if (cb instanceof Function) {
+            cb();
+          }
+        });
+      });
 
     //DEBUG
-    globalThis.__PIXI_APP__ = this.pixiApp;
 
     ///
-
-    this.loader.add("boca_ss", "img/boca_ss/boca.json");
-    this.loader.add("river_ss", "img/river_ss/river.json");
-
-    this.loader.add("poli_ss", "img/poli_ss/agent.json");
-
-    // this.loader.add("walk_boca", "img/boca/walk.png");
-    // this.loader.add("idle_boca", "img/boca/idle.png");
-    // this.loader.add("die_boca", "img/boca/dead.png");
-    // this.loader.add("attack_boca", "img/boca/attack.png");
-
-    // this.loader.add("walk_river", "img/river/walk.png");
-    // this.loader.add("idle_river", "img/river/idle.png");
-    // this.loader.add("die_river", "img/river/dead.png");
-    // this.loader.add("attack_river", "img/river/attack.png");
-
-    // this.loader.add("attack_poli", "img/poli/attack2.png");
-    // this.loader.add("push_poli", "img/poli/attack.png");
-    // this.loader.add("walk_poli", "img/poli/walk.png");
-    // this.loader.add("idle_poli", "img/poli/idle.png");
-    // this.loader.add("die_poli", "img/poli/dead.png");
-
-    // this.loader.add("dead_2", "img/dead_2.png");
-    this.loader.add("bg", "img/bg3.jpg");
-    this.loader.add("blood", "img/blood.png");
-    // this.loader.add("fence", "img/fence.png");
-
-    //POR AHORA USAMOS AL ZOMBIE COMO IDOLO:
-    // this.loader.add("walk_idol", "img/river/walk.png");
-    // this.loader.add("idle_idol", "img/river/idle.png");
-    this.loader.add("pole", "img/pole.png");
-
-    this.loader.add("casa1", "img/casas/casa1.png");
-    this.loader.add("casa2", "img/casas/casa2.png");
-    this.loader.add("casa3", "img/casas/casa3.png");
-    this.loader.add("casa4", "img/casas/casa4.png");
-    this.loader.add("casa5", "img/casas/casa5.png");
-    this.loader.add("casa6", "img/casas/casa6.png");
-    this.loader.add("casa10", "img/casas/casa10.png");
-    this.loader.add("casa11", "img/casas/casa11.png");
-    this.loader.add("casa12", "img/casas/casa12.png");
-    this.loader.add("casa13", "img/casas/casa13.png");
-
-    this.loader.add("casa7", "img/casas/casa7.png");
-    this.loader.add("casa8", "img/casas/casa8.png");
-
-    //CALLES
-    this.loader.add("calle0", "img/casas/calle0.png");
-    this.loader.add("calle1", "img/casas/calle1.png");
-
-    this.loader.load((loader, resources) => {
-      this.res = resources;
-
-      this.createBG();
-      // this.setStageScale()
-      if (cb instanceof Function) cb();
-    });
-
-    this.canvas = this.pixiApp.view;
-
-    this.canvas.oncontextmenu = () => false;
-
-    this.canvas.id = "pixiCanvas";
-    // this.canvas.onclick = (e) => this.handleClickOnCanvas(e);
-    // this.canvas.onmousemove = (e) => this.handleMouseMoveOnCanvas(e);
-    document.body.appendChild(this.canvas);
-    this.mainContainer = new PIXI.Container();
-    this.mainContainer.name = "Main Container";
-    this.pixiApp.stage.addChild(this.mainContainer);
-    this.pixiApp.stage.sortableChildren = true;
-    this.mainContainer.sortableChildren = true;
   }
 
   setStageScale() {
@@ -240,18 +248,6 @@ class ParticleSystem {
     let bounds = this.pixiApp.stage.getBounds();
     this.pixiApp.stage.x = -bounds.width / 2;
     this.pixiApp.stage.y = -bounds.height / 2;
-  }
-
-  createBG() {
-    console.log("#create bg");
-    let tex = this.res["bg"].texture.clone();
-
-    this.bg = new PIXI.TilingSprite(tex);
-    this.bg.name = "BG";
-    this.bg.width = this.worldWidth;
-    this.bg.height = this.worldHeight;
-    this.bg.tileScale.set(0.666);
-    this.mainContainer.addChild(this.bg);
   }
 
   changeHeightForAllBoxes(howMuch) {
@@ -710,9 +706,9 @@ class ParticleSystem {
       .forEach((element) => {
         if (isMouseOverPixel(mousePosition, element)) {
           console.log(`Mouse sobre:`, element.parent.owner);
-          element.parent.owner.mouseover=true
-        }else{
-          element.parent.owner.mouseover=false
+          element.parent.owner.mouseover = true;
+        } else {
+          element.parent.owner.mouseover = false;
         }
       });
   }

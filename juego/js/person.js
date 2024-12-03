@@ -58,7 +58,7 @@ class Person extends GenericObject {
     );
     
 
-    this.createParticleContainer()
+    // this.createParticleContainer()
     this.createDebugContainer();
 
     this.createAnimatedSprite();
@@ -414,7 +414,7 @@ class Person extends GenericObject {
     this.changeSpriteAccordingToStateAndVelocity();
     // }
 
-    this.animateGravityToParticles();
+    // this.animateGravityToParticles();
 
     // this.emitBlood();
     // if (this.emitter) this.emitter.emit = false;
