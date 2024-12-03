@@ -1,7 +1,7 @@
 class Person extends GenericObject {
   states = {
     //de todes
- 
+
     YENDO: 1,
     RETROCEDIENDO: 2,
     HUYENDO: 3,
@@ -67,7 +67,28 @@ class Person extends GenericObject {
     // this.createSprite("idle_" + this.team);
 
     this.updateMyPositionInCell();
-    // this.addParticleEmitter();
+    this.createAnimationActions();
+  }
+
+  createAnimationActions() {
+    this.actions = {
+      meo: false,
+      birra: false,
+      tirapiedra: false,
+      golpe: false,
+      recibir_golpe: false,
+    };
+  }
+
+  setAction(action) {
+    if (!Object.keys(this.actions).includes(action)) {
+      return console.warn("La accion " + action + " no existe");
+    }
+    for (let a of Object.keys(this.actions)) {
+      this.actions[a] = false;
+    }
+
+    this.actions[action] = true;
   }
 
   initStartingAttributes() {
@@ -297,62 +318,15 @@ class Person extends GenericObject {
       howMuchHealthThisIsTakingFromMe *
       this.particleSystem.MULTIPLIERS.FEAR_REDUCER; //ANGER GOES UP ACCORDING TO courage. MORE courage, YOU GET ANGRIER
 
-    let incomingAngleOfHit = Math.atan2(part.pos.y, part.pos.x);
-
-    // this.emitBlood(incomingAngleOfHit);
-
-    // let difX = part.body.position.x - this.body.position.x;
-    // let difY = part.body.position.y - this.body.position.y;
-
-    // let dif = new p5.Vector(difX, difY).setMag(1);
-
-    // this.body.position.x -= dif.x * part.strength * 10;
-    // this.body.position.y -= dif.y * part.strength * 10;
-
-    // this.makeMeFlash();
-
-    // if (part instanceof Bullet) setTimeout(() => this.die(), 100);
+    // let incomingAngleOfHit = Math.atan2(part.pos.y, part.pos.x);
+    this.frenar();
+    this.setAction("recibir_golpe");
   }
-  // createBody(radius) {
-  //   let bodyOptions = {
-  //     restitution: 0.1,
-  //     mass: 0.01,
-  //     friction: 1,
-  //     slop: 0,
-  //     frictionAir: 0.5,
-  //     label: "particle",
-  //     // isSensor: true,
-  //     render: { visible: false },
-  //     isStatic: false,
-  //     // density: 99999999999999
-  //     // mass: 0
-  //     plugin: {
-  //       // attractors: [
-  //       //   (bodyA, bodyB) => {
-  //       //     let factor = this.getAttractionFactorAccordingToTemperature();
-  //       //     let distX = bodyA.position.x - bodyB.position.x;
-  //       //     let distY = bodyA.position.y - bodyB.position.y;
-  //       //     return {
-  //       //       x: (bodyA.position.x - bodyB.position.x) * 1e-6 * factor,
-  //       //       y: (bodyA.position.y - bodyB.position.y) * 1e-6 * factor,
-  //       //     };
-  //       //   },
-  //       // ],
-  //     },
-  //   };
 
-  //   this.body = this.Matter.Bodies.circle(
-  //     this.pos.x,
-  //     this.pos.y,
-  //     radius || this.diameter,
-  //     bodyOptions
-  //   );
-
-  //   this.body.constraints = []; //i need to keep track which constraints each body has
-  //   this.body.particle = this;
-
-  //   this.world.add(this.engine.world, [this.body]);
-  // }
+  frenar() {
+    this.body.velocity.x = 0;
+    this.body.velocity.y = 0;
+  }
 
   lookAround() {
     if (this.oncePerSecond()) {
@@ -401,8 +375,6 @@ class Person extends GenericObject {
     this.cambiarEstadoSegunCosas();
     this.updateMyStats(); //feel
     this.doActions();
-    this.doActionsIfDead();
-
 
     this.changeSpriteAccordingToStateAndVelocity();
     // }
@@ -430,19 +402,13 @@ class Person extends GenericObject {
     return console.warn("deberias sobreescribir este metodo");
   }
 
-  doActionsIfDead() {
-    if (this.dead || this.state == this.states.MUERTO) {
-      this.removeMatterBodyAfterIDied();
-      this.removeMeFromArray();
-    }
-  }
-
   throwRock() {
     this.lastViolentAct = this.COUNTER;
     if (!this.target) return;
 
     //HERE WE CAN EVALUATE WHAT TYPE OF BULLET, HOW OFTEN, RELOD, ETC
-
+    this.frenar();
+    this.setAction("tirapiedra");
     this.particleSystem.addRock(this);
   }
 
@@ -499,8 +465,10 @@ class Person extends GenericObject {
         this.courage;
     } else if (this.mappedPrediction < 0) {
       //hay mas enemigos
+      //CUANDO HAY MUCHOS ENEMIGOS, EL MIEDO SUBE RAPIDO
       this.fear -=
         this.mappedPrediction *
+        100 *
         this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER *
         (1 - this.courage);
     }
@@ -529,10 +497,7 @@ class Person extends GenericObject {
     if (this.fear < 0) this.fear = 0;
     if (this.fear > 1) this.fear = 1;
 
-
     this.checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath();
-
-
   }
   getInfo() {
     return {
@@ -561,42 +526,59 @@ class Person extends GenericObject {
     // if(this.log.length>300) this.log.splice(this.log.length)
   }
 
-  changeSpriteAccordingToStateAndVelocity() {
+  getCurrentActions() {
+    return Object.keys(this.actions).filter((k) => this.actions[k]);
+  }
+
+  changeSpriteAccordingToStateAndVelocity(second_time) {
+    if (this.dead) return;
+
     let vel = new p5.Vector(this.body.velocity.x, this.body.velocity.y);
 
-    if (this.state == this.states.MUERTO || this.dead) {
-      //EMPIEZA A MORIR
-      this.changeAnimation("muerte", true);
-    } else if (this.state == this.states.HUYENDO) {
-      this.changeAnimation("corre", false);
-    }
-
     ///ABOUT MOVEMENT:
+    let velLineal = Math.abs(vel.mag());
 
-    if (Math.abs(vel.mag()) > 0.05) {
-      //IT'S IDLE AND STARTS TO WALK
-      if (this.whichSpriteAmIShowing().startsWith("parado")) {
+    if (velLineal < 0.05) {
+      //PARADO
+      let actionsHappening = this.getCurrentActions();
+
+      //SI HAY ALGUNA ACCION QUE DEBA HACER EL CHABON:
+      if (actionsHappening.length > 0) {
+        let accion = actionsHappening[actionsHappening.length - 1];
+
+        //CUANDO TERMINA LA ANIMACION SELECCIONADA
+        this.image.onComplete = (e) => {
+          this.changeSpriteAccordingToStateAndVelocity(true);
+          this.image.onComplete = null;
+          //PONGO EN FALSE LA ACCION ESTA EN EL OBJETO DE ACCIONES
+          this.actions[accion] = false;
+        };
+
+        this.changeAnimation(accion, true);
+      } else {
+        this.changeAnimation("parado", false);
+      }
+    } else if (velLineal > 0.05) {
+      //EN MOV.
+      if (this.state == this.states.HUYENDO) {
+        this.changeAnimation("corre", false);
+      } else {
         this.changeAnimation("camina", false);
       }
-    } else if (Math.abs(vel.mag()) < 0.05) {
-      //it's not moving
-      if (this.whichSpriteAmIShowing().startsWith("camina")) {
-        this.changeAnimation("parado", true);
-      }
     }
   }
 
-  ImTotallyDead() {
-    this.world.remove(this.engine.world, this.body);
+  // ImTotallyDead() {
+  //   this.world.remove(this.engine.world, this.body);
 
-    // this.particleSystem.people = this.particleSystem.people.filter(
-    //   (k) => k.body.id != this.body.id
-    // );
+  //   // this.particleSystem.people = this.particleSystem.people.filter(
+  //   //   (k) => k.body.id != this.body.id
+  //   // );
 
-    this.particleSystem.mainContainer.removeChild(this.graphics);
+  //   this.particleSystem.mainContainer.removeChild(this.graphics);
 
-    this.removeMeAsTarget();
-  }
+  //   this.removeMeAsTarget();
+  // }
 
   defineVelVectorToMoveTowardsTarget() {
     if (!("x" in this.vel) || !("x" in this.pos)) return;
@@ -673,6 +655,7 @@ class Person extends GenericObject {
   }
 
   doTheWalk() {
+    if (this.getCurrentActions().length) return;
     // let minStam = this.particleSystem.MINIMUM_STAMINA_TO_MOVE;
     if (this.isStatic) return;
     // if (this.state == "bancando") return;
@@ -811,28 +794,30 @@ class Person extends GenericObject {
   }
 
   throwAPunch() {
-    // console.log("#", this.name, "punch");
+    console.log("#", this.name, "punch");
     // this.setState("attacking");
     this.lastViolentAct = this.COUNTER;
     this.target.recieveDamageFrom(this);
+    this.actions.golpe = true;
   }
 
   die() {
     if (this.dead) return;
 
+    this.setState("muerto");
+    this.dead = true;
+
+    this.removeMatterBodyAfterIDied();
+    this.removeMeFromArray();
+
     this.unHighlight();
 
-    this.body.isStatic = true;
+    this.changeAnimation("muerte", true, true);
+
     this.health = 0;
 
     // console.log(this.name, " died");
     // this.createSprite("die_1");
-
-    setTimeout(() => {
-      console.log(this.name + " murió");
-      this.setState("muerto");
-      this.dead = true;
-    }, this.particleSystem.deltaTime * 4);
   }
 
   makeMeLookLeft() {
@@ -863,6 +848,15 @@ class Person extends GenericObject {
 
   render() {
     super.render();
+
+    if (this.actions.tirapiedra && this.target) {
+      if (this.target.pos.x > this.pos.x) {
+        this.makeMeLookRight();
+      } else {
+        this.makeMeLookLeft();
+      }
+      return;
+    }
 
     if (this.vel.x < 0) this.makeMeLookLeft();
     else this.makeMeLookRight();

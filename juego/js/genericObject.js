@@ -304,7 +304,8 @@ class GenericObject {
     //   this.world.remove(this.engine.world, constr);
     // }
 
-    if(this.graphics) this.particleSystem.mainContainer.removeChild(this.graphics);
+    if (this.graphics)
+      this.particleSystem.mainContainer.removeChild(this.graphics);
     this.particleSystem.mainContainer.removeChild(this.container);
 
     if (this.body) {
@@ -449,14 +450,22 @@ class GenericObject {
     this.image.pivot.x = 0;
   }
 
-  changeAnimation(which, stopAtEnd = false) {
-    if (this.currentAnimation === which) return;
+  changeAnimation(which, stopAtEnd = false, force) {
+    if (this.currentAnimation === which) {
+      return;
+    }
+
+    if (!force && performance.now() - this.lastTimeChangedAnimation < 500) {
+      return;
+    }
     var newAnim = this.spritesheet.animations[which];
-    this.image.stop();
+    // this.image.stop();
     this.image.loop = !stopAtEnd;
     this.image.textures = newAnim;
     this.image.play();
     this.currentAnimation = which;
+
+    this.lastTimeChangedAnimation = performance.now();
   }
 
   // createSprite(which, stopsAtEnd) {
@@ -551,32 +560,4 @@ class GenericObject {
 
     // this.addTempCircleAt00();
   }
-
-  // animateSprite() {
-  //   let cantFrames = this.getFullwidthOfCurrentSprite() / this.image.width;
-
-  //   let frameCount = this.COUNTER + this.startingFrame;
-
-  //   if (frameCount % this.spriteSpeed != 0) return;
-
-  //   let x;
-  //   if (!this.shouldSpriteAnimationStopAtEnd) {
-  //     x = this.image.width * ((frameCount / this.spriteSpeed) % cantFrames);
-  //   } else {
-  //     let framesPassed = this.COUNTER - this.animationStartedAt;
-  //     let whichFrame = Math.floor(framesPassed / this.spriteSpeed);
-  //     if (whichFrame >= cantFrames) {
-  //       this.ImTotallyDead();
-  //       return;
-  //     }
-  //     x = this.image.width * whichFrame;
-  //   }
-
-  //   this.image.texture.frame = new PIXI.Rectangle(
-  //     x,
-  //     0,
-  //     this.image.width,
-  //     this.image.height
-  //   );
-  // }
 }
