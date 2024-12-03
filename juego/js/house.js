@@ -25,7 +25,7 @@ class House extends GenericObject {
       0.5
     );
 
-    this.createContainers();
+    
 
     this.createSprite();
 
@@ -37,12 +37,6 @@ class House extends GenericObject {
     // this.addParticleEmitter();
   }
 
-  // createContainers() {
-  //   this.container = new PIXI.Container();
-
-  //   this.particleSystem.mainContainer.addChild(this.container);
-  //   this.addTempCircleAt00();
-  // }
 
   createSprite() {
     this.image = new PIXI.Sprite(

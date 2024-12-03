@@ -4,7 +4,7 @@ class Ground extends GenericObject {
     const { x, y, particleSystem, width, height, sprite } = opt;
     this.sprite = sprite;
 
-    this.createContainers();
+    
 
     this.createSprite();
     this.update();

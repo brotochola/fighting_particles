@@ -27,6 +27,7 @@ class GenericObject {
     this.drawTargetLine = false; //true;
 
     this.currentAnimation = "parado";
+    this.createContainers();
 
     // this.createBody(10);
   }
@@ -240,7 +241,9 @@ class GenericObject {
       } else {
         if (this.image.tint != 0xffffff) this.image.tint = 0xffffff;
       }
-    } catch (e) {}
+    } catch (e) {
+      debugger;
+    }
 
     this.drawLineBetweenMeAndTarget();
   }
@@ -428,8 +431,12 @@ class GenericObject {
   }
 
   makeMeFlash() {
-    this.highlight();
-    setTimeout(() => this.unHighlight(), this.particleSystem.deltaTime);
+    // this.highlight();
+    // setTimeout(() => this.unHighlight(), this.particleSystem.deltaTime);
+    this.image.tint = 0xff0000;
+    setTimeout(() => {
+      this.image.tint = 0xffffff;
+    }, 100);
   }
 
   createAnimatedSprite() {
@@ -521,13 +528,19 @@ class GenericObject {
     this.image.pivot.y = +this.image.height;
   }
 
+  createParticleContainer() {
+    this.particleContainer = new PIXI.ParticleContainer();
+    this.particleContainer.zIndex = 1;
+
+    this.container.addChild(this.particleContainer);
+  }
   createContainers() {
     this.container = new PIXI.Container();
     this.container.sortableChildren = true;
 
-    setTimeout(() => {
-      this.container.name = this.constructor.name;
-    }, 100);
+    this.container.name = this.constructor.name;
+    this.container.owner = this;
+
     // this.container.pivot.set(this.image.width / 2, this.image.height);
 
     // cuadraditoTemporal.rectangle()

@@ -367,3 +367,30 @@ function combineColors(color1, color2) {
   return combinedColor;
 }
 
+
+
+function isMouseOverPixel(mousePosition, sprite) {
+  if(!sprite.isSprite) {
+    return
+  }
+  if(!sprite){
+    return
+  }
+  if(!sprite.texture){
+    return
+  }
+  // Obtén la posición del mouse relativa al sprite
+  const localPosition = sprite.toLocal(mousePosition);
+  
+  // Asegúrate de que esté dentro del rango de la textura
+  if (
+      localPosition.x < 0 || 
+      localPosition.y < 0 || 
+      localPosition.x > sprite.texture.width || 
+      localPosition.y > sprite.texture.height
+  ) {
+      return false;
+  }
+
+  return true
+}

@@ -1475,7 +1475,7 @@
     ],
     "recibir_golpe": [
       "boca/muerte/0",
-      "boca/muerte1",
+      "boca/muerte/1",
       "boca/idle"
     ]
   },

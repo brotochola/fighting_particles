@@ -1,0 +1,352 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="level2" itemID="65776f63-00000273" lastModified="1733099922">
+  <timeline>
+    <DOMTimeline name="level2" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="fence" color="#FF0000" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="piso">
+                  <matrix>
+                    <Matrix tx="975.45" ty="602.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa2">
+                  <matrix>
+                    <Matrix tx="370.55" ty="519.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.35" y="-210.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa7">
+                  <matrix>
+                    <Matrix a="-1" tx="200.05" ty="674.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa8">
+                  <matrix>
+                    <Matrix tx="265.7" ty="709.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-79"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa7">
+                  <matrix>
+                    <Matrix a="-1" tx="339.55" ty="739.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="939.4" centerPoint3DY="711.9">
+                  <matrix>
+                    <Matrix tx="939.35" ty="711.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle0">
+                  <matrix>
+                    <Matrix tx="869" ty="681.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="river" centerPoint3DX="949.75" centerPoint3DY="671.5">
+                  <matrix>
+                    <Matrix tx="949.75" ty="694.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="605.2" centerPoint3DY="542.4">
+                  <matrix>
+                    <Matrix tx="605.15" ty="542.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="666.35" centerPoint3DY="572.6">
+                  <matrix>
+                    <Matrix tx="666.3" ty="572.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa1">
+                  <matrix>
+                    <Matrix tx="727.55" ty="396.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="697" centerPoint3DY="496.2">
+                  <matrix>
+                    <Matrix tx="696.95" ty="496.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="758.15" centerPoint3DY="526.4">
+                  <matrix>
+                    <Matrix tx="758.1" ty="526.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="818" centerPoint3DY="556.4">
+                  <matrix>
+                    <Matrix tx="817.95" ty="556.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="881.3" centerPoint3DY="587.9">
+                  <matrix>
+                    <Matrix tx="881.25" ty="587.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="726.2" centerPoint3DY="602.6">
+                  <matrix>
+                    <Matrix tx="726.15" ty="602.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa2">
+                  <matrix>
+                    <Matrix tx="967.85" ty="432.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-7.35" y="-210.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="789.5" centerPoint3DY="634.1">
+                  <matrix>
+                    <Matrix tx="789.45" ty="634.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa1">
+                  <matrix>
+                    <Matrix tx="569.05" ty="652.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="789.4" centerPoint3DY="711.9">
+                  <matrix>
+                    <Matrix a="-1" tx="789.45" ty="711.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="boca" centerPoint3DX="786.6" centerPoint3DY="658.5">
+                  <matrix>
+                    <Matrix tx="786.6" ty="681.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="river" centerPoint3DX="873.95" centerPoint3DY="624.4">
+                  <matrix>
+                    <Matrix tx="873.95" ty="647.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="729.55" centerPoint3DY="741.9">
+                  <matrix>
+                    <Matrix a="-1" tx="729.6" ty="741.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="666.25" centerPoint3DY="773.4">
+                  <matrix>
+                    <Matrix a="-1" tx="666.3" ty="773.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="605.1" centerPoint3DY="803.6">
+                  <matrix>
+                    <Matrix a="-1" tx="605.15" ty="803.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="boca" centerPoint3DX="602.3" centerPoint3DY="750.2">
+                  <matrix>
+                    <Matrix tx="602.3" ty="773.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="545.25" centerPoint3DY="833.6">
+                  <matrix>
+                    <Matrix a="-1" tx="545.3" ty="833.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="481.95" centerPoint3DY="865.1">
+                  <matrix>
+                    <Matrix a="-1" tx="482" ty="865.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa7">
+                  <matrix>
+                    <Matrix tx="479.55" ty="739.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa8">
+                  <matrix>
+                    <Matrix a="-1" tx="403.35" ty="778.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-79"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle0">
+                  <matrix>
+                    <Matrix tx="405.3" ty="912.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="145.45" centerPoint3DY="771.9">
+                  <matrix>
+                    <Matrix tx="145.4" ty="771.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="206.6" centerPoint3DY="802.1">
+                  <matrix>
+                    <Matrix tx="206.55" ty="802.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="266.45" centerPoint3DY="832.1">
+                  <matrix>
+                    <Matrix tx="266.4" ty="832.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="329.75" centerPoint3DY="863.6">
+                  <matrix>
+                    <Matrix tx="329.7" ty="863.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle0">
+                  <matrix>
+                    <Matrix tx="961.8" ty="635.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="1104.65" centerPoint3DY="556.4">
+                  <matrix>
+                    <Matrix a="-1" tx="1104.7" ty="556.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="1041.35" centerPoint3DY="587.9">
+                  <matrix>
+                    <Matrix a="-1" tx="1041.4" ty="587.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa1">
+                  <matrix>
+                    <Matrix tx="1262.6" ty="601.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="1037.75" centerPoint3DY="662.65">
+                  <matrix>
+                    <Matrix tx="1037.7" ty="662.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="1097.6" centerPoint3DY="692.65">
+                  <matrix>
+                    <Matrix tx="1097.55" ty="692.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="1160.9" centerPoint3DY="724.15">
+                  <matrix>
+                    <Matrix tx="1160.85" ty="724.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

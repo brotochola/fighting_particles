@@ -14,6 +14,7 @@ class Person extends GenericObject {
 
   constructor(opt) {
     super(opt);
+    this.initialScale = this.scale = 2;
     const { x, y, particleSystem, team, isStatic, diameter } = opt;
     this.diameter = diameter;
     this.isStatic = isStatic;
@@ -55,7 +56,9 @@ class Person extends GenericObject {
       false,
       this.weight
     );
-    this.createContainers();
+    
+
+    this.createParticleContainer()
     this.createDebugContainer();
 
     this.createAnimatedSprite();
@@ -66,6 +69,8 @@ class Person extends GenericObject {
     this.updateMyPositionInCell();
     // this.addParticleEmitter();
   }
+
+
   initStartingAttributes() {
     this.dead = false;
     this.name = generateID();
@@ -111,17 +116,7 @@ class Person extends GenericObject {
   updateDebugText(txt) {
     this.debugText.text = txt;
   }
-  createContainers() {
-    this.container = new PIXI.Container();
 
-    this.container.name = this.constructor.name;
-
-    this.particleContainer = new PIXI.ParticleContainer();
-    this.particleContainer.zIndex = 1;
-
-    this.container.addChild(this.particleContainer);
-    this.particleSystem.mainContainer.addChild(this.container);
-  }
   addParticleEmitter() {
     // your imported namespace is
     this.emitter = new PIXI.particles.Emitter(
@@ -818,7 +813,7 @@ class Person extends GenericObject {
 
   die() {
     if (this.dead) return;
-  
+
     this.unHighlight();
 
     this.body.isStatic = true;

@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="casa7" itemID="67460682-000003f8" lastModified="1733091113">
+  <timeline>
+    <DOMTimeline name="casa7" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="Bitmap 5.png">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="-70" ty="-153"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="69.95" y="97"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

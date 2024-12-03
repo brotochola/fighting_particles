@@ -54,18 +54,21 @@ class ParticleSystem {
     //////////////////// FIN REDUCERS
     this.MINIMUM_STAMINA_TO_MOVE = 0.01;
     this.CELL_SIZE = 40;
+
+    this.stageScale = 1;
     this.buttonPanelHeight = 100;
 
-    this.viewPortHeight = window.innerHeight - this.buttonPanelHeight;
-    this.viewportWidth = window.innerWidth;
+    this.viewPortHeight =
+      (window.innerHeight - this.buttonPanelHeight) / this.stageScale;
+    this.viewportWidth = window.innerWidth / this.stageScale;
 
     this.Matter = Matter;
     // Matter.use(MatterAttractors);
     this.engine = Matter.Engine.create();
     this.world = Matter.World;
 
-    this.worldHeight = height;
-    this.worldWidth = width;
+    this.worldHeight = height / this.stageScale;
+    this.worldWidth = width / this.stageScale;
 
     this.spritesheets = {};
 
@@ -134,7 +137,7 @@ class ParticleSystem {
   createPixiStage(cb) {
     this.renderer = PIXI.autoDetectRenderer(
       this.viewportWidth,
-      window.innerHeight - this.buttonPanelHeight,
+      this.viewPortHeight,
       {
         // backgroundColor: "0x1099bb",
         antialias: false,
@@ -149,7 +152,9 @@ class ParticleSystem {
       backgroundAlpha: 0,
       transparent: true,
       width: this.viewportWidth,
-      height: window.innerHeight - this.buttonPanelHeight,
+      height: this.viewPortHeight,
+      resolution: 1, // Renderiza a la mitad de resolución
+      autoDensity: true // Escala automáticamente el canvas para que se vea bien
     });
 
     //DEBUG
@@ -194,8 +199,11 @@ class ParticleSystem {
     this.loader.add("casa4", "img/casas/casa4.png");
     this.loader.add("casa5", "img/casas/casa5.png");
     this.loader.add("casa6", "img/casas/casa6.png");
+    this.loader.add("casa10", "img/casas/casa10.png");
+    this.loader.add("casa11", "img/casas/casa11.png");
+    this.loader.add("casa12", "img/casas/casa12.png");
+    this.loader.add("casa13", "img/casas/casa13.png");
 
-    //ESTAS SON LAS ISOMETRICAS
     this.loader.add("casa7", "img/casas/casa7.png");
     this.loader.add("casa8", "img/casas/casa8.png");
 
@@ -207,6 +215,7 @@ class ParticleSystem {
       this.res = resources;
 
       this.createBG();
+      // this.setStageScale()
       if (cb instanceof Function) cb();
     });
 
@@ -219,24 +228,29 @@ class ParticleSystem {
     // this.canvas.onmousemove = (e) => this.handleMouseMoveOnCanvas(e);
     document.body.appendChild(this.canvas);
     this.mainContainer = new PIXI.Container();
-    this.mainContainer.name="Main Container"
+    this.mainContainer.name = "Main Container";
     this.pixiApp.stage.addChild(this.mainContainer);
     this.pixiApp.stage.sortableChildren = true;
     this.mainContainer.sortableChildren = true;
+  }
 
-
-
+  setStageScale() {
+    // debugger
+    this.pixiApp.stage.scale.set(this.stageScale);
+    let bounds = this.pixiApp.stage.getBounds();
+    this.pixiApp.stage.x = -bounds.width / 2;
+    this.pixiApp.stage.y = -bounds.height / 2;
   }
 
   createBG() {
-    console.log("#create bg")
-    let tex=this.res["bg"].texture.clone()
-    
+    console.log("#create bg");
+    let tex = this.res["bg"].texture.clone();
+
     this.bg = new PIXI.TilingSprite(tex);
-    this.bg.name="BG"
+    this.bg.name = "BG";
     this.bg.width = this.worldWidth;
     this.bg.height = this.worldHeight;
-    this.bg.tileScale.set(0.666)
+    this.bg.tileScale.set(0.666);
     this.mainContainer.addChild(this.bg);
   }
 
@@ -535,7 +549,7 @@ class ParticleSystem {
   doScreenCameraMove() {
     if (this.mouseLeft) return;
     let margin = 50;
-    let move=50
+    let move = 50;
     // console.log(
     //   this.screenX,
     //   this.screenY,
@@ -627,6 +641,7 @@ class ParticleSystem {
       let box = canvas.getBoundingClientRect();
       let x = e.x - box.x - this.mainContainer.x;
       let y = e.y - box.y - this.mainContainer.y;
+
       if (e.which == 1) {
         this.indicateWhichParticleItIs(x, y);
         window.tempCell = this.getCellAt(x, y);
@@ -652,6 +667,8 @@ class ParticleSystem {
 
       this.mouseX = x;
       this.mouseY = y;
+
+      this.seeWhatObjectsImOn(new PIXI.Point(x, y));
 
       if (!window.isDown && window.keyIsDown.length == 0) return;
 
@@ -685,6 +702,20 @@ class ParticleSystem {
     };
   }
 
+  seeWhatObjectsImOn(mousePosition) {
+    this.getAllObjects()
+      .map((k) => k.container.children)
+      .flat()
+      .filter((k) => k.isSprite)
+      .forEach((element) => {
+        if (isMouseOverPixel(mousePosition, element)) {
+          console.log(`Mouse sobre:`, element.parent.owner);
+          element.parent.owner.mouseover=true
+        }else{
+          element.parent.owner.mouseover=false
+        }
+      });
+  }
   // addEventListenerToMouse() {
   //   //THIS IS THE BURNING FUNCTION!
   //   // Add event listener to handle particle interaction on click

@@ -13,7 +13,7 @@ class Pole extends GenericObject {
     //create stuff
     this.createBody(10, 10, "circle", "pole", 0, true);
 
-    this.createContainers();
+    
 
     this.createSprite();
     this.update();
