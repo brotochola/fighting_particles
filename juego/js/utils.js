@@ -370,15 +370,8 @@ function combineColors(color1, color2) {
 
 
 function isMouseOverPixel(mousePosition, sprite) {
-  if(!sprite.isSprite) {
-    return
-  }
-  if(!sprite){
-    return
-  }
-  if(!sprite.texture){
-    return
-  }
+
+  let bounds=sprite.getBounds()
   // Obtén la posición del mouse relativa al sprite
   const localPosition = sprite.toLocal(mousePosition);
   
@@ -386,8 +379,8 @@ function isMouseOverPixel(mousePosition, sprite) {
   if (
       localPosition.x < 0 || 
       localPosition.y < 0 || 
-      localPosition.x > sprite.texture.width || 
-      localPosition.y > sprite.texture.height
+      localPosition.x > bounds.width || 
+      localPosition.y > bounds.height
   ) {
       return false;
   }

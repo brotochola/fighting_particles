@@ -664,7 +664,7 @@ class ParticleSystem {
       this.mouseX = x;
       this.mouseY = y;
 
-      this.seeWhatObjectsImOn(new PIXI.Point(x, y));
+      // this.seeWhatObjectsImOn(new PIXI.Point(x, y));
 
       if (!window.isDown && window.keyIsDown.length == 0) return;
 
@@ -700,15 +700,13 @@ class ParticleSystem {
 
   seeWhatObjectsImOn(mousePosition) {
     this.getAllObjects()
-      .map((k) => k.container.children)
-      .flat()
-      .filter((k) => k.isSprite)
+      .map((k) => k.container)   
       .forEach((element) => {
         if (isMouseOverPixel(mousePosition, element)) {
-          console.log(`Mouse sobre:`, element.parent.owner);
-          element.parent.owner.mouseover = true;
+          console.log(`Mouse sobre:`, element.owner);
+          // element.parent.owner.mouseover = true;
         } else {
-          element.parent.owner.mouseover = false;
+          // element.parent.owner.mouseover = false;
         }
       });
   }

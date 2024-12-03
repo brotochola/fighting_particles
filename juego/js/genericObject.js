@@ -304,7 +304,7 @@ class GenericObject {
     //   this.world.remove(this.engine.world, constr);
     // }
 
-    this.particleSystem.mainContainer.removeChild(this.graphics);
+    if(this.graphics) this.particleSystem.mainContainer.removeChild(this.graphics);
     this.particleSystem.mainContainer.removeChild(this.container);
 
     if (this.body) {

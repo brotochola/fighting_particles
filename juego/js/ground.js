@@ -12,7 +12,7 @@ class Ground extends GenericObject {
 
   createSprite() {
     this.image = new PIXI.Sprite(
-      this.particleSystem.res[this.sprite].texture.clone()
+      this.particleSystem.res[this.sprite]
     );
 
     this.alignSpriteMiddleBottom();
