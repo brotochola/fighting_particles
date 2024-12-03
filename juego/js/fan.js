@@ -30,116 +30,103 @@ class Fan extends Person {
       this.findClosestEnemy(this.contrincante);
     }
 
-    if (this.oncePerSecond() && this.target) {
-      if (this.state == this.states.RETROCEDIENDO) {
-        if (this.enemiesClose.length == 0) {
-          if (
-            this.courage <
-            this.particleSystem.MULTIPLIERS.LIMITE_DE_CORAJE_PARA_SER_UN_CAGON
-          ) {
-            if (this.isItMyFrame()) {
-              if (this.polisApaciguandoCerca.length == 0) this.throwRock();
-            }
-          }
-        }
-      } else if (this.state == this.states.BANCANDO) {
-        if (
-          this.courage <
-          this.particleSystem.MULTIPLIERS.LIMITE_DE_CORAJE_PARA_SER_UN_CAGON
-        ) {
-          if (this.isItMyFrame()) {
-            if (this.polisApaciguandoCerca.length == 0) this.throwRock();
-          }
-        }
-      }
-    }
-
     if (this.isItMyFrame()) {
       if (!this.target || this.distanceToClosestEnemy >= this.sightDistance) {
-        this.setTarget(null);
-        this.vel.y = this.vel.x = 0;
-        this.defineFlockingBehaviorTowardsFriends();
-        this.defineFlockingBehaviorAwayFromCops();
-        this.sumAllVectors(0, 1, 1);
-        this.doTheWalk();
+        this.hacerCosasEstadoIDLE();
       } else {
         //TIENE TARGET
         if (this.state == this.states.YENDO) {
-          if (this.distanceToClosestEnemy <= this.particleSystem.CELL_SIZE) {
-            //LLEGÓ!
-            this.whatToDoIfIReachedMyTarget();
-          } else {
-            //YENDO A UNA DISTANCIA Q PUEDE VER Y A LA VEZ NO ES TAN CERCA
-            this.defineVelVectorToMove();
-            this.defineFlockingBehaviorTowardsFriends();
-            this.defineFlockingBehaviorAwayFromCops();
-            this.sumAllVectors(1 + this.anger, 1 - this.fear, 1 - this.anger); //los mas corajudos tienden a ir solos
-            this.doTheWalk();
-          }
+          this.hacerCosasEstadoYENDO();
         } else if (this.state == this.states.BANCANDO) {
-          this.defineFlockingBehaviorTowardsFriends();
-          this.defineFlockingBehaviorAwayFromCops();
-          this.sumAllVectors(0, 0.5, 0.5);
-          this.doTheWalk();
+          this.hacerCosasEstadoBANCANDO();
         } else if (this.state == this.states.HUYENDO) {
-          this.defineVelVectorToMove();
-          this.defineFlockingBehaviorAwayFromCops();
-          this.sumAllVectors(1, 0, 0.1);
-          this.doTheWalk();
+          this.hacerCosasEstadoHUYENDO();
         } else if (this.state == this.states.RETROCEDIENDO) {
-          this.defineVelVectorToMove();
-          this.defineFlockingBehaviorTowardsFriends();
-          this.defineFlockingBehaviorAwayFromCops();
-          this.sumAllVectors(1, 1, 1.25);
-          this.doTheWalk();
+          this.hacerCosasEstadoRETROCEDIENDO();
         }
       }
     }
-    ////// old
-
-    // if (this.target) {
-    //   //TIENE UN TARGET
-    //   if (this.isItMyFrame()) {
-    //     this.defineVelVectorToMove();
-    //     //VEMOS SI LLEGO A SU TARGET O NO
-    //     if (this.distanceToClosestEnemy <= this.particleSystem.CELL_SIZE) {
-    //       this.whatToDoIfIReachedMyTarget();
-    //     }
-    //   } else if (this.oncePerSecond()) {
-    //     if (this.isStatic) {
-    //       // this.fireBullet();
-    //       this.throwRock();
-    //     }
-    //   }
-    // } //else if (!this.target || this.target.dead) this.setState("idle");
-
-    //   acciones(){
-    //     if(estado=="retrocediendo"){
-    //         if(no hay ningun enemigo bien cerca){
-    //             if(coraje < 0.5){
-    //                 //cagon
-    //                 tirarPiedra()
-    //             }
-    //         }
-    //     }
-    //     else if(estado=="bancando la parada" && coraje < 0.5){
-    //         tirarPiedra()
-    //     }
-    // }
-
-    // movimiento(){
-    //     if(yendo) vel+=vectorDeDireccion hacia el target + promedio de los vec de velocidad de los amigos
-    //     if(ira<0.75){
-    //         vel-= vector hacia policia mas cercano
-    //     }
-    // }
   }
+
+  hacerCosasEstadoIDLE() {
+    this.setTarget(null);
+    this.vel.y = this.vel.x = 0;
+    this.defineFlockingBehaviorTowardsFriends();
+    this.defineFlockingBehaviorAwayFromCops();
+    this.sumAllVectors(0, 1, 1);
+    if (this.vel.mag() < 0.01) {
+      this.moverseUnPoquitoRandom();
+    }
+
+    this.doTheWalk();
+  }
+
+  hacerCosasEstadoYENDO() {
+    if (this.distanceToClosestEnemy <= this.particleSystem.CELL_SIZE) {
+      //LLEGÓ!
+      this.whatToDoIfIReachedMyTarget();
+    } else {
+      //YENDO A UNA DISTANCIA Q PUEDE VER Y A LA VEZ NO ES TAN CERCA
+      this.defineVelVectorToMoveTowardsTarget();
+      this.defineFlockingBehaviorTowardsFriends();
+      this.defineFlockingBehaviorAwayFromCops();
+      this.sumAllVectors(1 + this.anger, 1 - this.fear, 1 - this.anger); //los mas corajudos tienden a ir solos
+      this.doTheWalk();
+    }
+  }
+  hacerCosasEstadoBANCANDO() {
+    this.tirarPiedraSiEstanDadasLasCondiciones();
+
+    this.defineFlockingBehaviorTowardsFriends();
+    this.defineFlockingBehaviorAwayFromCops();
+    this.sumAllVectors(0, 0.5, 0.5);
+    this.doTheWalk();
+  }
+  hacerCosasEstadoHUYENDO() {
+    this.defineVelVectorToMoveTowardsTarget();
+    this.defineFlockingBehaviorAwayFromCops();
+    this.sumAllVectors(1, 0, 0.1);
+    this.doTheWalk();
+  }
+
+  hacerCosasEstadoRETROCEDIENDO() {
+    this.tirarPiedraSiEstanDadasLasCondiciones();
+
+    this.defineVelVectorToMoveTowardsTarget();
+    this.defineFlockingBehaviorTowardsFriends();
+    this.defineFlockingBehaviorAwayFromCops();
+    this.sumAllVectors(1, 1, 1.25);
+    this.doTheWalk();
+  }
+
+  tirarPiedraSiEstanDadasLasCondiciones() {
+    if (
+      this.target &&
+      this.oncePerSecond() &&
+      !this.enemiesClose.length &&
+      this.courage <
+        this.particleSystem.MULTIPLIERS.LIMITE_DE_CORAJE_PARA_SER_UN_CAGON &&
+      this.isItMyFrame() &&
+      !this.polisApaciguandoCerca.length
+    ) {
+      this.throwRock();
+    }
+  }
+
+  moverseUnPoquitoRandom() {
+    let mult = Math.random() * 1.5;
+    if (this.oncePerSecond() && Math.random() > 0.3) {
+      this.vel.x = (Math.random() - 0.5) * mult;
+      this.vel.y = (Math.random() - 0.5) * mult;
+    }
+  }
+
   whatToDoIfIReachedMyTarget() {
     this.recieveDamageFrom(this.target);
     this.throwAPunch();
   }
 
-  finiteStateMachine() {
+  cambiarEstadoSegunCosas() {
     if (this.health <= 0) {
       this.die();
     } else if (this.health < 0.1) {
@@ -163,36 +150,7 @@ class Fan extends Person {
         else if (this.fear >= 0.9) this.setState(this.states.RETROCEDIENDO);
       }
     }
-
-    ////
-    // // this.state = "searching";
-    // if (this.health <= 0) {
-    //   this.die();
-    // } else if (
-    //   this.health < 0.1 ||
-    //   this.fear > this.particleSystem.MULTIPLIERS.FEAR_LIMIT_TO_ESCAPE
-    // ) {
-    //   this.setState("escaping");
-    // } else if (
-    //   this.fear < this.particleSystem.MULTIPLIERS.FEAR_LIMIT_TO_ESCAPE &&
-    //   this.health > this.particleSystem.MULTIPLIERS.HEALTH_LIMIT_TO_ESCAPE
-    // ) {
-    //   this.setState("idle");
-    // }
-    // if (!this.target) {
-    // }
   }
-
-  // render() {
-  //   this.updateDebugText(
-  //     this.health.toFixed(2) +
-  //       "," +
-  //       this.fear.toFixed(2) +
-  //       "," +
-  //       this.anger.toFixed(2)
-  //   );
-  //   super.render();
-  // }
 
   updateMyStats() {
     super.updateMyStats();

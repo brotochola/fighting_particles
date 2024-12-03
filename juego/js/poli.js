@@ -123,7 +123,7 @@ class Poli extends Person {
     if (fan.dead || fan.health < 0) this.closestFan = null;
   }
 
-  finiteStateMachine() {
+  cambiarEstadoSegunCosas() {
     // if (this.health <= 0) {
     //   this.die();
     // } else if (
@@ -221,7 +221,7 @@ class Poli extends Person {
       if (this.isItMyFrame()) {
         this.setTarget(this.targetAtinitialPoint);
         if (this.distanceToInitialPoint > this.particleSystem.CELL_SIZE) {
-          this.defineVelVectorToMove();
+          this.defineVelVectorToMoveTowardsTarget();
           this.defineFlockingBehaviorTowardsFriends();
           this.sumAllVectors(1, 0.5, 0);
 
@@ -254,7 +254,7 @@ class Poli extends Person {
 
         if (this.distanceToTargetPerson > this.attackDistance) {
           //VE PARA DONDE IR
-          this.defineVelVectorToMove();
+          this.defineVelVectorToMoveTowardsTarget();
           //SE FIJA DE NO QUEDARSE LEJOS DE LOS OTROS RATIS
           this.defineFlockingBehaviorTowardsFriends();
           this.sumAllVectors(1, 0, 0);
@@ -276,7 +276,7 @@ class Poli extends Person {
 
         this.calcDistanceToTargetPerson();
         if (this.distanceToTargetPerson > this.attackDistance) {
-          this.defineVelVectorToMove();
+          this.defineVelVectorToMoveTowardsTarget();
           // this.defineFlockingBehaviorTowardsFriends();
           this.sumAllVectors(1, 0, 0);
 

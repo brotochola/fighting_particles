@@ -1,6 +1,7 @@
 class Person extends GenericObject {
   states = {
     //de todes
+ 
     YENDO: 1,
     RETROCEDIENDO: 2,
     HUYENDO: 3,
@@ -56,7 +57,6 @@ class Person extends GenericObject {
       false,
       this.weight
     );
-    
 
     // this.createParticleContainer()
     this.createDebugContainer();
@@ -69,7 +69,6 @@ class Person extends GenericObject {
     this.updateMyPositionInCell();
     // this.addParticleEmitter();
   }
-
 
   initStartingAttributes() {
     this.dead = false;
@@ -357,8 +356,9 @@ class Person extends GenericObject {
 
   lookAround() {
     if (this.oncePerSecond()) {
+      this.checkIfImNotConsideredViolentAnyMore();
       this.seePeople();
-      this.evaluateSituation();
+      this.discernirAmigosYEnemigosYEvaluarLaSituacion();
 
       this.closeFixedObjects = this.findCloseObjects(2, 2);
 
@@ -395,22 +395,15 @@ class Person extends GenericObject {
     this.pos.y = this.body.position.y;
     this.container.zIndex = Math.floor(this.pos.y - (this.z || 0));
 
-    this.checkIfImNotConsideredViolentAnyMore();
-
     this.updateMyPositionInCell();
 
     this.lookAround();
+    this.cambiarEstadoSegunCosas();
+    this.updateMyStats(); //feel
+    this.doActions();
+    this.doActionsIfDead();
 
-    if (!this.dead) {
-      if (this.isItMyFrame()) this.updateMyStats(); //feel
-      this.finiteStateMachine(); //change state/mood
-      this.doActions(); //do
-      this.checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath();
-    } else {
-      //MUERTE!
-      this.removeMatterBodyAfterIDied();
-      this.removeMeFromArray();
-    }
+
     this.changeSpriteAccordingToStateAndVelocity();
     // }
 
@@ -437,6 +430,13 @@ class Person extends GenericObject {
     return console.warn("deberias sobreescribir este metodo");
   }
 
+  doActionsIfDead() {
+    if (this.dead || this.state == this.states.MUERTO) {
+      this.removeMatterBodyAfterIDied();
+      this.removeMeFromArray();
+    }
+  }
+
   throwRock() {
     this.lastViolentAct = this.COUNTER;
     if (!this.target) return;
@@ -458,7 +458,7 @@ class Person extends GenericObject {
       this.recieveDamageFrom(evilSqueezingEvilness, (howMany - 11) * 0.007);
     }
   }
-  evaluateSituation() {
+  discernirAmigosYEnemigosYEvaluarLaSituacion() {
     // let time = performance.now();
 
     this.enemiesICanSee = this.peopleICanSee.filter((k) => k.team != this.team);
@@ -488,6 +488,7 @@ class Person extends GenericObject {
     return this.peopleICanSee.filter((k) => k.team == team).length;
   }
   updateMyStats() {
+    if (!this.isItMyFrame()) return;
     // miedo -= prediccion *k //mis amigos me sacan el miedo
 
     if (this.mappedPrediction > 0) {
@@ -527,6 +528,11 @@ class Person extends GenericObject {
     if (this.anger > 1) this.anger = 1;
     if (this.fear < 0) this.fear = 0;
     if (this.fear > 1) this.fear = 1;
+
+
+    this.checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath();
+
+
   }
   getInfo() {
     return {
@@ -592,7 +598,7 @@ class Person extends GenericObject {
     this.removeMeAsTarget();
   }
 
-  defineVelVectorToMove() {
+  defineVelVectorToMoveTowardsTarget() {
     if (!("x" in this.vel) || !("x" in this.pos)) return;
 
     if ((this.target || {}).dead || !this.target || !this.target.pos) {

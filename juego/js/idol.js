@@ -25,7 +25,7 @@ class Idol extends Person {
   doActions() {
     if (this.state == "searching" || (this.state == "chasing" && this.target)) {
       if (this.COUNTER % 3 == 0) {
-        this.defineVelVectorToMove();
+        this.defineVelVectorToMoveTowardsTarget();
       }
 
       // if (this.isStatic) {
