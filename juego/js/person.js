@@ -70,7 +70,7 @@ class Person extends GenericObject {
     this.resetAnimationActions();
   }
 
-  resetAnimationActions() {    
+  resetAnimationActions() {
     this.actions = {
       meo: false,
       birra: false,
@@ -405,9 +405,8 @@ class Person extends GenericObject {
 
   throwRock() {
     if (!this.target) return;
-    this.lastViolentAct = this.COUNTER;    
+    this.lastViolentAct = this.COUNTER;
 
-    
     this.frenar();
     this.setAction("tirapiedra");
     this.particleSystem.addRock(this);
@@ -647,20 +646,17 @@ class Person extends GenericObject {
 
   doTheWalk() {
     // if (this.getCurrentActions().length) return;
-    
+
     if (this.isStatic) return;
-    
+
     //SI ESTA ESCAPANDOSE VA MAS RAPIDO
     let forceToApplyInX =
       this.vel.x * this.particleSystem.MULTIPLIERS.SPEED_REDUCER;
     let forceToApplyInY =
       this.vel.y * this.particleSystem.MULTIPLIERS.SPEED_REDUCER;
 
-    
     this.body.force.x = forceToApplyInX;
     this.body.force.y = forceToApplyInY;
-
-
   }
 
   avoidGas() {
@@ -758,8 +754,17 @@ class Person extends GenericObject {
 
   defineFlockingBehaviorTowardsFriends() {
     if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
-    let avgX = getAvg(this.friendsICanSee.map((k) => k.pos.x));
-    let avgY = getAvg(this.friendsICanSee.map((k) => k.pos.y));
+
+    let friendsICanSeeButAreNotInTheCloseArea = this.friendsICanSee.filter(
+      (m) => !this.friendsClose.map((k) => k.part).includes(m)
+    );
+
+    let avgX = getAvg(
+      friendsICanSeeButAreNotInTheCloseArea.map((k) => k.pos.x)
+    );
+    let avgY = getAvg(
+      friendsICanSeeButAreNotInTheCloseArea.map((k) => k.pos.y)
+    );
 
     this.vecThatAimsToTheAvg = p5.Vector.sub(
       new p5.Vector(avgX, avgY),
