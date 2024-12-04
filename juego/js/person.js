@@ -377,6 +377,8 @@ class Person extends GenericObject {
     this.updateMyStats(); //feel
     this.doActions();
 
+    this.checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath();
+
     this.changeSpriteAccordingToStateAndVelocity();
     // }
 
@@ -417,13 +419,25 @@ class Person extends GenericObject {
       (k) => !k.dead
     ).length;
     if (howMany > 11) {
+      this.squeezed = true;
       let evilSqueezingEvilness = {
         strength: 1,
         pos: this.pos,
       };
       this.recieveDamageFrom(evilSqueezingEvilness, (howMany - 11) * 0.007);
+
+      //EMPUJAR RANDOM
+      this.pushInARandomDirection();
+    } else {
+      this.squeezed = false;
     }
   }
+
+  pushInARandomDirection() {
+    this.body.force.x += (Math.random() * 1 - 0.5)*(this.strength*10)
+    this.body.force.y += (Math.random() * 1 - 0.5)*(this.strength*10)
+  }
+
   discernirAmigosYEnemigosYEvaluarLaSituacion() {
     // let time = performance.now();
 
@@ -496,8 +510,6 @@ class Person extends GenericObject {
     if (this.anger > 1) this.anger = 1;
     if (this.fear < 0) this.fear = 0;
     if (this.fear > 1) this.fear = 1;
-
-    this.checkHowManyPeopleAreAroundAndSeeIfImSqueezingToDeath();
   }
   getInfo() {
     return {
@@ -642,6 +654,14 @@ class Person extends GenericObject {
     );
 
     if (isNaN(this.vel.x)) debugger;
+  }
+
+  moverseUnPoquitoRandom() {
+    let mult = Math.random() * 1.5;
+    if (this.oncePerSecond() && Math.random() > 0.3) {
+      this.vel.x = (Math.random() - 0.5) * mult;
+      this.vel.y = (Math.random() - 0.5) * mult;
+    }
   }
 
   doTheWalk() {
