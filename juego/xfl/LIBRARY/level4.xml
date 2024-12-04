@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="level4" itemID="6750a955-000005a3" lastModified="1733340824">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="level4" itemID="6750a955-000005a3" lastModified="1733343647">
   <timeline>
     <DOMTimeline name="level4" layerDepthEnabled="true">
       <layers>
@@ -60,54 +60,6 @@
                     <Edge cubics="!4241 30500(;13539,30495 22838,30494 32130,30497q4241 30500Q18186 30493q32130 30497);"/>
                   </edges>
                 </DOMShape>
-                <DOMSymbolInstance libraryItemName="piso_de_prueba">
-                  <matrix>
-                    <Matrix tx="1119" ty="1633.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point y="-368.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="piso_de_prueba">
-                  <matrix>
-                    <Matrix tx="1203.55" ty="1100.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point y="-368.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="piso_de_prueba">
-                  <matrix>
-                    <Matrix tx="1588.75" ty="1326.7"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point y="-368.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="piso_de_prueba">
-                  <matrix>
-                    <Matrix tx="297.3" ty="1143.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point y="-368.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="piso_de_prueba">
-                  <matrix>
-                    <Matrix tx="720.95" ty="1392.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point y="-368.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="piso_de_prueba">
-                  <matrix>
-                    <Matrix tx="732.9" ty="896.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point y="-368.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="calle3">
                   <matrix>
                     <Matrix tx="519.95" ty="825.55"/>
@@ -1091,7 +1043,7 @@
                     <Point y="-205"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="casa21" selected="true">
+                <DOMSymbolInstance libraryItemName="casa21">
                   <matrix>
                     <Matrix tx="1096.35" ty="1289.95"/>
                   </matrix>

@@ -549,7 +549,7 @@ class ParticleSystem {
     }
 
     if (
-      this.screenY > window.innerHeight - this.buttonPanelHeight - margin ||
+      this.screenY > this.viewPortHeight - this.buttonPanelHeight - margin ||
       window.keyIsDown.includes(83)
     ) {
       this.mainContainer.y -= move;
@@ -565,7 +565,7 @@ class ParticleSystem {
     if (this.mainContainer.x < rightEndOfScreen)
       this.mainContainer.x = rightEndOfScreen;
 
-    let bottomEnd = -this.worldHeight + window.innerHeight - leftLimit;
+    let bottomEnd = -this.worldHeight + this.viewPortHeight - leftLimit;
     if (this.mainContainer.y < bottomEnd) this.mainContainer.y = bottomEnd;
 
     // this.movePerspectiveCSSBackground();
@@ -1235,12 +1235,32 @@ class ParticleSystem {
     return [...this.people, ...this.bullets];
   }
 
-  restartLevel(data) {
+  updateWorldAndGridSize(listOfElements) {
+    const { width, height } =
+      getWidthAndHeightFromListOfElements(listOfElements);
+
+    console.log("# NEW WIDTH AND HEIGHT", width, height);
+
+    this.worldWidth = width
+    this.worldHeight = height;
+
+    this.bg.width = this.worldWidth;
+    this.bg.height = this.worldHeight;
+
+
+    this.createGrid();
+
+    // this.runEngine()
+  }
+
+  restartLevel(listOfElements) {
     this.getAllObjects().forEach((k) => k.remove());
 
     this.grounds.forEach((k) => k.remove());
 
-    data.forEach((k) => {
+    this.updateWorldAndGridSize(listOfElements);
+
+    listOfElements.forEach((k) => {
       if (k.type == "boca" || k.type == "river") {
         this.addFan(Math.floor(k.x), Math.floor(k.y), false, k.type);
       } else if (k.type == "pole") {

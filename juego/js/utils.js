@@ -386,3 +386,21 @@ function isMouseOverPixel(mousePosition, sprite) {
 
   return true;
 }
+
+function getWidthAndHeightFromListOfElements(data) {
+  let exesAndYs = data.map((k) => {
+    return { x: Number(k.x), y: Number(k.y) };
+  });
+
+  let sortedXs = exesAndYs.sort((a, b) => (a.x > b.x ? 1 : -1));
+  let sortedYs = exesAndYs.sort((a, b) => (a.y > b.y ? 1 : -1));
+  // let minX = sortedXs[0].x;
+  let maxX = sortedXs[sortedXs.length - 1].x;
+  let minY = sortedYs[0].y;
+  let maxY = sortedYs[sortedYs.length - 1].y;
+
+  let width = maxX * 1.5 + 500;
+  let height = maxY * 1.5 + 500;
+  // debugger
+  return { width, height };
+}

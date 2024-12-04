@@ -212,7 +212,7 @@ class GenericObject {
     // if (this.oncePerSecond()) console.log(this.name, performance.now());
   }
   render() {
-    if (!this.doNotShowIfOutOfScreen()) return;
+    // if (!this.doNotShowIfOutOfScreen()) return;
 
     //POSICION X E Y
     this.container.y = this.pos.y; // this.calculateContainersY();
