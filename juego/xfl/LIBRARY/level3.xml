@@ -307,7 +307,7 @@
                     <Matrix tx="1270" ty="286"/>
                   </matrix>
                 </DOMBitmapInstance>
-                <DOMSymbolInstance libraryItemName="casa12" selected="true">
+                <DOMSymbolInstance libraryItemName="casa12">
                   <matrix>
                     <Matrix tx="595.85" ty="515.6"/>
                   </matrix>

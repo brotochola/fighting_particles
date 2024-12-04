@@ -109,6 +109,7 @@ class ParticleSystem {
       // this.createSmallerCanvas();
 
       this.createUI();
+      this.addFiltersToStage();
     });
   }
   createUI() {
@@ -142,24 +143,19 @@ class ParticleSystem {
       bg: "img/bg3.jpg",
       blood: "img/blood.png",
       pole: "img/pole.png",
-      casa1: "img/casas/casa1.png",
-      casa2: "img/casas/casa2.png",
-      casa3: "img/casas/casa3.png",
-      casa4: "img/casas/casa4.png",
-      casa5: "img/casas/casa5.png",
-      casa6: "img/casas/casa6.png",
-      casa7: "img/casas/casa7.png",
-      casa8: "img/casas/casa8.png",
-      casa10: "img/casas/casa10.png",
-      casa11: "img/casas/casa11.png",
-      casa12: "img/casas/casa12.png",
-      casa13: "img/casas/casa13.png", // //CALLES
-      calle0: "img/casas/calle0.png",
-      calle1: "img/casas/calle1.png",
+      casa15: "img/casas/casa15.png",
+      casa16: "img/casas/casa16.png",
+      casa17: "img/casas/casa17.png",
+      casa18: "img/casas/casa18.png",
+      casa19: "img/casas/casa19.png",
+      casa20: "img/casas/casa20.png",
+      casa21: "img/casas/casa21.png", // //CALLES
+      calle3: "img/casas/calle3.png",
+      calle2: "img/casas/calle2.png",
     };
 
     for (const [alias, src] of Object.entries(assetsToLoad)) {
-      console.log(alias, src);     
+      console.log(alias, src);
       PIXI.Assets.add({ alias, src });
     }
 
@@ -700,7 +696,7 @@ class ParticleSystem {
 
   seeWhatObjectsImOn(mousePosition) {
     this.getAllObjects()
-      .map((k) => k.container)   
+      .map((k) => k.container)
       .forEach((element) => {
         if (isMouseOverPixel(mousePosition, element)) {
           console.log(`Mouse sobre:`, element.owner);
@@ -991,7 +987,19 @@ class ParticleSystem {
       });
     });
 
+    this.updateFilters();
+
     // this.drawInSmallerCanvas();
+  }
+
+  updateFilters() {
+    if (
+      (this.pixiApp.stage.filters || []).length &&
+      (this.pixiApp.stage.filters || []).includes(this.CRTfilter)
+    ) {
+      this.CRTfilter.time = this.COUNTER * 0.5;
+      this.CRTfilter.seed = this.COUNTER * 0.5 * (Math.random() * 0.1 - 0.05);
+    }
   }
   createSmallerCanvas() {
     let SCALE = 4;
@@ -1257,6 +1265,45 @@ class ParticleSystem {
     } else {
       this.canvas.style.display = "block";
       document.querySelector("canvas:not(#pixiCanvas)").style.display = "none";
+    }
+  }
+
+  addFiltersToStage() {
+    this.bloomEffect = new PIXI.filters.AdvancedBloomFilter({
+      bloomScale: 0.12,
+      threshold: 0.7,
+      brightness: 1.066,
+      blur: 12,
+      pixelSize: 1,
+      quality: 10,
+    });
+
+    this.CRTfilter = new PIXI.filters.CRTFilter({
+      curvature: 1, // Bend of interlaced lines, higher value means more bend
+      lineContrast: 0.15, // Contrast of interlaced lines
+      lineWidth: 1, // Width of the interlaced lines
+      noise: 0.05, // Opacity/intensity of the noise effect between 0 and 1
+      noiseSize: 2, // The size of the noise particles
+      seed: Math.random(), // A seed value to apply to the random noise generation
+      time: 0, // For animating interlaced lines
+      verticalLine: false,
+      vignetting: 0.25, // The radius of the vignette effect, smaller values produces a smaller vignette
+      vignettingAlpha: 0.9, // Amount of opacity on the vignette
+      vignettingBlur: 0.2, // Blur intensity of the vignette
+    });
+
+    this.pixiApp.stage.filters = [this.bloomEffect, this.CRTfilter];
+  }
+
+  enableFilters() {
+    for (let f of this.pixiApp.stage.filters) {
+      f.enabled = true;
+    }
+  }
+
+  disableFilters() {
+    for (let f of this.pixiApp.stage.filters) {
+      f.enabled = false;
     }
   }
 }

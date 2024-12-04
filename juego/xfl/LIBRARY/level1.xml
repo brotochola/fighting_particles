@@ -1254,7 +1254,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="calle1" selected="true" centerPoint3DX="632.6" centerPoint3DY="587.75">
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="632.6" centerPoint3DY="587.75">
                   <matrix>
                     <Matrix tx="632.55" ty="587.75"/>
                   </matrix>
@@ -1262,7 +1262,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="calle1" selected="true" centerPoint3DX="692.45" centerPoint3DY="617.75">
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="692.45" centerPoint3DY="617.75">
                   <matrix>
                     <Matrix tx="692.4" ty="617.75"/>
                   </matrix>
@@ -1270,7 +1270,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="calle1" selected="true" centerPoint3DX="755.75" centerPoint3DY="649.25">
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="755.75" centerPoint3DY="649.25">
                   <matrix>
                     <Matrix tx="755.7" ty="649.25"/>
                   </matrix>
@@ -1278,7 +1278,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="calle1" selected="true" centerPoint3DX="816.9" centerPoint3DY="679.45">
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="816.9" centerPoint3DY="679.45">
                   <matrix>
                     <Matrix tx="816.85" ty="679.45"/>
                   </matrix>
@@ -1286,7 +1286,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="calle1" selected="true" centerPoint3DX="876.75" centerPoint3DY="709.45">
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="876.75" centerPoint3DY="709.45">
                   <matrix>
                     <Matrix tx="876.7" ty="709.45"/>
                   </matrix>
@@ -1294,7 +1294,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="calle1" selected="true" centerPoint3DX="940.05" centerPoint3DY="740.95">
+                <DOMSymbolInstance libraryItemName="calle1" centerPoint3DX="940.05" centerPoint3DY="740.95">
                   <matrix>
                     <Matrix tx="940" ty="740.95"/>
                   </matrix>
@@ -1302,7 +1302,7 @@
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="calle0" selected="true">
+                <DOMSymbolInstance libraryItemName="calle0">
                   <matrix>
                     <Matrix a="-1" tx="1016.7" ty="788.25"/>
                   </matrix>

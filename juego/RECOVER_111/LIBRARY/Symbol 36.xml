@@ -1,0 +1,80 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 36" itemID="674ff300-00000437" lastModified="1733292800">
+  <timeline>
+    <DOMTimeline name="Symbol 36" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Duplicate Items Folder/piso">
+                  <matrix>
+                    <Matrix a="-1" tx="69.45" ty="-541.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Duplicate Items Folder/piso">
+                  <matrix>
+                    <Matrix a="-1" tx="283.3" ty="-672.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Duplicate Items Folder/piso">
+                  <matrix>
+                    <Matrix a="-1" tx="279.65" ty="-432.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Duplicate Items Folder/piso">
+                  <matrix>
+                    <Matrix a="-1" tx="512.95" ty="-556.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Duplicate Items Folder/piso">
+                  <matrix>
+                    <Matrix a="-1" tx="-182.05" ty="-185.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Duplicate Items Folder/piso">
+                  <matrix>
+                    <Matrix a="-1" tx="51.25" ty="-309.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Duplicate Items Folder/piso">
+                  <matrix>
+                    <Matrix a="-1" tx="-392.85" ty="-303.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Duplicate Items Folder/piso">
+                  <matrix>
+                    <Matrix a="-1" tx="-161" ty="-422.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
