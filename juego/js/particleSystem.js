@@ -178,7 +178,7 @@ class ParticleSystem {
     console.log("#create bg");
     let tex = await PIXI.Assets.load("bg");
 
-    console.log("##", tex);
+    // console.log("##", tex);
 
     this.bg = new PIXI.TilingSprite(tex);
     this.bg.name = "BG";

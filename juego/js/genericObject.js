@@ -27,6 +27,7 @@ class GenericObject {
     this.drawTargetLine = false; //true;
 
     this.currentAnimation = "parado";
+    this.animatedSprites = {};
     this.createContainers();
 
     // this.createBody(10);
@@ -442,29 +443,49 @@ class GenericObject {
 
   createAnimatedSprite() {
     this.spritesheet = this.particleSystem.res[this.team + "_ss"];
-    // console.log(this.spritesheet);
-    this.image = new PIXI.AnimatedSprite(this.spritesheet.animations.parado);
-    this.container.addChild(this.image);
-    // this.image.y = 64;
-    this.image.animationSpeed = this.speed * 0.2;
-    this.image.pivot.x = 0;
+    // console.log("##", this.spritesheet);
+
+    let animations = Object.keys(this.spritesheet.animations);
+    for (let i = 0; i < animations.length; i++) {
+      let animatedSprite = new PIXI.AnimatedSprite(
+        this.spritesheet.animations[animations[i]]
+      );
+      this.animatedSprites[animations[i]] = animatedSprite;
+
+      animatedSprite.name = animations[i];
+      this.container.addChild(animatedSprite);
+
+      animatedSprite.animationSpeed = this.speed * 0.2;
+      animatedSprite.scale.set(this.initialScale);
+      animatedSprite.visible = false;
+    }
+
+    this.image = this.animatedSprites["parado"];
+    this.animatedSprites["parado"].visible = true;
+    this.animatedSprites["parado"].play();
   }
 
   changeAnimation(which, stopAtEnd = false, force) {
-    if (this.currentAnimation === which) {
-      return;
-    }
-
+   
     if (!force && performance.now() - this.lastTimeChangedAnimation < 500) {
       return;
     }
-    var newAnim = this.spritesheet.animations[which];
-    // this.image.stop();
-    this.image.loop = !stopAtEnd;
-    this.image.textures = newAnim;
-    this.image.play();
-    this.currentAnimation = which;
 
+    if (this.currentAnimation === which) {
+      return;
+    }
+    // console.log("changeAnimation", this.name, which, this.currentAnimation)
+ 
+    // var newAnim = this.spritesheet.animations[which];
+
+    this.image = this.animatedSprites[which];
+    this.image.visible = true;
+    this.animatedSprites[this.currentAnimation].visible = false;
+    this.image.gotoAndPlay(0);
+
+    this.image.loop = !stopAtEnd;
+    
+    this.currentAnimation = which;
     this.lastTimeChangedAnimation = performance.now();
   }
 
@@ -533,8 +554,15 @@ class GenericObject {
     this.image.pivot.y = +this.image.height - this.image.width / 4;
   }
   alignSpriteMiddleBottom() {
-    this.image.pivot.x = +this.image.width / 2;
-    this.image.pivot.y = +this.image.height;
+    this.image.pivot.x = +this.image.width / (this.initialScale * 2);
+    this.image.pivot.y = +this.image.height / this.initialScale;
+
+    if (this.animatedSprites) {
+      for (let as of Object.keys(this.animatedSprites)) {
+        this.animatedSprites[as].pivot.x = this.image.pivot.x;
+        this.animatedSprites[as].pivot.y = this.image.pivot.y;
+      }
+    }
   }
 
   createParticleContainer() {

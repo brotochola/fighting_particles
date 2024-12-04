@@ -48,7 +48,7 @@
         "y": 0.5
       }
     },
-    "boca/caminar/1": {
+    "boca/camina/1": {
       "frame": {
         "x": 0,
         "y": 38,
@@ -72,7 +72,7 @@
         "y": 0.5
       }
     },
-    "boca/caminar/5": {
+    "boca/camina/5": {
       "frame": {
         "x": 0,
         "y": 57,
@@ -120,7 +120,7 @@
         "y": 0.5
       }
     },
-    "boca/caminar/2": {
+    "boca/camina/2": {
       "frame": {
         "x": 0,
         "y": 95,
@@ -144,7 +144,7 @@
         "y": 0.5
       }
     },
-    "boca/caminar/4": {
+    "boca/camina/4": {
       "frame": {
         "x": 0,
         "y": 114,
@@ -168,7 +168,7 @@
         "y": 0.5
       }
     },
-    "boca/tirapiedra/2": {
+    "boca/recibir_golpe/1": {
       "frame": {
         "x": 0,
         "y": 133,
@@ -192,19 +192,19 @@
         "y": 0.5
       }
     },
-    "boca/atacar/3": {
+    "boca/tirapiedra/2": {
       "frame": {
         "x": 6,
         "y": 95,
-        "w": 10,
+        "w": 11,
         "h": 18
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 2,
+        "x": 1,
         "y": 2,
-        "w": 10,
+        "w": 11,
         "h": 18
       },
       "sourceSize": {
@@ -360,7 +360,7 @@
         "y": 0.5
       }
     },
-    "boca/meo/10": {
+    "boca/golpe/3": {
       "frame": {
         "x": 0,
         "y": 151,
@@ -371,7 +371,7 @@
       "trimmed": true,
       "spriteSourceSize": {
         "x": 2,
-        "y": 3,
+        "y": 2,
         "w": 10,
         "h": 18
       },
@@ -384,7 +384,7 @@
         "y": 0.5
       }
     },
-    "boca/meo/11": {
+    "boca/meo/10": {
       "frame": {
         "x": 0,
         "y": 169,
@@ -408,7 +408,7 @@
         "y": 0.5
       }
     },
-    "boca/meo/12": {
+    "boca/meo/11": {
       "frame": {
         "x": 0,
         "y": 187,
@@ -432,7 +432,7 @@
         "y": 0.5
       }
     },
-    "boca/tirapiedra/3": {
+    "boca/meo/12": {
       "frame": {
         "x": 0,
         "y": 205,
@@ -443,6 +443,30 @@
       "trimmed": true,
       "spriteSourceSize": {
         "x": 2,
+        "y": 3,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/pucho/4": {
+      "frame": {
+        "x": 0,
+        "y": 223,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
         "y": 2,
         "w": 10,
         "h": 18
@@ -456,59 +480,11 @@
         "y": 0.5
       }
     },
-    "boca/atacar/1": {
-      "frame": {
-        "x": 0,
-        "y": 223,
-        "w": 9,
-        "h": 18
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 1,
-        "y": 2,
-        "w": 9,
-        "h": 18
-      },
-      "sourceSize": {
-        "w": 12,
-        "h": 21
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "boca/atacar/2": {
+    "boca/pucho/5": {
       "frame": {
         "x": 0,
         "y": 241,
-        "w": 9,
-        "h": 18
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 1,
-        "y": 2,
-        "w": 9,
-        "h": 18
-      },
-      "sourceSize": {
-        "w": 12,
-        "h": 21
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "boca/atacar/4": {
-      "frame": {
-        "x": 0,
-        "y": 259,
-        "w": 9,
+        "w": 10,
         "h": 18
       },
       "rotated": false,
@@ -516,7 +492,55 @@
       "spriteSourceSize": {
         "x": 2,
         "y": 2,
-        "w": 9,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/recibir_golpe/3": {
+      "frame": {
+        "x": 0,
+        "y": 259,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 2,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/tirapiedra/3": {
+      "frame": {
+        "x": 0,
+        "y": 277,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
         "h": 18
       },
       "sourceSize": {
@@ -529,30 +553,6 @@
       }
     },
     "boca/birra/00": {
-      "frame": {
-        "x": 0,
-        "y": 277,
-        "w": 9,
-        "h": 18
-      },
-      "rotated": false,
-      "trimmed": true,
-      "spriteSourceSize": {
-        "x": 2,
-        "y": 2,
-        "w": 9,
-        "h": 18
-      },
-      "sourceSize": {
-        "w": 12,
-        "h": 21
-      },
-      "pivot": {
-        "x": 0.5,
-        "y": 0.5
-      }
-    },
-    "boca/birra/02": {
       "frame": {
         "x": 0,
         "y": 295,
@@ -576,10 +576,34 @@
         "y": 0.5
       }
     },
-    "boca/caminar/0": {
+    "boca/birra/02": {
       "frame": {
         "x": 0,
         "y": 313,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/camina/0": {
+      "frame": {
+        "x": 0,
+        "y": 331,
         "w": 9,
         "h": 18
       },
@@ -600,10 +624,82 @@
         "y": 0.5
       }
     },
+    "boca/golpe/1": {
+      "frame": {
+        "x": 0,
+        "y": 349,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/golpe/2": {
+      "frame": {
+        "x": 0,
+        "y": 367,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/golpe/4": {
+      "frame": {
+        "x": 0,
+        "y": 385,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
     "boca/meo/08": {
       "frame": {
         "x": 0,
-        "y": 331,
+        "y": 403,
         "w": 9,
         "h": 18
       },
@@ -627,7 +723,7 @@
     "boca/meo/09": {
       "frame": {
         "x": 0,
-        "y": 349,
+        "y": 421,
         "w": 9,
         "h": 18
       },
@@ -648,10 +744,82 @@
         "y": 0.5
       }
     },
-    "boca/atacar/0": {
+    "boca/pucho/3": {
       "frame": {
         "x": 0,
-        "y": 367,
+        "y": 439,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/recibir_golpe/0": {
+      "frame": {
+        "x": 0,
+        "y": 457,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/recibir_golpe/2": {
+      "frame": {
+        "x": 0,
+        "y": 475,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/golpe/0": {
+      "frame": {
+        "x": 0,
+        "y": 493,
         "w": 8,
         "h": 18
       },
@@ -672,10 +840,10 @@
         "y": 0.5
       }
     },
-    "boca/atacar/5": {
+    "boca/golpe/5": {
       "frame": {
         "x": 0,
-        "y": 385,
+        "y": 511,
         "w": 8,
         "h": 18
       },
@@ -699,7 +867,7 @@
     "boca/meo/07": {
       "frame": {
         "x": 0,
-        "y": 403,
+        "y": 529,
         "w": 8,
         "h": 18
       },
@@ -723,7 +891,7 @@
     "boca/muerte/0": {
       "frame": {
         "x": 0,
-        "y": 421,
+        "y": 547,
         "w": 8,
         "h": 18
       },
@@ -744,10 +912,34 @@
         "y": 0.5
       }
     },
-    "boca/atacar/6": {
+    "boca/pucho/2": {
       "frame": {
         "x": 0,
-        "y": 439,
+        "y": 565,
+        "w": 8,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 8,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/golpe/6": {
+      "frame": {
+        "x": 0,
+        "y": 583,
         "w": 7,
         "h": 18
       },
@@ -771,7 +963,7 @@
     "boca/meo/00": {
       "frame": {
         "x": 0,
-        "y": 457,
+        "y": 601,
         "w": 7,
         "h": 18
       },
@@ -795,7 +987,7 @@
     "boca/meo/01": {
       "frame": {
         "x": 0,
-        "y": 475,
+        "y": 619,
         "w": 7,
         "h": 18
       },
@@ -819,7 +1011,7 @@
     "boca/meo/02": {
       "frame": {
         "x": 0,
-        "y": 493,
+        "y": 637,
         "w": 7,
         "h": 18
       },
@@ -843,7 +1035,7 @@
     "boca/meo/04": {
       "frame": {
         "x": 0,
-        "y": 511,
+        "y": 655,
         "w": 7,
         "h": 18
       },
@@ -867,7 +1059,7 @@
     "boca/meo/05": {
       "frame": {
         "x": 0,
-        "y": 529,
+        "y": 673,
         "w": 7,
         "h": 18
       },
@@ -891,7 +1083,7 @@
     "boca/meo/06": {
       "frame": {
         "x": 0,
-        "y": 547,
+        "y": 691,
         "w": 7,
         "h": 18
       },
@@ -912,10 +1104,34 @@
         "y": 0.5
       }
     },
+    "boca/pucho/1": {
+      "frame": {
+        "x": 0,
+        "y": 709,
+        "w": 7,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 7,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
     "boca/tirapiedra/4": {
       "frame": {
         "x": 0,
-        "y": 565,
+        "y": 727,
         "w": 7,
         "h": 18
       },
@@ -936,10 +1152,10 @@
         "y": 0.5
       }
     },
-    "boca/caminar/3": {
+    "boca/camina/3": {
       "frame": {
         "x": 0,
-        "y": 583,
+        "y": 745,
         "w": 6,
         "h": 18
       },
@@ -963,7 +1179,7 @@
     "boca/idle": {
       "frame": {
         "x": 0,
-        "y": 601,
+        "y": 763,
         "w": 6,
         "h": 18
       },
@@ -987,7 +1203,7 @@
     "boca/meo/13": {
       "frame": {
         "x": 0,
-        "y": 619,
+        "y": 781,
         "w": 6,
         "h": 18
       },
@@ -1008,10 +1224,34 @@
         "y": 0.5
       }
     },
+    "boca/pucho/0": {
+      "frame": {
+        "x": 0,
+        "y": 799,
+        "w": 6,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 6,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
     "boca/tirapiedra/0": {
       "frame": {
         "x": 0,
-        "y": 637,
+        "y": 817,
         "w": 6,
         "h": 18
       },
@@ -1035,7 +1275,7 @@
     "boca/tirapiedra/5": {
       "frame": {
         "x": 0,
-        "y": 655,
+        "y": 835,
         "w": 6,
         "h": 18
       },
@@ -1056,10 +1296,34 @@
         "y": 0.5
       }
     },
-    "boca/muerte/1": {
+    "boca/salto/4": {
       "frame": {
         "x": 0,
-        "y": 673,
+        "y": 853,
+        "w": 10,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 1,
+        "w": 10,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/muerte/1": {
+      "frame": {
+        "x": 6,
+        "y": 745,
         "w": 8,
         "h": 17
       },
@@ -1083,7 +1347,7 @@
     "boca/salto/0": {
       "frame": {
         "x": 6,
-        "y": 583,
+        "y": 762,
         "w": 8,
         "h": 17
       },
@@ -1104,10 +1368,34 @@
         "y": 0.5
       }
     },
+    "boca/salto/1": {
+      "frame": {
+        "x": 6,
+        "y": 779,
+        "w": 8,
+        "h": 17
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 2,
+        "w": 8,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
     "boca/salto/2": {
       "frame": {
         "x": 6,
-        "y": 600,
+        "y": 796,
         "w": 8,
         "h": 17
       },
@@ -1131,7 +1419,7 @@
     "boca/salto/3": {
       "frame": {
         "x": 6,
-        "y": 617,
+        "y": 813,
         "w": 8,
         "h": 17
       },
@@ -1155,7 +1443,7 @@
     "boca/salto/5": {
       "frame": {
         "x": 6,
-        "y": 634,
+        "y": 830,
         "w": 8,
         "h": 17
       },
@@ -1176,10 +1464,34 @@
         "y": 0.5
       }
     },
-    "boca/salto/6": {
+    "boca/salto/7": {
       "frame": {
         "x": 6,
-        "y": 651,
+        "y": 847,
+        "w": 6,
+        "h": 17
+      },
+      "rotated": true,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 6,
+        "h": 17
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "boca/salto/6": {
+      "frame": {
+        "x": 7,
+        "y": 583,
         "w": 8,
         "h": 17
       },
@@ -1202,8 +1514,8 @@
     },
     "boca/muerte/2": {
       "frame": {
-        "x": 7,
-        "y": 439,
+        "x": 8,
+        "y": 493,
         "w": 9,
         "h": 14
       },
@@ -1227,7 +1539,7 @@
     "boca/muerte/3": {
       "frame": {
         "x": 8,
-        "y": 367,
+        "y": 507,
         "w": 9,
         "h": 12
       },
@@ -1251,7 +1563,7 @@
     "boca/muerte/5": {
       "frame": {
         "x": 8,
-        "y": 379,
+        "y": 519,
         "w": 12,
         "h": 8
       },
@@ -1275,7 +1587,7 @@
     "boca/muerte/6": {
       "frame": {
         "x": 8,
-        "y": 391,
+        "y": 531,
         "w": 12,
         "h": 8
       },
@@ -1299,7 +1611,7 @@
     "boca/muerte/4": {
       "frame": {
         "x": 8,
-        "y": 403,
+        "y": 543,
         "w": 11,
         "h": 11
       },
@@ -1347,7 +1659,7 @@
     "boca/birra/04": {
       "frame": {
         "x": 0,
-        "y": 295,
+        "y": 313,
         "w": 9,
         "h": 18
       },
@@ -1371,7 +1683,7 @@
     "boca/meo/03": {
       "frame": {
         "x": 0,
-        "y": 493,
+        "y": 637,
         "w": 7,
         "h": 18
       },
@@ -1417,13 +1729,13 @@
       "boca/tirapiedra/5"
     ],
     "golpe": [
-      "boca/atacar/0",
-      "boca/atacar/1",
-      "boca/atacar/2",
-      "boca/atacar/3",
-      "boca/atacar/4",
-      "boca/atacar/5",
-      "boca/atacar/6"
+      "boca/golpe/0",
+      "boca/golpe/1",
+      "boca/golpe/2",
+      "boca/golpe/3",
+      "boca/golpe/4",
+      "boca/golpe/5",
+      "boca/golpe/6"
     ],
     "meo": [
       "boca/meo/00",
@@ -1461,22 +1773,31 @@
       "boca/salto/6"
     ],
     "camina": [
-      "boca/caminar/0",
-      "boca/caminar/1",
-      "boca/caminar/2",
-      "boca/caminar/3",
-      "boca/caminar/4",
-      "boca/caminar/5"
+      "boca/camina/0",
+      "boca/camina/1",
+      "boca/camina/2",
+      "boca/camina/3",
+      "boca/camina/4",
+      "boca/camina/5"
     ],
     "corre": [
-      "boca/caminar/0",
-      "boca/caminar/2",
-      "boca/caminar/4"
+      "boca/camina/0",
+      "boca/camina/2",
+      "boca/camina/4"
     ],
     "recibir_golpe": [
-      "boca/muerte/0",
-      "boca/muerte/1",
-      "boca/idle"
+      "boca/recibir_golpe/0",
+      "boca/recibir_golpe/1",
+      "boca/recibir_golpe/2",
+      "boca/recibir_golpe/3"
+    ],
+    "pucho": [
+      "boca/pucho/0",
+      "boca/pucho/1",
+      "boca/pucho/2",
+      "boca/pucho/3",
+      "boca/pucho/4",
+      "boca/pucho/5"
     ]
   },
   "meta": {
@@ -1485,8 +1806,8 @@
     "image": "boca.png",
     "format": "RGBA8888",
     "size": {
-      "w": 20,
-      "h": 690
+      "w": 32,
+      "h": 1024
     },
     "scale": 1
   }

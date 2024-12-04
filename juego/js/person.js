@@ -67,16 +67,17 @@ class Person extends GenericObject {
     // this.createSprite("idle_" + this.team);
 
     this.updateMyPositionInCell();
-    this.createAnimationActions();
+    this.resetAnimationActions();
   }
 
-  createAnimationActions() {
+  resetAnimationActions() {    
     this.actions = {
       meo: false,
       birra: false,
       tirapiedra: false,
       golpe: false,
       recibir_golpe: false,
+      pucho: false,
     };
   }
 
@@ -403,10 +404,10 @@ class Person extends GenericObject {
   }
 
   throwRock() {
-    this.lastViolentAct = this.COUNTER;
     if (!this.target) return;
+    this.lastViolentAct = this.COUNTER;    
 
-    //HERE WE CAN EVALUATE WHAT TYPE OF BULLET, HOW OFTEN, RELOD, ETC
+    
     this.frenar();
     this.setAction("tirapiedra");
     this.particleSystem.addRock(this);
@@ -530,7 +531,7 @@ class Person extends GenericObject {
     return Object.keys(this.actions).filter((k) => this.actions[k]);
   }
 
-  changeSpriteAccordingToStateAndVelocity(second_time) {
+  changeSpriteAccordingToStateAndVelocity() {
     if (this.dead) return;
 
     let vel = new p5.Vector(this.body.velocity.x, this.body.velocity.y);
@@ -548,10 +549,10 @@ class Person extends GenericObject {
 
         //CUANDO TERMINA LA ANIMACION SELECCIONADA
         this.image.onComplete = (e) => {
-          this.changeSpriteAccordingToStateAndVelocity(true);
           this.image.onComplete = null;
           //PONGO EN FALSE LA ACCION ESTA EN EL OBJETO DE ACCIONES
-          this.actions[accion] = false;
+          this.resetAnimationActions();
+          this.changeSpriteAccordingToStateAndVelocity();
         };
 
         this.changeAnimation(accion, true);
@@ -565,20 +566,10 @@ class Person extends GenericObject {
       } else {
         this.changeAnimation("camina", false);
       }
+      //SI ESTA CORRIENDO Y TIENE Q HACER ALGUNA ANIMACION, Y ESTA CAMINANDO O CORRIENDO, LA SALTEA
+      // this.resetAnimationActions();
     }
   }
-
-  // ImTotallyDead() {
-  //   this.world.remove(this.engine.world, this.body);
-
-  //   // this.particleSystem.people = this.particleSystem.people.filter(
-  //   //   (k) => k.body.id != this.body.id
-  //   // );
-
-  //   this.particleSystem.mainContainer.removeChild(this.graphics);
-
-  //   this.removeMeAsTarget();
-  // }
 
   defineVelVectorToMoveTowardsTarget() {
     if (!("x" in this.vel) || !("x" in this.pos)) return;
@@ -655,25 +646,21 @@ class Person extends GenericObject {
   }
 
   doTheWalk() {
-    if (this.getCurrentActions().length) return;
-    // let minStam = this.particleSystem.MINIMUM_STAMINA_TO_MOVE;
+    // if (this.getCurrentActions().length) return;
+    
     if (this.isStatic) return;
-    // if (this.state == "bancando") return;
-    // if (this.stamina >= minStam) {
+    
     //SI ESTA ESCAPANDOSE VA MAS RAPIDO
     let forceToApplyInX =
       this.vel.x * this.particleSystem.MULTIPLIERS.SPEED_REDUCER;
     let forceToApplyInY =
       this.vel.y * this.particleSystem.MULTIPLIERS.SPEED_REDUCER;
 
-    // console.log("##", forceToApplyInX, forceToApplyInY);
+    
     this.body.force.x = forceToApplyInX;
     this.body.force.y = forceToApplyInY;
 
-    // this.stamina -= minStam * 0.1;
-    // } else {
-    //   this.stamina += minStam;
-    // }
+
   }
 
   avoidGas() {
@@ -794,7 +781,7 @@ class Person extends GenericObject {
   }
 
   throwAPunch() {
-    console.log("#", this.name, "punch");
+    // console.log("#", this.name, "punch");
     // this.setState("attacking");
     this.lastViolentAct = this.COUNTER;
     this.target.recieveDamageFrom(this);

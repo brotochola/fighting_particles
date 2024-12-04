@@ -48,7 +48,7 @@
         "y": 0.5
       }
     },
-    "river/caminar/1": {
+    "river/camina/1": {
       "frame": {
         "x": 0,
         "y": 38,
@@ -72,7 +72,7 @@
         "y": 0.5
       }
     },
-    "river/caminar/5": {
+    "river/camina/5": {
       "frame": {
         "x": 0,
         "y": 57,
@@ -120,7 +120,7 @@
         "y": 0.5
       }
     },
-    "river/caminar/2": {
+    "river/camina/2": {
       "frame": {
         "x": 0,
         "y": 95,
@@ -144,7 +144,7 @@
         "y": 0.5
       }
     },
-    "river/caminar/4": {
+    "river/camina/4": {
       "frame": {
         "x": 0,
         "y": 114,
@@ -168,7 +168,7 @@
         "y": 0.5
       }
     },
-    "river/tirapiedra/2": {
+    "river/recibir_golpe/1": {
       "frame": {
         "x": 0,
         "y": 133,
@@ -192,19 +192,19 @@
         "y": 0.5
       }
     },
-    "river/atacar/0": {
+    "river/tirapiedra/2": {
       "frame": {
         "x": 6,
         "y": 95,
-        "w": 10,
+        "w": 11,
         "h": 18
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 2,
+        "x": 1,
         "y": 2,
-        "w": 10,
+        "w": 11,
         "h": 18
       },
       "sourceSize": {
@@ -216,7 +216,7 @@
         "y": 0.5
       }
     },
-    "river/atacar/1": {
+    "river/birra/01": {
       "frame": {
         "x": 7,
         "y": 76,
@@ -240,7 +240,7 @@
         "y": 0.5
       }
     },
-    "river/atacar/3": {
+    "river/birra/03": {
       "frame": {
         "x": 6,
         "y": 113,
@@ -250,7 +250,7 @@
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 0,
+        "x": 2,
         "y": 2,
         "w": 10,
         "h": 18
@@ -264,7 +264,7 @@
         "y": 0.5
       }
     },
-    "river/birra/01": {
+    "river/birra/05": {
       "frame": {
         "x": 8,
         "y": 38,
@@ -288,7 +288,7 @@
         "y": 0.5
       }
     },
-    "river/birra/03": {
+    "river/birra/07": {
       "frame": {
         "x": 8,
         "y": 56,
@@ -312,7 +312,7 @@
         "y": 0.5
       }
     },
-    "river/birra/05": {
+    "river/birra/08": {
       "frame": {
         "x": 10,
         "y": 0,
@@ -336,7 +336,7 @@
         "y": 0.5
       }
     },
-    "river/birra/07": {
+    "river/birra/09": {
       "frame": {
         "x": 10,
         "y": 18,
@@ -360,7 +360,7 @@
         "y": 0.5
       }
     },
-    "river/birra/08": {
+    "river/golpe/0": {
       "frame": {
         "x": 0,
         "y": 151,
@@ -384,7 +384,7 @@
         "y": 0.5
       }
     },
-    "river/birra/09": {
+    "river/golpe/1": {
       "frame": {
         "x": 0,
         "y": 169,
@@ -408,7 +408,7 @@
         "y": 0.5
       }
     },
-    "river/meo/10": {
+    "river/golpe/3": {
       "frame": {
         "x": 0,
         "y": 187,
@@ -418,8 +418,8 @@
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 2,
-        "y": 3,
+        "x": 0,
+        "y": 2,
         "w": 10,
         "h": 18
       },
@@ -432,7 +432,7 @@
         "y": 0.5
       }
     },
-    "river/meo/11": {
+    "river/meo/10": {
       "frame": {
         "x": 0,
         "y": 205,
@@ -456,7 +456,7 @@
         "y": 0.5
       }
     },
-    "river/meo/12": {
+    "river/meo/11": {
       "frame": {
         "x": 0,
         "y": 223,
@@ -480,10 +480,34 @@
         "y": 0.5
       }
     },
-    "river/tirapiedra/3": {
+    "river/meo/12": {
       "frame": {
         "x": 0,
         "y": 241,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 3,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "river/pucho/4": {
+      "frame": {
+        "x": 0,
+        "y": 259,
         "w": 10,
         "h": 18
       },
@@ -504,19 +528,67 @@
         "y": 0.5
       }
     },
-    "river/atacar/2": {
+    "river/pucho/5": {
       "frame": {
         "x": 0,
-        "y": 259,
-        "w": 9,
+        "y": 277,
+        "w": 10,
         "h": 18
       },
       "rotated": false,
       "trimmed": true,
       "spriteSourceSize": {
-        "x": 1,
+        "x": 2,
         "y": 2,
-        "w": 9,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "river/recibir_golpe/3": {
+      "frame": {
+        "x": 0,
+        "y": 295,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 2,
+        "w": 10,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "river/tirapiedra/3": {
+      "frame": {
+        "x": 0,
+        "y": 313,
+        "w": 10,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 10,
         "h": 18
       },
       "sourceSize": {
@@ -531,7 +603,7 @@
     "river/birra/00": {
       "frame": {
         "x": 0,
-        "y": 277,
+        "y": 331,
         "w": 9,
         "h": 18
       },
@@ -555,7 +627,7 @@
     "river/birra/02": {
       "frame": {
         "x": 0,
-        "y": 295,
+        "y": 349,
         "w": 9,
         "h": 18
       },
@@ -576,10 +648,34 @@
         "y": 0.5
       }
     },
-    "river/caminar/0": {
+    "river/camina/0": {
       "frame": {
         "x": 0,
-        "y": 313,
+        "y": 367,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "river/golpe/2": {
+      "frame": {
+        "x": 0,
+        "y": 385,
         "w": 9,
         "h": 18
       },
@@ -603,7 +699,7 @@
     "river/meo/08": {
       "frame": {
         "x": 0,
-        "y": 331,
+        "y": 403,
         "w": 9,
         "h": 18
       },
@@ -627,7 +723,7 @@
     "river/meo/09": {
       "frame": {
         "x": 0,
-        "y": 349,
+        "y": 421,
         "w": 9,
         "h": 18
       },
@@ -648,10 +744,82 @@
         "y": 0.5
       }
     },
+    "river/pucho/3": {
+      "frame": {
+        "x": 0,
+        "y": 439,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "river/recibir_golpe/0": {
+      "frame": {
+        "x": 0,
+        "y": 457,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "river/recibir_golpe/2": {
+      "frame": {
+        "x": 0,
+        "y": 475,
+        "w": 9,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 1,
+        "y": 2,
+        "w": 9,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
     "river/meo/07": {
       "frame": {
         "x": 0,
-        "y": 367,
+        "y": 493,
         "w": 8,
         "h": 18
       },
@@ -675,7 +843,31 @@
     "river/muerte/0": {
       "frame": {
         "x": 0,
-        "y": 385,
+        "y": 511,
+        "w": 8,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 8,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "river/pucho/2": {
+      "frame": {
+        "x": 0,
+        "y": 529,
         "w": 8,
         "h": 18
       },
@@ -699,7 +891,7 @@
     "river/meo/00": {
       "frame": {
         "x": 0,
-        "y": 403,
+        "y": 547,
         "w": 7,
         "h": 18
       },
@@ -723,7 +915,7 @@
     "river/meo/01": {
       "frame": {
         "x": 0,
-        "y": 421,
+        "y": 565,
         "w": 7,
         "h": 18
       },
@@ -747,7 +939,7 @@
     "river/meo/02": {
       "frame": {
         "x": 0,
-        "y": 439,
+        "y": 583,
         "w": 7,
         "h": 18
       },
@@ -771,7 +963,7 @@
     "river/meo/04": {
       "frame": {
         "x": 0,
-        "y": 457,
+        "y": 601,
         "w": 7,
         "h": 18
       },
@@ -795,7 +987,7 @@
     "river/meo/05": {
       "frame": {
         "x": 0,
-        "y": 475,
+        "y": 619,
         "w": 7,
         "h": 18
       },
@@ -819,7 +1011,7 @@
     "river/meo/06": {
       "frame": {
         "x": 0,
-        "y": 493,
+        "y": 637,
         "w": 7,
         "h": 18
       },
@@ -840,10 +1032,34 @@
         "y": 0.5
       }
     },
+    "river/pucho/1": {
+      "frame": {
+        "x": 0,
+        "y": 655,
+        "w": 7,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 7,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
     "river/tirapiedra/4": {
       "frame": {
         "x": 0,
-        "y": 511,
+        "y": 673,
         "w": 7,
         "h": 18
       },
@@ -864,10 +1080,10 @@
         "y": 0.5
       }
     },
-    "river/caminar/3": {
+    "river/camina/3": {
       "frame": {
         "x": 0,
-        "y": 529,
+        "y": 691,
         "w": 6,
         "h": 18
       },
@@ -891,7 +1107,7 @@
     "river/idle": {
       "frame": {
         "x": 0,
-        "y": 547,
+        "y": 709,
         "w": 6,
         "h": 18
       },
@@ -915,7 +1131,31 @@
     "river/meo/13": {
       "frame": {
         "x": 0,
-        "y": 565,
+        "y": 727,
+        "w": 6,
+        "h": 18
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 2,
+        "w": 6,
+        "h": 18
+      },
+      "sourceSize": {
+        "w": 12,
+        "h": 21
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "river/pucho/0": {
+      "frame": {
+        "x": 0,
+        "y": 745,
         "w": 6,
         "h": 18
       },
@@ -939,7 +1179,7 @@
     "river/tirapiedra/0": {
       "frame": {
         "x": 0,
-        "y": 583,
+        "y": 763,
         "w": 6,
         "h": 18
       },
@@ -963,7 +1203,7 @@
     "river/tirapiedra/5": {
       "frame": {
         "x": 0,
-        "y": 601,
+        "y": 781,
         "w": 6,
         "h": 18
       },
@@ -987,7 +1227,7 @@
     "river/salto/4": {
       "frame": {
         "x": 0,
-        "y": 619,
+        "y": 799,
         "w": 10,
         "h": 17
       },
@@ -1011,7 +1251,7 @@
     "river/muerte/1": {
       "frame": {
         "x": 6,
-        "y": 529,
+        "y": 691,
         "w": 8,
         "h": 17
       },
@@ -1035,7 +1275,7 @@
     "river/salto/0": {
       "frame": {
         "x": 6,
-        "y": 546,
+        "y": 708,
         "w": 8,
         "h": 17
       },
@@ -1059,7 +1299,7 @@
     "river/salto/1": {
       "frame": {
         "x": 6,
-        "y": 563,
+        "y": 725,
         "w": 8,
         "h": 17
       },
@@ -1083,7 +1323,7 @@
     "river/salto/2": {
       "frame": {
         "x": 6,
-        "y": 580,
+        "y": 742,
         "w": 8,
         "h": 17
       },
@@ -1107,7 +1347,7 @@
     "river/salto/3": {
       "frame": {
         "x": 6,
-        "y": 597,
+        "y": 759,
         "w": 8,
         "h": 17
       },
@@ -1130,8 +1370,8 @@
     },
     "river/salto/5": {
       "frame": {
-        "x": 7,
-        "y": 403,
+        "x": 6,
+        "y": 776,
         "w": 8,
         "h": 17
       },
@@ -1152,19 +1392,19 @@
         "y": 0.5
       }
     },
-    "river/salto/6": {
+    "river/salto/7": {
       "frame": {
-        "x": 8,
-        "y": 367,
-        "w": 8,
+        "x": 6,
+        "y": 793,
+        "w": 6,
         "h": 17
       },
-      "rotated": false,
+      "rotated": true,
       "trimmed": true,
       "spriteSourceSize": {
         "x": 2,
         "y": 3,
-        "w": 8,
+        "w": 6,
         "h": 17
       },
       "sourceSize": {
@@ -1176,11 +1416,11 @@
         "y": 0.5
       }
     },
-    "river/salto/7": {
+    "river/salto/6": {
       "frame": {
-        "x": 8,
-        "y": 384,
-        "w": 6,
+        "x": 7,
+        "y": 547,
+        "w": 8,
         "h": 17
       },
       "rotated": false,
@@ -1188,7 +1428,7 @@
       "spriteSourceSize": {
         "x": 2,
         "y": 3,
-        "w": 6,
+        "w": 8,
         "h": 17
       },
       "sourceSize": {
@@ -1202,8 +1442,8 @@
     },
     "river/muerte/2": {
       "frame": {
-        "x": 14,
-        "y": 384,
+        "x": 8,
+        "y": 493,
         "w": 9,
         "h": 14
       },
@@ -1226,8 +1466,8 @@
     },
     "river/muerte/3": {
       "frame": {
-        "x": 9,
-        "y": 259,
+        "x": 8,
+        "y": 507,
         "w": 9,
         "h": 12
       },
@@ -1250,8 +1490,8 @@
     },
     "river/muerte/5": {
       "frame": {
-        "x": 9,
-        "y": 271,
+        "x": 8,
+        "y": 519,
         "w": 12,
         "h": 8
       },
@@ -1274,8 +1514,8 @@
     },
     "river/muerte/6": {
       "frame": {
-        "x": 9,
-        "y": 283,
+        "x": 8,
+        "y": 531,
         "w": 12,
         "h": 8
       },
@@ -1298,8 +1538,8 @@
     },
     "river/muerte/4": {
       "frame": {
-        "x": 9,
-        "y": 295,
+        "x": 7,
+        "y": 564,
         "w": 11,
         "h": 11
       },
@@ -1322,8 +1562,8 @@
     },
     "river/birra/06": {
       "frame": {
-        "x": 8,
-        "y": 38,
+        "x": 7,
+        "y": 76,
         "w": 10,
         "h": 18
       },
@@ -1347,7 +1587,7 @@
     "river/birra/04": {
       "frame": {
         "x": 0,
-        "y": 295,
+        "y": 349,
         "w": 9,
         "h": 18
       },
@@ -1371,7 +1611,7 @@
     "river/meo/03": {
       "frame": {
         "x": 0,
-        "y": 439,
+        "y": 583,
         "w": 7,
         "h": 18
       },
@@ -1417,13 +1657,13 @@
       "river/tirapiedra/5"
     ],
     "golpe": [
-      "river/atacar/0",
-      "river/atacar/1",
-      "river/atacar/2",
-      "river/atacar/3",
-      "river/atacar/4",
-      "river/atacar/5",
-      "river/atacar/6"
+      "river/golpe/0",
+      "river/golpe/1",
+      "river/golpe/2",
+      "river/golpe/3",
+      "river/golpe/4",
+      "river/golpe/5",
+      "river/golpe/6"
     ],
     "meo": [
       "river/meo/00",
@@ -1461,22 +1701,31 @@
       "river/salto/6"
     ],
     "camina": [
-      "river/caminar/0",
-      "river/caminar/1",
-      "river/caminar/2",
-      "river/caminar/3",
-      "river/caminar/4",
-      "river/caminar/5"
+      "river/camina/0",
+      "river/camina/1",
+      "river/camina/2",
+      "river/camina/3",
+      "river/camina/4",
+      "river/camina/5"
     ],
     "corre": [
-      "river/caminar/0",
-      "river/caminar/2",
-      "river/caminar/4"
+      "river/camina/0",
+      "river/camina/2",
+      "river/camina/4"
     ],
     "recibir_golpe": [
-      "river/muerte/0",
-      "river/muerte1",
-      "river/idle"
+      "river/recibir_golpe/0",
+      "river/recibir_golpe/1",
+      "river/recibir_golpe/2",
+      "river/recibir_golpe/3"
+    ],
+    "pucho": [
+      "river/pucho/0",
+      "river/pucho/1",
+      "river/pucho/2",
+      "river/pucho/3",
+      "river/pucho/4",
+      "river/pucho/5"
     ]
   },
   "meta": {
@@ -1485,8 +1734,8 @@
     "image": "river.png",
     "format": "RGBA8888",
     "size": {
-      "w": 23,
-      "h": 636
+      "w": 32,
+      "h": 1024
     },
     "scale": 1
   }
