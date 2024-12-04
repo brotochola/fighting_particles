@@ -89,24 +89,13 @@ class ParticleSystem {
 
       this.runEngine();
 
-      // // Add event listener to resize canvas when window size changes
-      // window.addEventListener('resize', () => {
-      //     this.canvas.width = width;
-      //     this.canvas.height = height;
-      // });
-
-      // this.addEventListenerToMouse();
       this.addClickListenerToCanvas();
-
-      // this.addExtraCanvasForFire();
 
       this.addShortCuts();
 
       // Matter.Events.on(this.engine, "collisionActive", (e) => {
       //   this.collisionHandler(e);
       // });
-
-      // this.createSmallerCanvas();
 
       this.createUI();
       this.addFiltersToStage();
@@ -628,6 +617,13 @@ class ParticleSystem {
     canvas.onmouseenter = (e) => {
       this.mouseLeft = false;
     };
+
+    this.mainContainer.interactive = true;
+    this.mainContainer.on("pointermove", (e) => {
+      this.lastPointerMoveEvent = e;
+
+      this.seeWhatObjectsImOn(e);
+    });
     canvas.onmousedown = (e) => {
       window.isDown = e.which;
       let box = canvas.getBoundingClientRect();
@@ -659,8 +655,6 @@ class ParticleSystem {
 
       this.mouseX = x;
       this.mouseY = y;
-
-      // this.seeWhatObjectsImOn(new PIXI.Point(x, y));
 
       if (!window.isDown && window.keyIsDown.length == 0) return;
 
@@ -695,14 +689,16 @@ class ParticleSystem {
   }
 
   seeWhatObjectsImOn(mousePosition) {
-    this.getAllObjects()
+    this.fixedObjects
       .map((k) => k.container)
       .forEach((element) => {
+        element.alpha = 1;
         if (isMouseOverPixel(mousePosition, element)) {
           console.log(`Mouse sobre:`, element.owner);
-          // element.parent.owner.mouseover = true;
+          element.alpha = 0.33;
+          element.owner.mouseover = true;
         } else {
-          // element.parent.owner.mouseover = false;
+          element.owner.mouseover = false;
         }
       });
   }
@@ -771,7 +767,7 @@ class ParticleSystem {
         x,
         y,
         particleSystem: this,
-        type: Math.random() > 0.5 ? "casa7" : "casa8",
+        type: Math.random() > 0.5 ? "casa17" : "casa18",
       });
     } else if (key == 71) {
       //G DE GAS
