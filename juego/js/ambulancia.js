@@ -2,7 +2,7 @@ class Ambulancia extends GenericObject {
   constructor(opt) {
     super({
       ...opt,
-      team: "civil",
+      team: "auto",
       isStatic: false,
       spritesheetName: "ambulancia_ss",
     });
@@ -137,22 +137,25 @@ class Ambulancia extends GenericObject {
   }
 
   hacerCosasEstadoIDLE() {
-    this.vel.x =(this.body.velocity.x+this.vel.x)*0.4
-    this.vel.y =(this.body.velocity.y+this.vel.y)*0.4
+    this.vel.x = (this.body.velocity.x + this.vel.x) * 0.4;
+    this.vel.y = (this.body.velocity.y + this.vel.y) * 0.4;
 
     let vectores = [
       // this.getVectorAwayFromGroup("poli", -1).mult(0.2),
       // this.getVectorAwayFromGroup("boca", -1).mult(1),
       // this.getVectorAwayFromGroup("river", -1).mult(1),
+      this.getVectorAwayFromGroup("river", -1, { onlyNearPeople: true }).mult(
+        0.5
+      ),
+      this.getVectorAwayFromGroup("boca", -1, { onlyNearPeople: true }).mult(
+        0.5
+      ),
+      this.getVectorAwayFromGroup("civil", -1, { onlyNearPeople: true }).mult(
+        0.5
+      ),
+
       this.cell.directionVector,
     ];
-
-    if (!this.cell.directionVector) {
-      this.vel.x = 0;
-      this.vel.y = 0;
-
-      return;
-    }
 
     for (let i = 0; i < vectores.length; i++) {
       if (vectores[i]) {

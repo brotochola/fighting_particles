@@ -34,28 +34,27 @@ class Civil extends Person {
     this.vel.y = this.vel.x = 0;
 
     let vecAmigos =
-      !this.friendsClose &&
+      !this.friendsClose.length &&
       !this.squeezed &&
       this.getVectorAwayFromGroup("civil", 1, {
         discardNearPeople: true,
       }).mult(1);
 
+    console.log(vecAmigos);
+    
     let vectores = [
       vecAmigos,
       this.getVectorAwayFromGroup("poli", -1).mult(0.2),
       this.getVectorAwayFromGroup("boca", -1).mult(1),
       this.getVectorAwayFromGroup("river", -1).mult(1),
-      this.cell.directionVector && this.cell.directionVector,
+      this.cell.directionVector,
     ];
-
-    
 
     for (let i = 0; i < vectores.length; i++) {
       if (vectores[i]) this.vel.add(vectores[i]);
     }
 
     this.limitVelToSpeed();
-
 
     if (this.vel.mag() < 0.01) {
       this.moverseUnPoquitoRandom();

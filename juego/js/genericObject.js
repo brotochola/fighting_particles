@@ -531,7 +531,10 @@ class GenericObject {
   }
 
   checkIfTheresSomeoneInTheWay(team) {
-    let vector = new p5.Vector(this.body.velocity.x, this.body.velocity.y).setMag(particleSystem.CELL_SIZE);
+    let vector = new p5.Vector(
+      this.body.velocity.x,
+      this.body.velocity.y
+    ).setMag(particleSystem.CELL_SIZE);
     let startingX = this.pos.x;
     let startingY = this.pos.y;
 
@@ -572,6 +575,12 @@ class GenericObject {
       peopleISee = peopleISee.filter(
         (m) => !this.nearPeople.map((k) => k.part).includes(m)
       );
+    }
+
+    if ((options || {}).onlyNearPeople) {
+      peopleISee = this.nearPeople
+        .map((k) => k.part)
+        .filter((k) => k.team == team);
     }
 
     if (peopleISee.length == 0) {
@@ -769,7 +778,7 @@ class GenericObject {
   }
   alignSpriteMiddleCenter() {
     this.image.pivot.x = +this.image.width / (this.initialScale * 2);
-    this.image.pivot.y = +this.image.height / (this.initialScale*2);
+    this.image.pivot.y = +this.image.height / (this.initialScale * 2);
 
     if (this.animatedSprites) {
       for (let as of Object.keys(this.animatedSprites)) {
@@ -778,7 +787,6 @@ class GenericObject {
       }
     }
   }
-
 
   createParticleContainer() {
     this.particleContainer = new PIXI.ParticleContainer();
