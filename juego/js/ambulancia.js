@@ -14,11 +14,16 @@ class Ambulancia extends GenericObject {
     this.isStatic = isStatic;
 
     this.initStartingAttributes();
-    this.speed = 0.1;
+
+    this.weight = 2000;
+    this.speed = 10;
 
     this.team = team;
 
     this.spriteSpeed = Math.floor(4 * this.speed);
+
+    this.lastMatterVels = [];
+    this.numberOfVelocitiesWeSave = 2;
 
     /////////////////////////////
 
@@ -64,7 +69,8 @@ class Ambulancia extends GenericObject {
   }
 
   createBodyParaLaAmbulancia() {
-    this.createBody(40, 20, "rectangle", "person", 0, false, this.weight);
+    this.createBody(90, 45, "rectangle", "ambulancia", 0, false, this.weight);
+
     this.body.frictionAir = 0.01;
     this.body.restitution = 0.9;
     this.body.frictionAir = 0.3;
@@ -131,25 +137,35 @@ class Ambulancia extends GenericObject {
   }
 
   hacerCosasEstadoIDLE() {
+    this.vel.x =(this.body.velocity.x+this.vel.x)*0.4
+    this.vel.y =(this.body.velocity.y+this.vel.y)*0.4
+
     let vectores = [
       // this.getVectorAwayFromGroup("poli", -1).mult(0.2),
       // this.getVectorAwayFromGroup("boca", -1).mult(1),
       // this.getVectorAwayFromGroup("river", -1).mult(1),
-      this.cell.directionVector && this.cell.directionVector,
+      this.cell.directionVector,
     ];
 
     if (!this.cell.directionVector) {
       this.vel.x = 0;
       this.vel.y = 0;
-    } else {
-      for (let i = 0; i < vectores.length; i++) {
-        if (vectores[i]) this.vel.add(vectores[i]);
-      }
 
-      this.vel.limit(this.speed);
-
-      this.doTheWalk();
+      return;
     }
+
+    for (let i = 0; i < vectores.length; i++) {
+      if (vectores[i]) {
+        this.vel.x += vectores[i].x * 2;
+        this.vel.y += vectores[i].y * 2;
+      }
+    }
+
+    // this.vel.mult(10);
+
+    this.vel.limit(this.speed);
+
+    this.doTheWalk();
   }
 
   //   hacerCosasEstadoYENDO() {
@@ -264,8 +280,6 @@ class Ambulancia extends GenericObject {
     this.updateMyStats(); //feel
     this.doActions();
 
-    // this.friccionAngular();
-
     this.ajustarSpriteSegunAngulo();
 
     // }
@@ -275,27 +289,34 @@ class Ambulancia extends GenericObject {
     // this.emitBlood();
     // if (this.emitter) this.emitter.emit = false;
 
-    this.lastMatterVel = { x: this.body.velocity.x, y: this.body.velocity.y };
+    this.saveLast10Velocities();
 
     this.render();
 
     // this.saveLog();
   }
 
-  // friccionAngular() {
-  //   // Aplicar fricción angular solo si el cuerpo está rotando
-  //   if (this.body.angularVelocity !== 0) {
-  //     this.particleSystem.Matter.Body.setAngularVelocity(
-  //       this.body,
-  //       this.body.angularVelocity / 2
-  //     );
+  saveLast10Velocities() {
+    this.lastMatterVels.push(
+      new p5.Vector(this.body.velocity.x, this.body.velocity.y)
+    );
+    if (this.lastMatterVels.length > this.numberOfVelocitiesWeSave) {
+      this.lastMatterVels.splice(0, 1);
+    }
+  }
 
-  //     // Detener la rotación si es muy pequeña
-  //     if (Math.abs(this.body.angularVelocity) < 0.001) {
-  //       this.particleSystem.Matter.Body.setAngularVelocity(this.body, 0);
-  //     }
-  //   }
-  // }
+  getAvgOfLast10Velocities() {
+    let sum = new p5.Vector(0, 0);
+
+    for (let vel of this.lastMatterVels) {
+      sum.add(vel);
+    }
+
+    sum.x /= this.lastMatterVels.length + 1;
+    sum.y /= this.lastMatterVels.length + 1;
+
+    return sum;
+  }
 
   render() {
     // if (!this.doNotShowIfOutOfScreen()) return;
@@ -323,19 +344,13 @@ class Ambulancia extends GenericObject {
     //360 GRADOS LOS DIVIDO POR LA CANTIDAD Q TENEMOS
     // this.calcularAngulo();
 
-    let promOfVelcocities
+    let promOfVelocities = this.getAvgOfLast10Velocities();
 
-    if (!this.lastMatterVel) {
-      promOfVelcocities = this.body.velocity;
-    } else {
-      promOfVelcocities = {
-        y: (this.body.velocity.y + this.lastMatterVel.y) / 2,
-        x: (this.body.velocity.x + this.lastMatterVel.x) / 2,
-      };
-    }
-
-    const angle = Math.atan2(promOfVelcocities.y, promOfVelcocities.x); // Ángulo de la velocidad
-    this.particleSystem.Matter.Body.setAngle(this.body, angle);
+    const angle = Math.atan2(promOfVelocities.y, promOfVelocities.x); // Ángulo de la velocidad
+    this.particleSystem.Matter.Body.setAngle(
+      this.body,
+      (this.body.angle + angle) * 0.5
+    );
 
     const cantidadDeImagenesQTenemos = 47;
     let grados = 360 / cantidadDeImagenesQTenemos;
