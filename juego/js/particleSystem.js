@@ -85,8 +85,6 @@ class ParticleSystem {
     this.createPixiStage(() => {
       this.createGrid();
 
-      this.addFloor();
-
       this.runEngine();
 
       this.addClickListenerToCanvas();
@@ -305,14 +303,6 @@ class ParticleSystem {
         setTimeout(() => p.bodyB.particle.remove(), this.deltaTime);
       }
 
-      if (p.bodyA.label == "ground" && p.bodyB.label == "bullet") {
-        p.bodyB.particle.remove();
-      }
-
-      if (p.bodyB.label == "ground" && p.bodyA.label == "bullet") {
-        p.bodyA.particle.remove();
-      }
-
       if (p.bodyA.label == "person" && p.bodyB.label == "person") {
         p.bodyB.particle.recieveDamageFrom(p.bodyA.particle);
         p.bodyA.particle.recieveDamageFrom(p.bodyB.particle);
@@ -490,22 +480,6 @@ class ParticleSystem {
       closest.body.particle.remove();
     }
   }
-  checkIfAPointCollidesWithTheGrounds(x, y) {
-    let arr = this.engine.world.bodies.filter((k) => k.label == "ground");
-    let isColliding = false;
-    for (let gr of arr) {
-      if (
-        x > gr.bounds.min.x &&
-        x < gr.bounds.max.x &&
-        y > gr.bounds.min.y &&
-        y < gr.bounds.max.y
-      ) {
-        isColliding = true;
-        break;
-      }
-    }
-    return isColliding;
-  }
 
   // createStick(w, h) {
   //   let arr = [];
@@ -527,19 +501,28 @@ class ParticleSystem {
 
   createGrid() {
     this.grid = [];
+
+    //MAKE SURE NO ONE HAS ANY CELL
+    this.people.forEach((k) => (k.cell = null));
+
     for (
-      let i = Math.floor((-1.5 * this.worldHeight) / this.CELL_SIZE);
-      i < this.worldHeight / this.CELL_SIZE + 2;
+      let i = Math.floor((-1.5 * this.worldHeight) / this.CELL_SIZE) + 2;
+      i < Math.floor((this.worldHeight * 1.5) / this.CELL_SIZE) + 2;
       i++
     ) {
       this.grid[i] = [];
-      for (let j = -2; j < this.worldWidth / this.CELL_SIZE + 2; j++) {
+      for (
+        let j = Math.floor((-1.5 * this.worldWidth) / this.CELL_SIZE) + 2;
+        j < Math.floor((this.worldWidth * 1.5) / this.CELL_SIZE) + 2;
+        j++
+      ) {
         this.grid[i][j] = new Cell(i, j, this.CELL_SIZE, this.grid, this);
       }
     }
 
     return this.grid;
   }
+
   doScreenCameraMove() {
     if (this.mouseLeft) return;
     let margin = 50;
@@ -799,8 +782,7 @@ class ParticleSystem {
     } else if (key == 71) {
       //G DE GAS
       this.addGas(x, y);
-    }
-    else if(key==78){
+    } else if (key == 78) {
       //N DE "NO HACEN NADA"
       this.addCivilian(x, y);
     }
@@ -814,66 +796,6 @@ class ParticleSystem {
     for (let i = 0; i < this.people.length; i++) {
       if (this.people[i].id == id) return this.people[i];
     }
-  }
-
-  addFloor() {
-    var ground = Bodies.rectangle(0, this.worldHeight + 90, 3000, 200, {
-      restitution: 0,
-      friction: 0.5,
-      slop: 0,
-      label: "ground",
-      render: {
-        fillStyle: "red",
-        lineWidth: 0,
-      },
-      isStatic: true,
-      render: { fillStyle: "black" },
-    });
-
-    var roof = Bodies.rectangle(0, -95, 3000, 200, {
-      restitution: 0,
-      friction: 0.5,
-      slop: 0,
-      label: "ground",
-
-      isStatic: true,
-      render: { fillStyle: "black" },
-    });
-
-    var leftWall = Bodies.rectangle(
-      -90,
-      this.worldHeight / 2,
-      200,
-      this.worldHeight,
-      {
-        restitution: 0,
-        friction: 0.5,
-        slop: 0,
-        label: "ground",
-
-        isStatic: true,
-        render: { fillStyle: "black" },
-      }
-    );
-
-    var rightWall = Bodies.rectangle(
-      this.worldWidth + 90,
-      this.worldHeight / 2,
-      200,
-      this.worldHeight,
-      {
-        restitution: 0,
-        friction: 0.5,
-        slop: 0,
-        label: "ground",
-
-        isStatic: true,
-        render: { fillStyle: "black" },
-      }
-    );
-
-    // add all of the bodies to the world
-    this.world.add(this.engine.world, [ground, leftWall, rightWall, roof]);
   }
 
   addPoli(x, y, isStatic) {
@@ -934,7 +856,7 @@ class ParticleSystem {
     const particle = new Civil({
       x,
       y,
-      particleSystem: this     
+      particleSystem: this,
     });
     particle.particles = this.people;
     this.people.push(particle);
@@ -1311,6 +1233,8 @@ class ParticleSystem {
         this.addHouse(k);
       } else if (k.type.startsWith("calle")) {
         this.addGround(k);
+      } else if (k.type.startsWith("civil")) {
+        this.addCivilian(k.x, k.y);
       }
     });
   }

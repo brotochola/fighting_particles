@@ -35,11 +35,12 @@ class Civil extends Person {
     this.vel.y = this.vel.x = 0;
 
     let vectores = [
-      !this.friendsClose && !this.squeezed &&
-        this.getVectorAwayFromGroup("civil", 1, { discardNearPeople: true }),
-      this.getVectorAwayFromGroup("poli", -1),
-      this.getVectorAwayFromGroup("boca", -1),
-      this.getVectorAwayFromGroup("river", -1),
+    //   !this.friendsClose && !this.squeezed &&
+    //     this.getVectorAwayFromGroup("civil", 1, { discardNearPeople: true }),
+    //   this.getVectorAwayFromGroup("poli", -1),
+    //   this.getVectorAwayFromGroup("boca", -1),
+    //   this.getVectorAwayFromGroup("river", -1),
+      this.cell.directionVector
     ];
 
     for (let i = 0; i < vectores.length; i++) {
