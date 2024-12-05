@@ -646,14 +646,17 @@ class Person extends GenericObject {
       ((this.vecAwayFromGas || {}).y || 0);
 
     //LIMITAR LA VELOCIDA A LA VELOCIDAD DEL CHABON, Y SI SE ESTA RAJANDO, UN TOQ MAS
+    this.limitVelToSpeed();
+    if (isNaN(this.vel.x)) debugger;
+  }
+
+  limitVelToSpeed() {
     this.vel.limit(
       this.speed *
         (this.state == this.states.HUYENDO
           ? this.particleSystem.MULTIPLIERS.EXTRA_SPEED_WHEN_ESCAPING
           : 1)
     );
-
-    if (isNaN(this.vel.x)) debugger;
   }
 
   moverseUnPoquitoRandom() {
@@ -793,6 +796,7 @@ class Person extends GenericObject {
     let vecAway = p5.Vector.sub(new p5.Vector(avgX, avgY), this.pos);
 
     vecAway.setMag(1);
+
     if (direction == -1) {
       vecAway.x *= -1;
       vecAway.y *= -1;

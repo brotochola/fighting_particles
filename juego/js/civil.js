@@ -31,21 +31,31 @@ class Civil extends Person {
   }
 
   hacerCosasEstadoIDLE() {
-    this.setTarget(null);
     this.vel.y = this.vel.x = 0;
 
+    let vecAmigos =
+      !this.friendsClose &&
+      !this.squeezed &&
+      this.getVectorAwayFromGroup("civil", 1, {
+        discardNearPeople: true,
+      }).mult(1);
+
     let vectores = [
-    //   !this.friendsClose && !this.squeezed &&
-    //     this.getVectorAwayFromGroup("civil", 1, { discardNearPeople: true }),
-    //   this.getVectorAwayFromGroup("poli", -1),
-    //   this.getVectorAwayFromGroup("boca", -1),
-    //   this.getVectorAwayFromGroup("river", -1),
-      this.cell.directionVector
+      vecAmigos,
+      this.getVectorAwayFromGroup("poli", -1).mult(0.2),
+      this.getVectorAwayFromGroup("boca", -1).mult(1),
+      this.getVectorAwayFromGroup("river", -1).mult(1),
+      this.cell.directionVector && this.cell.directionVector,
     ];
+
+    
 
     for (let i = 0; i < vectores.length; i++) {
       if (vectores[i]) this.vel.add(vectores[i]);
     }
+
+    this.limitVelToSpeed();
+
 
     if (this.vel.mag() < 0.01) {
       this.moverseUnPoquitoRandom();
