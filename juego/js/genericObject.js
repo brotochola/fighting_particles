@@ -6,7 +6,7 @@ class GenericObject {
     // this.pepe();
     const { x, y, particleSystem, team, isStatic, diameter, scaleX } = opt;
     this.opt = opt;
-
+    this.type=constructor.name
     this.particleSystem = particleSystem;
     this.Matter = particleSystem.Matter;
     this.engine = particleSystem.engine;
@@ -407,8 +407,6 @@ class GenericObject {
   }
 
   getParticlesFromCloseCells() {
-    //from this cell and neighbour cells
-    // let tiempo = performance.now();
     if (!this.cell) return [];
     let arr = [];
     arr.push(...this.getParticlesFromCell());
@@ -441,8 +439,8 @@ class GenericObject {
     }, 100);
   }
 
-  createAnimatedSprite() {
-    this.spritesheet = this.particleSystem.res[this.team + "_ss"];
+  createAnimatedSprite(which) {
+    this.spritesheet = this.particleSystem.res[which + "_ss"];
     // console.log("##", this.spritesheet);
 
     let animations = Object.keys(this.spritesheet.animations);
@@ -466,7 +464,6 @@ class GenericObject {
   }
 
   changeAnimation(which, stopAtEnd = false, force) {
-   
     if (!force && performance.now() - this.lastTimeChangedAnimation < 500) {
       return;
     }
@@ -475,7 +472,7 @@ class GenericObject {
       return;
     }
     // console.log("changeAnimation", this.name, which, this.currentAnimation)
- 
+
     // var newAnim = this.spritesheet.animations[which];
 
     this.image = this.animatedSprites[which];
@@ -484,7 +481,7 @@ class GenericObject {
     this.image.gotoAndPlay(0);
 
     this.image.loop = !stopAtEnd;
-    
+
     this.currentAnimation = which;
     this.lastTimeChangedAnimation = performance.now();
   }
@@ -587,5 +584,30 @@ class GenericObject {
     this.particleSystem.mainContainer.addChild(this.container);
 
     // this.addTempCircleAt00();
+  }
+
+  getCellsALargeObjectIsAt() {
+
+
+    let numberOfCellsInX = Math.ceil(
+      this.container.width / this.particleSystem.CELL_SIZE
+    );
+    let numberOfCellsInY = Math.ceil(
+      this.container.height / this.particleSystem.CELL_SIZE
+    );
+    let cells = [];
+
+    for (let x = 0; x < numberOfCellsInX; x++) {
+      for (let y = 0; y < numberOfCellsInY; y++) {
+        cells.push(
+          this.particleSystem.getCellAt(
+            this.pos.x - this.image.pivot.x + x * this.particleSystem.CELL_SIZE,
+            this.pos.y - this.image.pivot.y + y * this.particleSystem.CELL_SIZE
+          )
+        );
+      }
+    }
+
+    return cells;
   }
 }

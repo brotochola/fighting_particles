@@ -6,15 +6,19 @@ class Cell {
     this.pos = { x: x * cellWidth, y: y * cellWidth };
     this.x = x;
     this.y = y;
-    this.gas=0
-    this.graphics
+    this.gas = 0;
+    this.graphics;
     this.maxLuckyNumbers = 25;
     this.myLuckyNumber = randomInt(this.maxLuckyNumbers - 1);
     // this.container = elem;
     this.particlesHere = [];
-    this.color=generateRandomGrassColor()
-    this.createRectInPixi()
+    this.color = generateRandomGrassColor();
+    // this.createRectInPixi();
     this.startingFrame = randomInt(8);
+  }
+
+  setDirectionVector(x, y) {
+    this.directionVector = new p5.Vector(x, y);
   }
 
   removeMe(who) {
@@ -41,12 +45,6 @@ class Cell {
     if (!areYouHere) {
       this.particlesHere.push(who);
     }
-  }
-  unHighlight() {
-    this.highlighted = false;
-  }
-  highlight() {
-    this.highlighted = true
   }
 
   getNeighbours() {
@@ -144,47 +142,65 @@ class Cell {
   isItMyFrame() {
     return this.COUNTER % 9 == this.startingFrame;
   }
-  update(FRAMENUM){
-    this.COUNTER=FRAMENUM
+  update(FRAMENUM) {
+    this.COUNTER = FRAMENUM;
     // console.log(this.isItMyFrame())
-    if(!this.isItMyFrame()) return
+    if (!this.isItMyFrame()) return;
 
-    if(this.gas>0.01){
-      this.getNeighbours().forEach(k=>{
-        if(this.gas>k.gas){
-          k.gas+=this.gas*0.06
-          this.gas=this.gas* 0.94-0.005
+    if (this.gas > 0.01) {
+      this.getNeighbours().forEach((k) => {
+        if (this.gas > k.gas) {
+          k.gas += this.gas * 0.06;
+          this.gas = this.gas * 0.94 - 0.005;
         }
-        
-      })   
-
-      
-      
-    }else{
-      this.gas=0
+      });
+    } else {
+      this.gas = 0;
     }
 
-    
-
-    this.render()
-    
+    this.render();
   }
-  createRectInPixi() {
-    // this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);
+  highlight(color = "red") {
+    if (!this.graphics) {
+      this.graphics = new PIXI.Graphics();
+      this.particleSystem.mainContainer.addChild(this.graphics);
+    }
 
-    //CIRCLE
-    this.graphics = new PIXI.Graphics();
-    // this.graphics.beginFill(this.color);
-    // this.graphics.drawRect(this.x*this.cellWidth, this.y*this.cellWidth, this.cellWidth, this.cellWidth);
-    // this.graphics.endFill();
-    // this.particleSystem.mainContainer.addChild(this.graphics);
+    this.graphics.rect(
+      this.x * this.cellWidth,
+      this.y * this.cellWidth,
+      this.cellWidth,
+      this.cellWidth
+    );
+
+    // this.graphics.fill({ color: "red", alpha:0.5 });
+    this.graphics.stroke({ color, width: 3 });
+  }
+
+  showDirectionVector() {
+    this.highlight("white");
+    this.graphics.moveTo(
+      this.pos.x + this.cellWidth / 2,
+      this.pos.y + this.cellWidth / 2
+    );
+    let halfCell = this.cellWidth * 0.5;
+    this.graphics.lineTo(
+      this.pos.x + halfCell + this.directionVector.x * halfCell,
+      this.pos.y + halfCell + this.directionVector.y * halfCell
+    );
+    this.graphics.stroke({ color: "white", width: 2 });
+  }
+
+  unHighlight() {
+    if(!this.graphics) return
+    
+    this.graphics.clear();
   }
   render(FRAMENUM) {
-    let  color=this.highlighted?0xffffff:screenBlend(generateGrayscaleColorHex(this.gas), this.color)
-    this.graphics.clear()
-    this.graphics.beginFill(color);
-
-    this.graphics.drawRect(this.x*this.cellWidth, this.y*this.cellWidth, this.cellWidth, this.cellWidth);
-    this.graphics.endFill();
+    // let  color=this.highlighted?0xffffff:screenBlend(generateGrayscaleColorHex(this.gas), this.color)
+    // this.graphics.clear()
+    // this.graphics.beginFill(color);
+    // this.graphics.drawRect(this.x*this.cellWidth, this.y*this.cellWidth, this.cellWidth, this.cellWidth);
+    // this.graphics.endFill();
   }
 }

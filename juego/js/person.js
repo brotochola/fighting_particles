@@ -61,7 +61,7 @@ class Person extends GenericObject {
     // this.createParticleContainer()
     this.createDebugContainer();
 
-    this.createAnimatedSprite();
+    this.createAnimatedSprite(this.team);
     this.alignSpriteMiddleBottom();
 
     // this.createSprite("idle_" + this.team);
@@ -434,8 +434,8 @@ class Person extends GenericObject {
   }
 
   pushInARandomDirection() {
-    this.body.force.x += (Math.random() * 1 - 0.5)*(this.strength*10)
-    this.body.force.y += (Math.random() * 1 - 0.5)*(this.strength*10)
+    this.body.force.x += (Math.random() * 1 - 0.5) * (this.strength * 10);
+    this.body.force.y += (Math.random() * 1 - 0.5) * (this.strength * 10);
   }
 
   discernirAmigosYEnemigosYEvaluarLaSituacion() {
@@ -772,6 +772,35 @@ class Person extends GenericObject {
     // this.vel.setMag(1);
   }
 
+  getVectorAwayFromGroup(team, direction, options) {
+    if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
+
+    let peopleISee = this.peopleICanSee.filter((k) => k.team == team);
+
+    if ((options || {}).discardNearPeople) {
+      peopleISee = peopleISee.filter(
+        (m) => !this.nearPeople.map((k) => k.part).includes(m)
+      );
+    }
+
+    if (peopleISee.length == 0) {
+      return new p5.Vector(0, 0);
+    }
+
+    let avgX = getAvg(peopleISee.map((k) => k.pos.x));
+    let avgY = getAvg(peopleISee.map((k) => k.pos.y));
+
+    let vecAway = p5.Vector.sub(new p5.Vector(avgX, avgY), this.pos);
+
+    vecAway.setMag(1);
+    if (direction == -1) {
+      vecAway.x *= -1;
+      vecAway.y *= -1;
+    }
+
+    return vecAway;
+  }
+
   defineFlockingBehaviorTowardsFriends() {
     if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
 
@@ -791,7 +820,7 @@ class Person extends GenericObject {
       this.pos
     );
 
-    if (this.friendsClose.length > 3 || this.cell.particlesHere > 2) {
+    if (this.friendsClose.length > 3) {
       this.vecThatAimsToTheAvg.setMag(0);
     } else {
       this.vecThatAimsToTheAvg.setMag(1);

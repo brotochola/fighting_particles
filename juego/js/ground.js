@@ -1,19 +1,26 @@
 class Ground extends GenericObject {
   constructor(opt) {
     super(opt);
-    const { x, y, particleSystem, width, height, sprite } = opt;
-    this.sprite = sprite;
-
-    
+    this.options = opt;
+    this.sprite = opt.sprite;
 
     this.createSprite();
+
+    this.putDirectionVectorsInCells();
+
     this.update();
   }
 
+  putDirectionVectorsInCells() {
+    this.cellsOccupied = this.getCellsALargeObjectIsAt();
+    this.cellsOccupied.map((cell) => {
+      if (this.options.scaleX == 1) cell.setDirectionVector(0.5, 0.333);
+      else cell.setDirectionVector(0.5, -0.333);
+    });
+  }
+
   createSprite() {
-    this.image = new PIXI.Sprite(
-      this.particleSystem.res[this.sprite]
-    );
+    this.image = new PIXI.Sprite(this.particleSystem.res[this.sprite]);
 
     this.alignSpriteMiddleBottom();
 

@@ -99,6 +99,7 @@ class ParticleSystem {
 
       this.createUI();
       this.addFiltersToStage();
+      this.disableFilters();
     });
   }
   createUI() {
@@ -129,6 +130,7 @@ class ParticleSystem {
       boca_ss: "img/boca_ss/boca.json",
       river_ss: "img/river_ss/river.json",
       poli_ss: "img/poli_ss/agent.json",
+      civil_ss: "img/civil_ss/civil.json",
       bg: "img/bg3.jpg",
       blood: "img/blood.png",
       pole: "img/pole.png",
@@ -210,9 +212,11 @@ class ParticleSystem {
           // this.canvas.onclick = (e) => this.handleClickOnCanvas(e);
           // this.canvas.onmousemove = (e) => this.handleMouseMoveOnCanvas(e);
           document.body.appendChild(this.canvas);
+
           this.mainContainer = new PIXI.Container();
           this.mainContainer.name = "Main Container";
           this.pixiApp.stage.addChild(this.mainContainer);
+
           this.pixiApp.stage.sortableChildren = true;
           this.mainContainer.sortableChildren = true;
 
@@ -225,6 +229,14 @@ class ParticleSystem {
     //DEBUG
 
     ///
+  }
+
+  createGridDebug() {
+    if (this.gridDebugGraphics) return;
+    this.gridDebugGraphics = new PIXI.Graphics();
+    this.gridDebugGraphics.name = "Grid debug";
+    this.mainContainer.addChild(this.gridDebugGraphics);
+    this.gridDebugGraphics.zIndex = 4;
   }
 
   setStageScale() {
@@ -513,7 +525,7 @@ class ParticleSystem {
     }
   }
 
-  createGrid = () => {
+  createGrid() {
     this.grid = [];
     for (
       let i = Math.floor((-1.5 * this.worldHeight) / this.CELL_SIZE);
@@ -525,12 +537,13 @@ class ParticleSystem {
         this.grid[i][j] = new Cell(i, j, this.CELL_SIZE, this.grid, this);
       }
     }
+
     return this.grid;
-  };
+  }
   doScreenCameraMove() {
     if (this.mouseLeft) return;
     let margin = 50;
-    let move = 50;
+    let move = 25;
     // console.log(
     //   this.screenX,
     //   this.screenY,
@@ -540,20 +553,26 @@ class ParticleSystem {
     let leftLimit = this.doPerspective ? this.viewportWidth / 2 : 0;
 
     if (
-      this.screenX > this.viewportWidth - margin ||
+      // this.screenX > this.viewportWidth - margin ||
       window.keyIsDown.includes(68)
     ) {
       this.mainContainer.x -= move;
-    } else if (this.screenX < margin || window.keyIsDown.includes(65)) {
+    } else if (
+      // this.screenX < margin ||
+      window.keyIsDown.includes(65)
+    ) {
       this.mainContainer.x += move;
     }
 
     if (
-      this.screenY > this.viewPortHeight - this.buttonPanelHeight - margin ||
+      // this.screenY > this.viewPortHeight - this.buttonPanelHeight - margin ||
       window.keyIsDown.includes(83)
     ) {
       this.mainContainer.y -= move;
-    } else if (this.screenY < margin || window.keyIsDown.includes(87)) {
+    } else if (
+      // this.screenY < margin ||
+      window.keyIsDown.includes(87)
+    ) {
       this.mainContainer.y += move;
     }
 
@@ -694,13 +713,21 @@ class ParticleSystem {
       .forEach((element) => {
         element.alpha = 1;
         if (isMouseOverPixel(mousePosition, element)) {
-          console.log(`Mouse sobre:`, element.owner);
+          // console.log(`Mouse sobre:`, element.owner);
           element.alpha = 0.33;
           element.owner.mouseover = true;
         } else {
           element.owner.mouseover = false;
         }
       });
+
+    this.grounds.map((k) => {
+      let cont = k.container;
+      k.cellsOccupied.forEach((k) => k.unHighlight());
+      if (isMouseOverPixel(mousePosition, cont)) {
+        k.cellsOccupied.forEach((k) => k.showDirectionVector());
+      }
+    });
   }
   // addEventListenerToMouse() {
   //   //THIS IS THE BURNING FUNCTION!
@@ -772,6 +799,10 @@ class ParticleSystem {
     } else if (key == 71) {
       //G DE GAS
       this.addGas(x, y);
+    }
+    else if(key==78){
+      //N DE "NO HACEN NADA"
+      this.addCivilian(x, y);
     }
   }
   saveLevel() {
@@ -892,6 +923,18 @@ class ParticleSystem {
       particleSystem: this,
       team,
       isStatic,
+    });
+    particle.particles = this.people;
+    this.people.push(particle);
+    window.lastParticle = particle;
+    return particle;
+  }
+
+  addCivilian(x, y) {
+    const particle = new Civil({
+      x,
+      y,
+      particleSystem: this     
     });
     particle.particles = this.people;
     this.people.push(particle);
@@ -1241,12 +1284,11 @@ class ParticleSystem {
 
     console.log("# NEW WIDTH AND HEIGHT", width, height);
 
-    this.worldWidth = width
+    this.worldWidth = width;
     this.worldHeight = height;
 
     this.bg.width = this.worldWidth;
     this.bg.height = this.worldHeight;
-
 
     this.createGrid();
 
@@ -1303,8 +1345,8 @@ class ParticleSystem {
       seed: Math.random(), // A seed value to apply to the random noise generation
       time: 0, // For animating interlaced lines
       verticalLine: false,
-      vignetting: 0.25, // The radius of the vignette effect, smaller values produces a smaller vignette
-      vignettingAlpha: 0.9, // Amount of opacity on the vignette
+      vignetting: 0.35, // The radius of the vignette effect, smaller values produces a smaller vignette
+      vignettingAlpha: 0.75, // Amount of opacity on the vignette
       vignettingBlur: 0.2, // Blur intensity of the vignette
     });
 
@@ -1320,6 +1362,16 @@ class ParticleSystem {
   disableFilters() {
     for (let f of this.pixiApp.stage.filters) {
       f.enabled = false;
+    }
+  }
+  toggleFilters() {
+    if (
+      this.pixiApp.stage.filters.length &&
+      this.pixiApp.stage.filters[0].enabled
+    ) {
+      this.disableFilters();
+    } else {
+      this.enableFilters();
     }
   }
 }
