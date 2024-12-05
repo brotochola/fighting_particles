@@ -14,9 +14,10 @@ class Person extends GenericObject {
   };
 
   constructor(opt) {
-    super(opt);
+    super(opt); 
     this.initialScale = this.scale = 2;
     const { x, y, particleSystem, team, isStatic, diameter } = opt;
+    this.options = opt;
     this.diameter = diameter;
     this.isStatic = isStatic;
     //PARAMS OF THIS PERSON:
@@ -61,7 +62,10 @@ class Person extends GenericObject {
     // this.createParticleContainer()
     this.createDebugContainer();
 
-    this.createAnimatedSprite(this.team);
+    this.createAnimatedSprite(
+      this.options.spritesheetName || this.team+"_ss",
+      this instanceof Ambulancia ? "1" : "parado"
+    );
     this.alignSpriteMiddleBottom();
 
     // this.createSprite("idle_" + this.team);
@@ -92,31 +96,7 @@ class Person extends GenericObject {
     this.actions[action] = true;
   }
 
-  initStartingAttributes() {
-    this.dead = false;
-    this.name = generateID();
 
-    this.strength = Math.random() * 0.05 + 0.05;
-    this.weight = Math.random() * 50 + 50;
-
-    this.health = 1;
-    this.speed = Math.random() * 0.5 + 0.5;
-    this.intelligence = Math.random(); //opposite of courage
-    this.courage = 1 - this.intelligence;
-
-    this.attackDistance = this.diameter * 2;
-    this.sightDistance = Math.random() * 100 + 300;
-
-    this.stamina = 1;
-    this.fear = 0;
-    this.anger = 0;
-    this.happiness = 1;
-
-    //que tan rapido le baja la ira
-    this.calma = Math.random() + 0.01;
-    //que tan rapido acumula ira ante diferente eventos
-    this.irascibilidad = 1 - this.calma;
-  }
   createDebugContainer() {
     this.debugContainer = new PIXI.Container();
     this.debugContainer.x = -10;
@@ -348,16 +328,7 @@ class Person extends GenericObject {
       // this.updateDebugText(this.nearPeople.length);
     }
   }
-  checkIfImNotConsideredViolentAnyMore() {
-    if (this.lastViolentAct == null) return;
-    if (
-      this.COUNTER - this.lastViolentAct >
-      this.particleSystem.MULTIPLIERS
-        .CANTIDAD_DE_FRAMES_PARA_DEJAR_DE_SER_UN_VIOLENTO
-    ) {
-      this.lastViolentAct = null;
-    }
-  }
+
   update(COUNTER) {
     super.update(COUNTER);
 
@@ -438,79 +409,13 @@ class Person extends GenericObject {
     this.body.force.y += (Math.random() * 1 - 0.5) * (this.strength * 10);
   }
 
-  discernirAmigosYEnemigosYEvaluarLaSituacion() {
-    // let time = performance.now();
 
-    this.enemiesICanSee = this.peopleICanSee.filter((k) => k.team != this.team);
 
-    this.friendsICanSee = this.peopleICanSee.filter((k) => k.team == this.team);
 
-    let val =
-      (this.friendsICanSee.length + 1) / (this.enemiesICanSee.length + 1);
-
-    this.prediction = val;
-    this.mappedPrediction = mapLogExpValuesTo1(val);
-    // console.log(performance.now() - time, "XXXXXXX");
-
-    // //COMBINACION DE MIEDO, VIDA, ENEMIGOS CERCA, ETC
-    // this.arrogance =
-    //   (this.prediction *
-    //     (this.anger + this.health - this.fear + this.courage)) /
-    //   4;
-  }
-
-  getNumberOfEnemiesRunningAway() {
-    return this.peopleICanSee.filter(
-      (k) => k.state == this.states.HUYENDO && k.team != this.team
-    ).length;
-  }
   getHowManyOfPeopleFromCertainTeamICanSee(team) {
     return this.peopleICanSee.filter((k) => k.team == team).length;
   }
-  updateMyStats() {
-    if (!this.isItMyFrame()) return;
-    // miedo -= prediccion *k //mis amigos me sacan el miedo
-
-    if (this.mappedPrediction > 0) {
-      //hay mas amigos q enemigos
-      this.fear -=
-        this.mappedPrediction *
-        this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER *
-        this.courage;
-    } else if (this.mappedPrediction < 0) {
-      //hay mas enemigos
-      //CUANDO HAY MUCHOS ENEMIGOS, EL MIEDO SUBE RAPIDO
-      this.fear -=
-        this.mappedPrediction *
-        100 *
-        this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER *
-        (1 - this.courage);
-    }
-
-    // miedo+= (1-salud)*(1-coraje) *k //si me lastimaron, me sube el miedo
-    this.fear +=
-      (1 - this.health) *
-      (1 - this.courage) *
-      this.particleSystem.MULTIPLIERS.FEAR_INCREASE_DUE_TO_HEALTH;
-
-    // miedo-=enemigosBienCerca.filter(k=>estado==this.states.HUYENDO).length * k
-    this.fear -=
-      this.getNumberOfEnemiesRunningAway() *
-      this.particleSystem.MULTIPLIERS.FEAR_RECOVERY_REDUCER;
-
-    this.anger -=
-      this.calma * this.particleSystem.MULTIPLIERS.ANGER_RECOVERY_REDUCER;
-
-    if (this.health > 0.1) {
-      this.health += this.particleSystem.MULTIPLIERS.HEALTH_RECOVERY_REDUCER;
-    }
-
-    if (this.health > 1) this.health = 1;
-    if (this.anger < 0) this.anger = 0;
-    if (this.anger > 1) this.anger = 1;
-    if (this.fear < 0) this.fear = 0;
-    if (this.fear > 1) this.fear = 1;
-  }
+  
   getInfo() {
     return {
       name: this.name,
@@ -659,28 +564,7 @@ class Person extends GenericObject {
     );
   }
 
-  moverseUnPoquitoRandom() {
-    let mult = Math.random() * 1.5;
-    if (this.oncePerSecond() && Math.random() > 0.3) {
-      this.vel.x = (Math.random() - 0.5) * mult;
-      this.vel.y = (Math.random() - 0.5) * mult;
-    }
-  }
 
-  doTheWalk() {
-    // if (this.getCurrentActions().length) return;
-
-    if (this.isStatic) return;
-
-    //SI ESTA ESCAPANDOSE VA MAS RAPIDO
-    let forceToApplyInX =
-      this.vel.x * this.particleSystem.MULTIPLIERS.SPEED_REDUCER;
-    let forceToApplyInY =
-      this.vel.y * this.particleSystem.MULTIPLIERS.SPEED_REDUCER;
-
-    this.body.force.x = forceToApplyInX;
-    this.body.force.y = forceToApplyInY;
-  }
 
   avoidGas() {
     let cellWithMostGas = this.cell
@@ -775,35 +659,6 @@ class Person extends GenericObject {
     // this.vel.setMag(1);
   }
 
-  getVectorAwayFromGroup(team, direction, options) {
-    if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
-
-    let peopleISee = this.peopleICanSee.filter((k) => k.team == team);
-
-    if ((options || {}).discardNearPeople) {
-      peopleISee = peopleISee.filter(
-        (m) => !this.nearPeople.map((k) => k.part).includes(m)
-      );
-    }
-
-    if (peopleISee.length == 0) {
-      return new p5.Vector(0, 0);
-    }
-
-    let avgX = getAvg(peopleISee.map((k) => k.pos.x));
-    let avgY = getAvg(peopleISee.map((k) => k.pos.y));
-
-    let vecAway = p5.Vector.sub(new p5.Vector(avgX, avgY), this.pos);
-
-    vecAway.setMag(1);
-
-    if (direction == -1) {
-      vecAway.x *= -1;
-      vecAway.y *= -1;
-    }
-
-    return vecAway;
-  }
 
   defineFlockingBehaviorTowardsFriends() {
     if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
@@ -911,14 +766,6 @@ class Person extends GenericObject {
     this.target = target;
   }
 
-  seePeople() {
-    // let time = performance.now();
-    let offset = Math.floor(this.sightDistance / this.particleSystem.CELL_SIZE);
-    //ya q estamos lo guardo
-    this.peopleICanSee = this.findClosePeople(offset, offset);
-
-    // console.log(performance.now() - time, "XXXXXXX");
-  }
 
   findClosestEnemy(team) {
     let arr = this.peopleICanSee
@@ -946,33 +793,6 @@ class Person extends GenericObject {
     return this.closestEnemy;
   }
 
-  checkIfTheresSomeoneInTheWay(team) {
-    let vector = this.vel.copy().setMag(particleSystem.CELL_SIZE);
-    let startingX = this.pos.x;
-    let startingY = this.pos.y;
-
-    for (let i = 0; i < 50; i++) {
-      // console.log(vector, tempPos.copy());
-      let x = startingX + vector.x * i;
-      let y = startingY + vector.y * i;
-      let objects = this.particleSystem.getObjectsAt(x, y);
-
-      // let cellX = Math.floor(x / this.particleSystem.CELL_SIZE);
-      // let cellY = Math.floor(y / this.particleSystem.CELL_SIZE);
-      // let cell = (this.particleSystem.grid[cellY] || [])[cellX];
-      // if (!cell) return console.warn("end");
-      // cell.highlight();
-
-      if (objects.length == 0) return [];
-
-      let peopleFromSelectedTeam = objects.filter((k) => k.team == team);
-      if (peopleFromSelectedTeam.length > 0) {
-        return peopleFromSelectedTeam;
-      }
-    }
-
-    return [];
-  }
 
   getNextCellAccordingToMyDirection(numberOfCells) {
     let vector = this.vel

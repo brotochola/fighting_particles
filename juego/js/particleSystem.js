@@ -77,6 +77,7 @@ class ParticleSystem {
     // this.canvas.width = width;
     // this.canvas.height = height;
     this.people = []; // array to hold all particles
+    this.cars = [];
     // this.fences = [];
     this.fixedObjects = [];
     this.grounds = [];
@@ -126,6 +127,7 @@ class ParticleSystem {
   async cargarAssets() {
     const assetsToLoad = {
       boca_ss: "img/boca_ss/boca.json",
+      ambulancia_ss: "img/ambulancia_ss/ambulancia.json",
       river_ss: "img/river_ss/river.json",
       poli_ss: "img/poli_ss/agent.json",
       civil_ss: "img/civil_ss/civil.json",
@@ -434,7 +436,9 @@ class ParticleSystem {
     if (!closeP[0]) return;
 
     const maxDistance = 20;
-    this.people.forEach((person) => person.unHighlight());
+    this.getAllObjectThatGottaUpdate().forEach((person) =>
+      person.unHighlight()
+    );
 
     if (
       dist(x, y, closeP[0].body.position.x, closeP[0].body.position.y) <
@@ -785,6 +789,9 @@ class ParticleSystem {
     } else if (key == 78) {
       //N DE "NO HACEN NADA"
       this.addCivilian(x, y);
+    } else if (key == 65) {
+      //A DE AMBULANCIA
+      this.addAmbulance(x, y);
     }
   }
   saveLevel() {
@@ -858,8 +865,20 @@ class ParticleSystem {
       y,
       particleSystem: this,
     });
-    particle.particles = this.people;
+
     this.people.push(particle);
+    window.lastParticle = particle;
+    return particle;
+  }
+
+  addAmbulance(x, y) {
+    const particle = new Ambulancia({
+      x,
+      y,
+      particleSystem: this,
+    });
+
+    this.cars.push(particle);
     window.lastParticle = particle;
     return particle;
   }
@@ -1193,11 +1212,12 @@ class ParticleSystem {
       ...this.bullets,
       ...this.poles,
       ...this.fixedObjects,
+      ...this.cars,
     ];
   }
 
   getAllObjectThatGottaUpdate() {
-    return [...this.people, ...this.bullets];
+    return [...this.people, ...this.bullets, ...this.cars];
   }
 
   updateWorldAndGridSize(listOfElements) {
