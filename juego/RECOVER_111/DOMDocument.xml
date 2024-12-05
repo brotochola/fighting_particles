@@ -42,6 +42,7 @@
           <DOMBitmapItem name="senda peatonal.png" itemID="674ff0ef-00000387" sourceExternalFilepath="../calles/senda peatonal.png" sourceLastImported="1733292233" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="senda peatonal.png" bitmapDataHRef="M 42 1733339487.dat" frameRight="1200" frameBottom="720"/>
      </media>
      <symbols>
+          <Include href="ambulancia.xml" loadImmediate="false" itemID="6752014b-0000071b" lastModified="1733427544"/>
           <Include href="boca.xml" loadImmediate="false" itemID="6750a95f-00000627" lastModified="1733291408"/>
           <Include href="calle0.xml" loadImmediate="false" itemID="6749f0a3-00000218" lastModified="1733084068"/>
           <Include href="calle1.xml" loadImmediate="false" itemID="674ccef6-0000028c" lastModified="1733086966"/>
@@ -67,12 +68,11 @@
           <Include href="level1.xml" loadImmediate="false" itemID="65a008ae-0000048f" lastModified="1733181172"/>
           <Include href="level2.xml" loadImmediate="false" itemID="65776f63-00000273" lastModified="1733099922"/>
           <Include href="level3.xml" loadImmediate="false" itemID="674d0271-000004c9" lastModified="1733151902"/>
-          <Include href="level4.xml" loadImmediate="false" itemID="6750a955-000005a3" lastModified="1733377617"/>
+          <Include href="level4.xml" loadImmediate="false" itemID="6750a955-000005a3" lastModified="1733430942"/>
           <Include href="piso.xml" loadImmediate="false" itemID="674cea4e-00000409" lastModified="1733094006"/>
           <Include href="piso_de_prueba.xml" loadImmediate="false" itemID="6750ad12-000006ae" lastModified="1733340434"/>
           <Include href="river.xml" loadImmediate="false" itemID="65a007d5-0000041c" lastModified="1733150941"/>
           <Include href="Symbol 42.xml" loadImmediate="false" itemID="674ff74d-0000055b" lastModified="1733293904"/>
-          <Include href="Symbol 43.xml" loadImmediate="false" itemID="674ff7b9-00000576" lastModified="1733294018"/>
      </symbols>
      <timelines>
           <DOMTimeline name="Scene 1" layerDepthEnabled="true">

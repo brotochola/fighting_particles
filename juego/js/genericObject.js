@@ -6,7 +6,7 @@ class GenericObject {
     // this.pepe();
     const { x, y, particleSystem, team, isStatic, diameter, scaleX } = opt;
     this.opt = opt;
-    this.type = constructor.name;
+    this.type = this.constructor.name;
     this.particleSystem = particleSystem;
     this.Matter = particleSystem.Matter;
     this.engine = particleSystem.engine;

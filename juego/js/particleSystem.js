@@ -789,8 +789,8 @@ class ParticleSystem {
     } else if (key == 78) {
       //N DE "NO HACEN NADA"
       this.addCivilian(x, y);
-    } else if (key == 65) {
-      //A DE AMBULANCIA
+    } else if (key == 81) {
+      //Q DE AMBULANCIA
       this.addAmbulance(x, y);
     }
   }
@@ -1255,6 +1255,8 @@ class ParticleSystem {
         this.addGround(k);
       } else if (k.type.startsWith("civil")) {
         this.addCivilian(k.x, k.y);
+      }else if (k.type.startsWith("ambulancia")) {
+        this.addAmbulance(k.x, k.y);
       }
     });
   }

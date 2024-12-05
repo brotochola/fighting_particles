@@ -14,7 +14,7 @@ class Ambulancia extends GenericObject {
     this.isStatic = isStatic;
 
     this.initStartingAttributes();
-    this.speed = 0.15;
+    this.speed = 0.1;
 
     this.team = team;
 

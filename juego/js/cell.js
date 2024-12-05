@@ -18,7 +18,14 @@ class Cell {
   }
 
   setDirectionVector(x, y) {
-    this.directionVector = new p5.Vector(x, y);
+    if (this.directionVector) {
+      this.directionVector.x += x;
+      this.directionVector.y += y;
+      this.directionVector.x *= 0.5;
+      this.directionVector.y *= 0.5;
+    } else {
+      this.directionVector = new p5.Vector(x, y);
+    }
   }
 
   removeMe(who) {
@@ -192,8 +199,8 @@ class Cell {
   }
 
   unHighlight() {
-    if(!this.graphics) return
-    
+    if (!this.graphics) return;
+
     this.graphics.clear();
   }
   render(FRAMENUM) {
