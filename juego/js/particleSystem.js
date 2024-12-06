@@ -218,11 +218,6 @@ class ParticleSystem {
           this.mainContainer.name = "Main Container";
           this.pixiApp.stage.addChild(this.mainContainer);
 
-          this.gasContainer = new PIXI.Container();
-          this.gasContainer.name = "Gas Container";
-          this.mainContainer.addChild(this.gasContainer);
-
-
           this.pixiApp.stage.sortableChildren = true;
           this.mainContainer.sortableChildren = true;
 
@@ -616,7 +611,7 @@ class ParticleSystem {
 
   addGas(x, y) {
     let cell = this.getCellAt(x, y);
-    cell.gas = 2;
+    if (!cell.blocked) cell.gas = 100;
   }
 
   addClickListenerToCanvas() {
@@ -876,7 +871,6 @@ class ParticleSystem {
     window.lastParticle = particle;
     return particle;
   }
-
 
   addAmbulance(x, y) {
     const particle = new Ambulancia({
@@ -1241,7 +1235,28 @@ class ParticleSystem {
 
     this.createGrid();
 
+   
+
     // this.runEngine()
+  }
+
+  findBodiesAtPoint(point) {
+    // Consultar qué cuerpos contienen el punto
+    let bodies=this.Matter.Query.point(this.engine.world.bodies, point);    
+    return bodies
+  }
+
+  scanMapToKnowWhichCellsAreWalkable() {
+    for (let cell of this.grid.flat()) {
+      let x = cell.x * cell.cellWidth + cell.cellWidth * 0.5;
+      let y = cell.y * cell.cellWidth + cell.cellWidth * 0.5;
+
+      let bodies = this.findBodiesAtPoint({ x, y });
+      if (bodies.length > 0) {
+        console.log(x, y, bodies.length);
+        cell.blocked = true;
+      }
+    }
   }
 
   restartLevel(listOfElements) {
@@ -1262,10 +1277,12 @@ class ParticleSystem {
         this.addGround(k);
       } else if (k.type.startsWith("civil")) {
         this.addCivilian(k.x, k.y);
-      }else if (k.type.startsWith("ambulancia")) {
+      } else if (k.type.startsWith("ambulancia")) {
         this.addAmbulance(k.x, k.y);
       }
     });
+
+    this.scanMapToKnowWhichCellsAreWalkable();
   }
 
   toggleDebugMode() {

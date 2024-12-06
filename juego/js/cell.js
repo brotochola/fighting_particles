@@ -150,26 +150,31 @@ class Cell {
   isItMyFrame() {
     return this.COUNTER % 9 == this.startingFrame;
   }
+  manageGas() {
+    if (this.gas > 0.01) {
+      this.getNeighbours()
+        .filter((k) => !k.blocked)
+        .forEach((k) => {
+          if (this.gas > k.gas) {
+            k.gas += this.gas * 0.06;
+            this.gas = this.gas * 0.94 - 0.005;
+          }
+        });
+    } else {
+      this.gas = 0;
+    }
+
+    for (let gas of this.gases) {
+      gas.update(this.COUNTER);
+    }
+  }
   update(FRAMENUM) {
     this.COUNTER = FRAMENUM;
     // console.log(this.isItMyFrame())
     if (!this.isItMyFrame()) return;
 
-    if (this.gas > 0.01) {
-      this.getNeighbours().forEach((k) => {
-        if (this.gas > k.gas) {
-          k.gas += this.gas * 0.06;
-          this.gas = this.gas * 0.94 - 0.005;
-        }
-      });
-    } else {
-      this.gas = 0;
-    }
-
+    this.manageGas();
     this.putGasSprite();
-    for (let gas of this.gases) {
-      gas.update(FRAMENUM);
-    }
 
     this.render();
   }

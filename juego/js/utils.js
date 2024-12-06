@@ -387,6 +387,9 @@ function isMouseOverPixel(mousePosition, sprite) {
   return true;
 }
 
+
+
+
 function getWidthAndHeightFromListOfElements(data) {
   let exesAndYs = data.map((k) => {
     return { x: Number(k.x), y: Number(k.y) };
