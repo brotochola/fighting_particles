@@ -40,8 +40,6 @@ class Civil extends Person {
         discardNearPeople: true,
       }).mult(1);
 
-    console.log(vecAmigos);
-    
     let vectores = [
       vecAmigos,
       this.getVectorAwayFromGroup("poli", -1).mult(0.2),

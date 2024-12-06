@@ -127,6 +127,7 @@ class ParticleSystem {
   async cargarAssets() {
     const assetsToLoad = {
       boca_ss: "img/boca_ss/boca.json",
+      humo_ss: "img/humo_ss/humo.json",
       ambulancia_ss: "img/ambulancia_ss/ambulancia.json",
       river_ss: "img/river_ss/river.json",
       poli_ss: "img/poli_ss/agent.json",
@@ -216,6 +217,11 @@ class ParticleSystem {
           this.mainContainer = new PIXI.Container();
           this.mainContainer.name = "Main Container";
           this.pixiApp.stage.addChild(this.mainContainer);
+
+          this.gasContainer = new PIXI.Container();
+          this.gasContainer.name = "Gas Container";
+          this.mainContainer.addChild(this.gasContainer);
+
 
           this.pixiApp.stage.sortableChildren = true;
           this.mainContainer.sortableChildren = true;
@@ -610,7 +616,7 @@ class ParticleSystem {
 
   addGas(x, y) {
     let cell = this.getCellAt(x, y);
-    cell.gas = 30;
+    cell.gas = 2;
   }
 
   addClickListenerToCanvas() {
@@ -870,6 +876,7 @@ class ParticleSystem {
     window.lastParticle = particle;
     return particle;
   }
+
 
   addAmbulance(x, y) {
     const particle = new Ambulancia({

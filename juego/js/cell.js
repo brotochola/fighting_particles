@@ -15,6 +15,7 @@ class Cell {
     this.color = generateRandomGrassColor();
     // this.createRectInPixi();
     this.startingFrame = randomInt(8);
+    this.gases = [];
   }
 
   setDirectionVector(x, y) {
@@ -165,7 +166,25 @@ class Cell {
       this.gas = 0;
     }
 
+    this.putGasSprite();
+    for (let gas of this.gases) {
+      gas.update(FRAMENUM);
+    }
+
     this.render();
+  }
+
+  putGasSprite() {
+    if (this.gas > 0) {
+      if (Math.random() > 0.3) return;
+      for (let i = 0; i < this.gas; i++) {
+        let x = this.x * this.cellWidth + this.cellWidth * Math.random();
+        let y = this.y * this.cellWidth + this.cellWidth * Math.random();
+        this.gases.push(
+          new Humo({ x, y, particleSystem: this.particleSystem })
+        );
+      }
+    }
   }
   highlight(color = "red") {
     if (!this.graphics) {

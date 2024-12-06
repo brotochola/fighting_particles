@@ -5,6 +5,7 @@ class GenericObject {
   constructor(opt) {
     // this.pepe();
     const { x, y, particleSystem, team, isStatic, diameter, scaleX } = opt;
+    
     this.opt = opt;
     this.type = this.constructor.name;
     this.particleSystem = particleSystem;
@@ -643,7 +644,7 @@ class GenericObject {
     }, 100);
   }
 
-  createAnimatedSprite(which, startingAnimationID) {
+  createAnimatedSprite(which, startingAnimationID, stopAtEnd) {
     this.spritesheet = this.particleSystem.res[which];
 
     let animations = Object.keys(this.spritesheet.animations);
@@ -660,12 +661,13 @@ class GenericObject {
 
       animatedSprite.name = animations[i];
       this.container.addChild(animatedSprite);
+      
+      animatedSprite.animationSpeed = (this.speed||1) * 0.2;
 
-      animatedSprite.animationSpeed = this.speed * 0.2;
       animatedSprite.scale.set(this.initialScale);
       animatedSprite.visible = false;
     }
-    this.changeAnimation(startingAnimationID);
+    this.changeAnimation(startingAnimationID, stopAtEnd);
   }
 
   changeAnimation(which, stopAtEnd = false, force) {

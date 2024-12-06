@@ -822,7 +822,7 @@
                     <Point y="-31.5"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="casa20" selected="true">
+                <DOMSymbolInstance libraryItemName="casa20">
                   <matrix>
                     <Matrix tx="1927.65" ty="833.8"/>
                   </matrix>
