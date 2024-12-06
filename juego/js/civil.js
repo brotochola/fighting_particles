@@ -42,11 +42,14 @@ class Civil extends Person {
 
     let vectores = [
       vecAmigos,
+      this.getVectorToRepelGas(),
       this.getVectorAwayFromGroup("poli", -1).mult(0.2),
       this.getVectorAwayFromGroup("boca", -1).mult(1),
       this.getVectorAwayFromGroup("river", -1).mult(1),
       this.cell.directionVector,
     ];
+
+    // this.avoidGas();
 
     for (let i = 0; i < vectores.length; i++) {
       if (vectores[i]) this.vel.add(vectores[i]);

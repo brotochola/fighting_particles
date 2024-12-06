@@ -1235,15 +1235,13 @@ class ParticleSystem {
 
     this.createGrid();
 
-   
-
     // this.runEngine()
   }
 
   findBodiesAtPoint(point) {
     // Consultar qué cuerpos contienen el punto
-    let bodies=this.Matter.Query.point(this.engine.world.bodies, point);    
-    return bodies
+    let bodies = this.Matter.Query.point(this.engine.world.bodies, point);
+    return bodies;
   }
 
   scanMapToKnowWhichCellsAreWalkable() {
@@ -1251,9 +1249,10 @@ class ParticleSystem {
       let x = cell.x * cell.cellWidth + cell.cellWidth * 0.5;
       let y = cell.y * cell.cellWidth + cell.cellWidth * 0.5;
 
-      let bodies = this.findBodiesAtPoint({ x, y });
-      if (bodies.length > 0) {
-        console.log(x, y, bodies.length);
+      let bodies = this.findBodiesAtPoint({ x, y }).filter(
+        (k) => k.label == "house"
+      );
+      if (bodies.length > 0) {        
         cell.blocked = true;
       }
     }

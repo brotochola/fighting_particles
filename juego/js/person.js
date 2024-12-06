@@ -14,7 +14,7 @@ class Person extends GenericObject {
   };
 
   constructor(opt) {
-    super(opt); 
+    super(opt);
     this.initialScale = this.scale = 2;
     const { x, y, particleSystem, team, isStatic, diameter } = opt;
     this.options = opt;
@@ -63,7 +63,7 @@ class Person extends GenericObject {
     this.createDebugContainer();
 
     this.createAnimatedSprite(
-      this.options.spritesheetName || this.team+"_ss",
+      this.options.spritesheetName || this.team + "_ss",
       this instanceof Ambulancia ? "1" : "parado"
     );
     this.alignSpriteMiddleBottom();
@@ -95,7 +95,6 @@ class Person extends GenericObject {
 
     this.actions[action] = true;
   }
-
 
   createDebugContainer() {
     this.debugContainer = new PIXI.Container();
@@ -409,13 +408,10 @@ class Person extends GenericObject {
     this.body.force.y += (Math.random() * 1 - 0.5) * (this.strength * 10);
   }
 
-
-
-
   getHowManyOfPeopleFromCertainTeamICanSee(team) {
     return this.peopleICanSee.filter((k) => k.team == team).length;
   }
-  
+
   getInfo() {
     return {
       name: this.name,
@@ -512,8 +508,12 @@ class Person extends GenericObject {
     magnitudOfCops = 0.5
   ) {
     // Calculate vector to repel objects, like houses and such
-    this.repelHouses();
-    this.avoidGas();
+    // this.repelHouses();
+    // this.avoidGas();
+
+    this.vecAwayFromGas = this.getVectorToRepelGas();
+    this.vecAwayFromObjects = this.getVectorToRepelBlockedCells();
+
     //MOVE OR REPEL TARGET
     let whereToMoveRegardingTarget;
     if ((this.vectorThatAimsToTheTarget || {}).x) {
@@ -564,19 +564,16 @@ class Person extends GenericObject {
     );
   }
 
-
-
-  avoidGas() {
+  getVectorToRepelGas() {
     let cellWithMostGas = this.cell
       .getNeighbours()
       .sort((a, b) => (a.gas > b.gas ? -1 : 1))[0];
 
     if (cellWithMostGas.gas < 0.1) {
-      this.vecAwayFromGas = new p5.Vector(0, 0);
-      return;
+      return new p5.Vector(0, 0);
     }
 
-    this.vecAwayFromGas = p5.Vector.sub(
+    let vecGas = p5.Vector.sub(
       new p5.Vector(
         cellWithMostGas.x * this.particleSystem.CELL_SIZE,
         cellWithMostGas.y * this.particleSystem.CELL_SIZE
@@ -584,50 +581,50 @@ class Person extends GenericObject {
       this.pos
     );
 
-    this.vecAwayFromGas.setMag(2);
+    vecGas.setMag(2);
 
-    this.vecAwayFromGas.x *= -1;
-    this.vecAwayFromGas.y *= -1;
+    vecGas.x *= -1;
+    vecGas.y *= -1;
 
-    // let goTowardsAvgCenterX=this.vecThatAimsToTheAvg.x * this.intelligence;
-    // let goTowardsAvgCenterY=this.vecThatAimsToTheAvg.y * this.intelligence;
-
-    // this.vel.setMag(1);
+    return vecGas;
   }
 
-  repelHouses() {
-    if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
 
-    if (this.closeFixedObjects.length == 0) {
-      this.vecAwayFromObjects = new p5.Vector(0, 0);
-      return;
-    }
+  // repelHouses() {
+  //   if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
 
-    let avgX = getAvg(this.closeFixedObjects.map((k) => k.pos.x));
-    let avgY = getAvg(this.closeFixedObjects.map((k) => k.pos.y));
+  //   if (this.closeFixedObjects.length == 0) {
+  //     this.vecAwayFromObjects = new p5.Vector(0, 0);
+  //     return;
+  //   }
 
-    this.vecAwayFromObjects = p5.Vector.sub(
-      new p5.Vector(avgX, avgY),
-      this.pos
-    );
+  //   let avgX = getAvg(this.closeFixedObjects.map((k) => k.pos.x));
+  //   let avgY = getAvg(this.closeFixedObjects.map((k) => k.pos.y));
 
-    // let dist = cheaperDist(
-    //   this.vecAwayFromCops.x,
-    //   this.vecAwayFromCops.y,
-    //   this.pos.x,
-    //   this.pos.y
-    // );
+  //   this.vecAwayFromObjects = p5.Vector.sub(
+  //     new p5.Vector(avgX, avgY),
+  //     this.pos
+  //   );
 
-    this.vecAwayFromObjects.setMag(1);
+  //   // let dist = cheaperDist(
+  //   //   this.vecAwayFromCops.x,
+  //   //   this.vecAwayFromCops.y,
+  //   //   this.pos.x,
+  //   //   this.pos.y
+  //   // );
 
-    this.vecAwayFromObjects.x *= -1;
-    this.vecAwayFromObjects.y *= -1;
+  //   this.vecAwayFromObjects.setMag(1);
 
-    // let goTowardsAvgCenterX=this.vecThatAimsToTheAvg.x * this.intelligence;
-    // let goTowardsAvgCenterY=this.vecThatAimsToTheAvg.y * this.intelligence;
+  //   this.vecAwayFromObjects.x *= -1;
+  //   this.vecAwayFromObjects.y *= -1;
 
-    // this.vel.setMag(1);
-  }
+  //   // let goTowardsAvgCenterX=this.vecThatAimsToTheAvg.x * this.intelligence;
+  //   // let goTowardsAvgCenterY=this.vecThatAimsToTheAvg.y * this.intelligence;
+
+  //   // this.vel.setMag(1);
+
+  //   return this.vecAwayFromObjects;
+  // }
 
   defineFlockingBehaviorAwayFromCops() {
     if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
@@ -658,7 +655,6 @@ class Person extends GenericObject {
 
     // this.vel.setMag(1);
   }
-
 
   defineFlockingBehaviorTowardsFriends() {
     if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
@@ -766,7 +762,6 @@ class Person extends GenericObject {
     this.target = target;
   }
 
-
   findClosestEnemy(team) {
     let arr = this.peopleICanSee
       .filter((k) => k.team == team && !k.dead)
@@ -792,7 +787,6 @@ class Person extends GenericObject {
     this.setTarget(this.closestEnemy);
     return this.closestEnemy;
   }
-
 
   getNextCellAccordingToMyDirection(numberOfCells) {
     let vector = this.vel

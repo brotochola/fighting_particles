@@ -5,7 +5,7 @@ class GenericObject {
   constructor(opt) {
     // this.pepe();
     const { x, y, particleSystem, team, isStatic, diameter, scaleX } = opt;
-    
+
     this.opt = opt;
     this.type = this.constructor.name;
     this.particleSystem = particleSystem;
@@ -324,6 +324,28 @@ class GenericObject {
   }
   unHighlight() {
     this.highlighted = false;
+  }
+  getVectorToRepelBlockedCells() {
+    let vec = new p5.Vector();
+    let count = 0;
+    this.cell
+      .getNeighbours()
+      .filter((k) => k.blocked)
+      .forEach((k) => {
+        count++;
+        vec.x += k.centerX;
+        vec.y += k.centerY;
+      });
+
+    if (count) {
+      console.log(1)
+      vec.x /= count;
+      vec.y /= count;
+
+      vec.sub(this.pos).setMag(-5);
+    }
+
+    return vec;
   }
 
   removeMeAsTarget() {
@@ -661,8 +683,8 @@ class GenericObject {
 
       animatedSprite.name = animations[i];
       this.container.addChild(animatedSprite);
-      
-      animatedSprite.animationSpeed = (this.speed||1) * 0.2;
+
+      animatedSprite.animationSpeed = (this.speed || 1) * 0.2;
 
       animatedSprite.scale.set(this.initialScale);
       animatedSprite.visible = false;

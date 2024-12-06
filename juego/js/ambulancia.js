@@ -144,6 +144,7 @@ class Ambulancia extends GenericObject {
       // this.getVectorAwayFromGroup("poli", -1).mult(0.2),
       // this.getVectorAwayFromGroup("boca", -1).mult(1),
       // this.getVectorAwayFromGroup("river", -1).mult(1),
+      this.getVectorToRepelBlockedCells(),
       this.getVectorAwayFromGroup("river", -1, { onlyNearPeople: true }).mult(
         0.5
       ),

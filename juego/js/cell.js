@@ -6,6 +6,8 @@ class Cell {
     this.pos = { x: x * cellWidth, y: y * cellWidth };
     this.x = x;
     this.y = y;
+    this.centerX=this.x*this.cellWidth+this.cellWidth*0.5
+    this.centerY=this.y*this.cellWidth+this.cellWidth*0.5
     this.gas = 0;
     this.graphics;
     this.maxLuckyNumbers = 25;
@@ -181,8 +183,9 @@ class Cell {
 
   putGasSprite() {
     if (this.gas > 0) {
-      if (Math.random() > 0.3) return;
+   
       for (let i = 0; i < this.gas; i++) {
+        if (Math.random() > 0.3) return;
         let x = this.x * this.cellWidth + this.cellWidth * Math.random();
         let y = this.y * this.cellWidth + this.cellWidth * Math.random();
         this.gases.push(
