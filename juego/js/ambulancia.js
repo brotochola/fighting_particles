@@ -2,11 +2,10 @@ class Ambulancia extends GenericObject {
   constructor(opt) {
     super({
       ...opt,
-      team: "auto",
       isStatic: false,
       spritesheetName: "ambulancia_ss",
     });
-
+    this.team = "auto";
     this.initialScale = this.scale = 1;
     const { x, y, particleSystem, team, isStatic, diameter } = opt;
     this.options = opt;
@@ -17,8 +16,6 @@ class Ambulancia extends GenericObject {
 
     this.weight = 2000;
     this.speed = 10;
-
-    this.team = team;
 
     this.spriteSpeed = Math.floor(4 * this.speed);
 
@@ -38,7 +35,6 @@ class Ambulancia extends GenericObject {
     this.friendsICanSee = [];
     this.enemiesICanSee = [];
     this.friendsClose = [];
-    this.closeFixedObjects = [];
 
     this.lastViolentAct = null;
 
@@ -55,7 +51,7 @@ class Ambulancia extends GenericObject {
 
     // this.createSprite("idle_" + this.team);
 
-    this.updateMyPositionInCell();
+    // this.updateMyPositionInGrid();
 
     this.strength = Math.random() * 0.4 + 0.1;
     this.isThereACopInMyWay = false;
@@ -109,8 +105,6 @@ class Ambulancia extends GenericObject {
       this.seePeople();
       this.discernirAmigosYEnemigosYEvaluarLaSituacion();
 
-      this.closeFixedObjects = this.findCloseObjects(2, 2);
-
       this.nearPeople = this.getParticlesFromCloseCells();
       this.enemiesClose = this.nearPeople.filter(
         (k) => k.part.team != this.team
@@ -137,26 +131,20 @@ class Ambulancia extends GenericObject {
   }
 
   hacerCosasEstadoIDLE() {
+    //UN TOQ DE INERCIA DEL MOTOR
     this.vel.x = (this.body.velocity.x + this.vel.x) * 0.4;
     this.vel.y = (this.body.velocity.y + this.vel.y) * 0.4;
 
     let vectores = [
-      // this.getVectorAwayFromGroup("poli", -1).mult(0.2),
-      // this.getVectorAwayFromGroup("boca", -1).mult(1),
-      // this.getVectorAwayFromGroup("river", -1).mult(1),
       this.getVectorToRepelBlockedCells(),
-      this.getVectorAwayFromGroup("river", -1, { onlyNearPeople: true }).mult(
-        0.5
-      ),
-      this.getVectorAwayFromGroup("boca", -1, { onlyNearPeople: true }).mult(
-        0.5
-      ),
-      this.getVectorAwayFromGroup("civil", -1, { onlyNearPeople: true }).mult(
-        0.5
-      ),
+      this.getVectorAwayFromGroup(["auto", "civil", "boca", "river"], -1, {
+        onlyNearPeople: true,
+      }).mult(0.33),
 
       this.cell.directionVector,
     ];
+
+    // console.log(this.id,vectores)
 
     for (let i = 0; i < vectores.length; i++) {
       if (vectores[i]) {
@@ -277,7 +265,8 @@ class Ambulancia extends GenericObject {
     this.pos.y = this.body.position.y;
     this.container.zIndex = Math.floor(this.pos.y - (this.z || 0));
 
-    this.updateMyPositionInCell();
+    this.updateMyPositionInGrid();
+    this.updateMyPositionInGridForLargerObjects();
 
     this.lookAround();
     this.cambiarEstadoSegunCosas();
@@ -330,15 +319,7 @@ class Ambulancia extends GenericObject {
     this.container.x = this.pos.x; //this.calculateContainersX();
 
     // //SI ESTA HIGHLIGHTED
-    // try {
-    //   if (this.highlighted) {
-    //     if (this.image.tint != 0xff0000) this.image.tint = 0xff0000;
-    //   } else {
-    //     if (this.image.tint != 0xffffff) this.image.tint = 0xffffff;
-    //   }
-    // } catch (e) {
-    //   debugger;
-    // }
+    this.ifHighlightedTintRed();
 
     // this.drawLineBetweenMeAndTarget();
   }

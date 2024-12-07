@@ -450,7 +450,7 @@ class ParticleSystem {
       window.sel = p.particle;
 
       console.log(p.particle);
-      p.particle.highlighted = !p.particle.highlighted;
+      p.particle.highlight();
     } else {
       this.selectedPerson = null;
     }
@@ -459,10 +459,11 @@ class ParticleSystem {
   getParticlesAndTheirDistance(x, y, substance) {
     let arr = [];
     let chosenParticles;
+    let peopleAndCars = [...this.people, ...this.cars];
     if (substance) {
-      chosenParticles = this.people.filter((k) => k.substance == substance);
+      chosenParticles = peopleAndCars.filter((k) => k.substance == substance);
     } else {
-      chosenParticles = this.people;
+      chosenParticles = peopleAndCars;
     }
     for (let i = 0; i < chosenParticles.length; i++) {
       let b = chosenParticles[i].body;
@@ -611,7 +612,7 @@ class ParticleSystem {
 
   addGas(x, y) {
     let cell = this.getCellAt(x, y);
-    if (!cell.blocked) cell.gas = 100;
+    if (!cell.blocked) cell.gas = 30;
   }
 
   addClickListenerToCanvas() {
@@ -1221,6 +1222,10 @@ class ParticleSystem {
     return [...this.people, ...this.bullets, ...this.cars];
   }
 
+  getPeopleAndCars() {
+    return [...this.people, ...this.cars];
+  }
+
   updateWorldAndGridSize(listOfElements) {
     const { width, height } =
       getWidthAndHeightFromListOfElements(listOfElements);
@@ -1239,9 +1244,7 @@ class ParticleSystem {
   }
 
   findBodiesAtPoint(point) {
-    // Consultar qué cuerpos contienen el punto
-    let bodies = this.Matter.Query.point(this.engine.world.bodies, point);
-    return bodies;
+    return this.Matter.Query.point(this.engine.world.bodies, point);
   }
 
   scanMapToKnowWhichCellsAreWalkable() {
@@ -1252,7 +1255,7 @@ class ParticleSystem {
       let bodies = this.findBodiesAtPoint({ x, y }).filter(
         (k) => k.label == "house"
       );
-      if (bodies.length > 0) {        
+      if (bodies.length > 0) {
         cell.blocked = true;
       }
     }

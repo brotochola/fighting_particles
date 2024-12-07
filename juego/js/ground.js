@@ -3,7 +3,7 @@ class Ground extends GenericObject {
     super(opt);
 
     this.sprite = opt.sprite;
-    this.cellsOccupied = [];
+   
     this.createSprite();
 
     this.putDirectionVectorsInCells();

@@ -6,8 +6,8 @@ class Cell {
     this.pos = { x: x * cellWidth, y: y * cellWidth };
     this.x = x;
     this.y = y;
-    this.centerX=this.x*this.cellWidth+this.cellWidth*0.5
-    this.centerY=this.y*this.cellWidth+this.cellWidth*0.5
+    this.centerX = this.x * this.cellWidth + this.cellWidth * 0.5;
+    this.centerY = this.y * this.cellWidth + this.cellWidth * 0.5;
     this.gas = 0;
     this.graphics;
     this.maxLuckyNumbers = 25;
@@ -18,6 +18,7 @@ class Cell {
     // this.createRectInPixi();
     this.startingFrame = randomInt(8);
     this.gases = [];
+    this.cellsOccupied = [];
   }
 
   setDirectionVector(x, y) {
@@ -55,6 +56,34 @@ class Cell {
     if (!areYouHere) {
       this.particlesHere.push(who);
     }
+  }
+
+  getMoreNeighbours(howManyCellsInX, howManyCellsInY) {
+    let grid = this.grid;
+    let arrRet = [];
+
+    for (
+      let dy = this.y - howManyCellsInY;
+      dy <= this.y + howManyCellsInY;
+      dy++
+    ) {
+      for (
+        let dx = this.x - howManyCellsInX;
+        dx <= this.x + howManyCellsInX;
+        dx++
+      ) {
+        try {
+          let cell = grid[dy][dx];
+          if (cell) {
+            arrRet.push(cell);
+          }
+        } catch (e) {
+          console.error("Error accessing cell:", e);
+        }
+      }
+    }
+
+    return arrRet;
   }
 
   getNeighbours() {
@@ -158,8 +187,11 @@ class Cell {
         .filter((k) => !k.blocked)
         .forEach((k) => {
           if (this.gas > k.gas) {
-            k.gas += this.gas * 0.06;
-            this.gas = this.gas * 0.94 - 0.005;
+            let ratioOfY = k.y != this.y ? 0.2 : 1;
+            let howMuchGasIsMoving = this.gas * 0.05 * ratioOfY;
+
+            k.gas += howMuchGasIsMoving;
+            this.gas -= howMuchGasIsMoving * 1.1;
           }
         });
     } else {
@@ -167,7 +199,7 @@ class Cell {
     }
 
     for (let gas of this.gases) {
-      gas.update(this.COUNTER);
+      gas.update(this.COUNTER, this.gas * 1.5);
     }
   }
   update(FRAMENUM) {
@@ -183,17 +215,17 @@ class Cell {
 
   putGasSprite() {
     if (this.gas > 0) {
-   
       for (let i = 0; i < this.gas; i++) {
         if (Math.random() > 0.3) return;
         let x = this.x * this.cellWidth + this.cellWidth * Math.random();
         let y = this.y * this.cellWidth + this.cellWidth * Math.random();
         this.gases.push(
-          new Humo({ x, y, particleSystem: this.particleSystem })
+          new Humo({ x, y, particleSystem: this.particleSystem, cell: this })
         );
       }
     }
   }
+  
   highlight(color = "red") {
     if (!this.graphics) {
       this.graphics = new PIXI.Graphics();
@@ -219,8 +251,8 @@ class Cell {
     );
     let halfCell = this.cellWidth * 0.5;
     this.graphics.lineTo(
-      this.pos.x + halfCell + this.directionVector.x * halfCell,
-      this.pos.y + halfCell + this.directionVector.y * halfCell
+      this.pos.x + halfCell + (this.directionVector || {}).x * halfCell,
+      this.pos.y + halfCell + (this.directionVector || {}).y * halfCell
     );
     this.graphics.stroke({ color: "white", width: 2 });
   }

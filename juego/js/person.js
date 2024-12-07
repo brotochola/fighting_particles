@@ -40,7 +40,7 @@ class Person extends GenericObject {
     this.friendsICanSee = [];
     this.enemiesICanSee = [];
     this.friendsClose = [];
-    this.closeFixedObjects = [];
+    
 
     this.lastViolentAct = null;
 
@@ -70,7 +70,7 @@ class Person extends GenericObject {
 
     // this.createSprite("idle_" + this.team);
 
-    this.updateMyPositionInCell();
+    this.updateMyPositionInGrid();
     this.resetAnimationActions();
   }
 
@@ -314,7 +314,7 @@ class Person extends GenericObject {
       this.seePeople();
       this.discernirAmigosYEnemigosYEvaluarLaSituacion();
 
-      this.closeFixedObjects = this.findCloseObjects(2, 2);
+      
 
       this.nearPeople = this.getParticlesFromCloseCells();
       this.enemiesClose = this.nearPeople.filter(
@@ -340,7 +340,7 @@ class Person extends GenericObject {
     this.pos.y = this.body.position.y;
     this.container.zIndex = Math.floor(this.pos.y - (this.z || 0));
 
-    this.updateMyPositionInCell();
+    this.updateMyPositionInGrid();
 
     this.lookAround();
     this.cambiarEstadoSegunCosas();
@@ -590,21 +590,7 @@ class Person extends GenericObject {
   }
 
 
-  // repelHouses() {
-  //   if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
 
-  //   if (this.closeFixedObjects.length == 0) {
-  //     this.vecAwayFromObjects = new p5.Vector(0, 0);
-  //     return;
-  //   }
-
-  //   let avgX = getAvg(this.closeFixedObjects.map((k) => k.pos.x));
-  //   let avgY = getAvg(this.closeFixedObjects.map((k) => k.pos.y));
-
-  //   this.vecAwayFromObjects = p5.Vector.sub(
-  //     new p5.Vector(avgX, avgY),
-  //     this.pos
-  //   );
 
   //   // let dist = cheaperDist(
   //   //   this.vecAwayFromCops.x,

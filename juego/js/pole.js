@@ -17,7 +17,7 @@ class Pole extends GenericObject {
 
     this.createSprite();
     this.update();
-    this.updateMyPositionInCell();
+    this.updateMyPositionInGrid();
   }
   createSprite() {
     this.image = new PIXI.Sprite(
@@ -41,7 +41,7 @@ class Pole extends GenericObject {
     this.pos.y = this.body.position.y;
     this.container.zIndex = Math.floor(this.pos.y);
 
-    this.updateMyPositionInCell();
+    this.updateMyPositionInGrid();
     super.render();
   }
 

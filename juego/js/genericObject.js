@@ -30,6 +30,7 @@ class GenericObject {
     this.currentAnimation = null; //"parado";
     this.animatedSprites = {};
     this.createContainers();
+    this.cellsOccupied = [];
 
     // this.createBody(10);
   }
@@ -295,7 +296,9 @@ class GenericObject {
       this.image.scale.x = this.direction * this.scale;
     } else {*/
     // this.scale = this.initialScale;
-    this.image.scale.x = this.direction * this.scale;
+    if (!this.image || this.image.destroyed) return;
+
+    this.image.scale.x = (this.direction || 1) * this.scale;
     this.image.scale.y = this.scale;
     //}
 
@@ -305,18 +308,9 @@ class GenericObject {
     //   this.image.x = -15;
     // }
 
-    //SI ESTA HIGHLIGHTED
-    try {
-      if (this.highlighted) {
-        if (this.image.tint != 0xff0000) this.image.tint = 0xff0000;
-      } else {
-        if (this.image.tint != 0xffffff) this.image.tint = 0xffffff;
-      }
-    } catch (e) {
-      debugger;
-    }
+    this.ifHighlightedTintRed();
 
-    this.drawLineBetweenMeAndTarget();
+    // this.drawLineBetweenMeAndTarget();
   }
 
   highlight() {
@@ -338,11 +332,11 @@ class GenericObject {
       });
 
     if (count) {
-      console.log(1)
+      // console.log(1);
       vec.x /= count;
       vec.y /= count;
 
-      vec.sub(this.pos).setMag(-5);
+      vec.sub(this.pos).setMag(-1);
     }
 
     return vec;
@@ -356,7 +350,7 @@ class GenericObject {
       particlesWithMeAsTarget.map((k) => k.setTarget(null));
     }
   }
-  updateMyPositionInCell() {
+  updateMyPositionInGrid() {
     if (this.dead) return;
     // let ret;
 
@@ -427,36 +421,19 @@ class GenericObject {
     return this.cell.particlesHere;
   }
 
-  findCloseObjects(xMargin, yMargin) {
-    let offset = Math.floor(this.sightDistance / this.particleSystem.CELL_SIZE);
-
-    if (!yMargin) yMargin = offset;
-    if (!xMargin) xMargin = offset;
-    // let tiempo = performance.now();
-
-    let ret = this.particleSystem.fixedObjects.filter(
-      (k) =>
-        k.cellX > this.cellX - xMargin &&
-        k.cellX < this.cellX + xMargin &&
-        k.cellY > this.cellY - yMargin &&
-        k.cellY < this.cellY + yMargin
-    );
-
-    // console.log("###", performance.now() - tiempo);
-    return ret;
-  }
-
   findClosePeople(xMargin, yMargin) {
     // let tiempo = performance.now();
 
-    let ret = this.particleSystem.people.filter(
-      (k) =>
-        k.cellX > this.cellX - xMargin &&
-        k.cellX < this.cellX + xMargin &&
-        k.cellY > this.cellY - yMargin &&
-        k.cellY < this.cellY + yMargin &&
-        !k.dead
-    );
+    let ret = this.particleSystem
+      .getPeopleAndCars()
+      .filter(
+        (k) =>
+          k.cellX > this.cellX - xMargin &&
+          k.cellX < this.cellX + xMargin &&
+          k.cellY > this.cellY - yMargin &&
+          k.cellY < this.cellY + yMargin &&
+          !k.dead
+      );
 
     // console.log("###", performance.now() - tiempo);
     return ret;
@@ -589,21 +566,24 @@ class GenericObject {
     ).length;
   }
 
-  getVectorAwayFromGroup(team, direction, options) {
-    if (!this.particleSystem.MULTIPLIERS.DO_FLOCKING) return;
+  getVectorAwayFromGroup(arrOfTeam, direction, options) {
+    // if(this instanceof Civil) debugger
+    let peopleISee;
 
-    let peopleISee = this.peopleICanSee.filter((k) => k.team == team);
+    if ((options || {}).onlyNearPeople) {
+      peopleISee = this.nearPeople
+        .map((k) => k.part)
+        .filter((k) => arrOfTeam.includes(k.team) && k != this);
+    } else {
+      peopleISee = this.peopleICanSee.filter(
+        (k) => arrOfTeam.includes(k.team) && k != this
+      );
+    }
 
     if ((options || {}).discardNearPeople) {
       peopleISee = peopleISee.filter(
         (m) => !this.nearPeople.map((k) => k.part).includes(m)
       );
-    }
-
-    if ((options || {}).onlyNearPeople) {
-      peopleISee = this.nearPeople
-        .map((k) => k.part)
-        .filter((k) => k.team == team);
     }
 
     if (peopleISee.length == 0) {
@@ -857,5 +837,51 @@ class GenericObject {
     }
 
     return cells;
+  }
+
+  updateMyPositionInGridForLargerObjects() {
+    for (let c of this.cellsOccupied) {
+      c.removeMe(this);
+    }
+    this.cellsOccupied = [];
+    // debugger
+
+    let changuiX =
+      Math.ceil(this.container.width / this.particleSystem.CELL_SIZE) * 0.5;
+    let changuiY =
+      Math.ceil(this.container.height / this.particleSystem.CELL_SIZE) * 0.5;
+
+    // let desdeX = this.cellX - changuiX;
+    // let hastaX = this.cellX + changuiX;
+    // let desdeY = this.cellY - changuiY;
+    // let hastaY = this.cellY + changuiY;
+
+    this.cell.getMoreNeighbours(changuiX, changuiY).forEach((cell) => {
+      // cell.highlight()
+      let posX = cell.x * cell.cellWidth + cell.cellWidth * 0.5;
+      let posY = cell.y * cell.cellWidth + cell.cellWidth * 0.5;
+
+      let bodies = this.particleSystem.findBodiesAtPoint({ x: posX, y: posY });
+      for (let body of bodies) {
+        if (body.particle == this) {
+          cell.addMe(this);
+          this.cellsOccupied.push(cell);
+          // cell.showDirectionVector()
+          break;
+        }
+      }
+    });
+  }
+
+  ifHighlightedTintRed() {
+    try {
+      if (this.highlighted) {
+        if (this.image.tint != 0xff0000) this.image.tint = 0xff0000;
+      } else {
+        if (this.image.tint != 0xffffff) this.image.tint = 0xffffff;
+      }
+    } catch (e) {
+      debugger;
+    }
   }
 }

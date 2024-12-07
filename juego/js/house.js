@@ -27,7 +27,7 @@ class House extends GenericObject {
     this.createSprite();
 
     // debugger
-    this.updateMyPositionInCell();
+    this.updateMyPositionInGrid();
     this.update();
 
     // this.body.angle = this.startingAngle;
@@ -54,7 +54,7 @@ class House extends GenericObject {
     this.pos.y = this.body.position.y;
     this.container.zIndex = Math.floor(this.pos.y);
 
-    this.updateMyPositionInCell();
+    this.updateMyPositionInGrid();
 
     super.render();
   }
