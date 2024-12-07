@@ -277,6 +277,7 @@ class Person extends GenericObject {
     this.particleSystem.addBullet(this);
   }
   recieveDamageFrom(part, coeficient = 1) {
+    // if(this instanceof Civil && part instanceof Ambulancia) debugger
     // this.makeMeFlash();
     if (!part || part.dead) return;
     // console.log(this.team, part.team, this.health);

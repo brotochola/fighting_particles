@@ -77,6 +77,7 @@ class ParticleSystem {
     // this.canvas.width = width;
     // this.canvas.height = height;
     this.people = []; // array to hold all particles
+    this.directionArrows = [];
     this.cars = [];
     // this.fences = [];
     this.fixedObjects = [];
@@ -92,9 +93,9 @@ class ParticleSystem {
 
       this.addShortCuts();
 
-      // Matter.Events.on(this.engine, "collisionActive", (e) => {
-      //   this.collisionHandler(e);
-      // });
+      Matter.Events.on(this.engine, "collisionActive", (e) => {
+        this.collisionHandler(e);
+      });
 
       this.createUI();
       this.addFiltersToStage();
@@ -278,37 +279,45 @@ class ParticleSystem {
 
   collisionHandler(e) {
     for (let p of e.pairs) {
-      // console.log(p.bodyA, p.bodyB);
-
-      // console.log(p)
-      // debugger
-      // console.log(p.bodyA, p.bodyB)
-
-      // if (p.bodyA.id != "ground") p.bodyA.isSensor = true
-      // if (p.bodyB.id != "ground") p.bodyB.isSensor = true
-
-      // let maxConnectionsPerParticle = |;
-
       // console.log(p.bodyA.label, p.bodyB.label);
 
-      if (p.bodyA.label == "bullet" && p.bodyB.label == "bullet") {
-        p.bodyA.particle.remove();
-        p.bodyB.particle.remove();
-      }
+      // if (p.bodyA.label == "bullet" && p.bodyB.label == "bullet") {
+      //   p.bodyA.particle.remove();
+      //   p.bodyB.particle.remove();
+      // }
 
-      if (p.bodyA.label == "bullet" && p.bodyB.label == "person") {
-        p.bodyB.particle.recieveDamage(p.bodyA.particle, "bullet");
-        setTimeout(() => p.bodyA.particle.remove(), this.deltaTime);
-      }
+      // if (p.bodyA.label == "bullet" && p.bodyB.label == "person") {
+      //   p.bodyB.particle.recieveDamage(p.bodyA.particle, "bullet");
+      //   setTimeout(() => p.bodyA.particle.remove(), this.deltaTime);
+      // }
 
-      if (p.bodyB.label == "bullet" && p.bodyA.label == "person") {
-        p.bodyA.particle.recieveDamage(p.bodyB.particle, "bullet");
-        setTimeout(() => p.bodyB.particle.remove(), this.deltaTime);
-      }
+      // if (p.bodyB.label == "bullet" && p.bodyA.label == "person") {
+      //   p.bodyA.particle.recieveDamage(p.bodyB.particle, "bullet");
+      //   setTimeout(() => p.bodyB.particle.remove(), this.deltaTime);
+      // }
 
-      if (p.bodyA.label == "person" && p.bodyB.label == "person") {
-        p.bodyB.particle.recieveDamageFrom(p.bodyA.particle);
-        p.bodyA.particle.recieveDamageFrom(p.bodyB.particle);
+      if (p.bodyA.label == "auto" && p.bodyB.label == "person") {
+        let person = p.bodyB.particle;
+        person.recieveDamageFrom(
+          p.bodyA.particle,
+          cheaperDist(
+            0,
+            0,
+            p.bodyA.particle.body.velocity.x,
+            p.bodyA.particle.body.velocity.y
+          ) * 0.66
+        );
+      } else if (p.bodyB.label == "auto" && p.bodyA.label == "person") {
+        let person = p.bodyA.particle;
+        person.recieveDamageFrom(
+          p.bodyB.particle,
+          cheaperDist(
+            0,
+            0,
+            p.bodyB.particle.body.velocity.x,
+            p.bodyB.particle.body.velocity.y
+          ) * 0.66
+        );
       }
     }
   }
@@ -631,6 +640,7 @@ class ParticleSystem {
       this.lastPointerMoveEvent = e;
 
       this.seeWhatObjectsImOn(e);
+      this.showDirectionVectorOfCells(e);
     });
     canvas.onmousedown = (e) => {
       window.isDown = e.which;
@@ -710,13 +720,26 @@ class ParticleSystem {
         }
       });
 
-    this.grounds.map((k) => {
-      let cont = k.container;
-      k.cellsOccupied.forEach((k) => k.unHighlight());
-      if (isMouseOverPixel(mousePosition, cont)) {
-        k.cellsOccupied.forEach((k) => k.showDirectionVector());
-      }
-    });
+    // this.grounds.map((k) => {
+    //   let cont = k.container;
+    //   k.cellsOccupied.forEach((k) => k.unHighlight());
+    //   if (isMouseOverPixel(mousePosition, cont)) {
+    //     k.cellsOccupied.forEach((k) => k.showDirectionVector());
+    //   }
+    // });
+  }
+
+  showDirectionVectorOfCells(mousePosition) {
+    this.grid.flat().forEach((cell) => cell.unHighlight());
+
+    this.getCellAt(
+      mousePosition.x - this.mainContainer.x,
+      +mousePosition.y - this.mainContainer.y
+    )
+      .getMoreNeighbours(3, 3)
+      .forEach((cell) => {
+        cell.showDirectionVector();
+      });
   }
   // addEventListenerToMouse() {
   //   //THIS IS THE BURNING FUNCTION!
@@ -871,6 +894,14 @@ class ParticleSystem {
     this.people.push(particle);
     window.lastParticle = particle;
     return particle;
+  }
+  addDirectionVector(k) {
+    this.directionArrows.push(
+      new DirectionArrow({
+        ...k,
+        particleSystem: this,
+      })
+    );
   }
 
   addAmbulance(x, y) {
@@ -1281,6 +1312,8 @@ class ParticleSystem {
         this.addCivilian(k.x, k.y);
       } else if (k.type.startsWith("ambulancia")) {
         this.addAmbulance(k.x, k.y);
+      } else if (k.type.startsWith("directionVector")) {
+        this.addDirectionVector(k);
       }
     });
 

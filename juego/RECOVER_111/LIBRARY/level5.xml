@@ -1,0 +1,336 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="level5" itemID="6754ca49-0000085f" lastModified="1733611852">
+  <timeline>
+    <DOMTimeline name="level5" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="0.884902954101562" b="0.4656982421875" c="-0.4656982421875" d="0.884902954101562" tx="1160.25" ty="1423.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa15" centerPoint3DX="914.9" centerPoint3DY="495.7">
+                  <matrix>
+                    <Matrix tx="914.9" ty="722.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-316.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa15" centerPoint3DX="1358.75" centerPoint3DY="446.7">
+                  <matrix>
+                    <Matrix tx="1358.75" ty="673.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-316.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa16" centerPoint3DX="612.5" centerPoint3DY="507.5">
+                  <matrix>
+                    <Matrix tx="612.5" ty="656"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-228.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa17" centerPoint3DX="755.9" centerPoint3DY="656.15">
+                  <matrix>
+                    <Matrix tx="756.4" ty="762.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-166.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa18" centerPoint3DX="875.3" centerPoint3DY="744.95">
+                  <matrix>
+                    <Matrix tx="875.3" ty="841.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-177"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa16" centerPoint3DX="1165.3" centerPoint3DY="648.95">
+                  <matrix>
+                    <Matrix a="-1" tx="1165.3" ty="797.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-228.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa19" centerPoint3DX="1025.7" centerPoint3DY="785.25">
+                  <matrix>
+                    <Matrix a="-1" tx="1025.7" ty="903.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-205"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="0.940765380859375" b="-0.33880615234375" c="0.33880615234375" d="0.940765380859375" tx="868.3" ty="1416.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector" centerPoint3DX="782.65" centerPoint3DY="1521.1">
+                  <matrix>
+                    <Matrix a="0.3828125" b="-0.923782348632812" c="0.923782348632812" d="0.3828125" tx="782.65" ty="1519.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa15" centerPoint3DX="1879.9" centerPoint3DY="1138.05">
+                  <matrix>
+                    <Matrix tx="1879.9" ty="1364.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-316.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa15" centerPoint3DX="2323.75" centerPoint3DY="1089.05">
+                  <matrix>
+                    <Matrix tx="2323.75" ty="1315.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-316.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa16" centerPoint3DX="1577.5" centerPoint3DY="1149.85">
+                  <matrix>
+                    <Matrix tx="1577.5" ty="1298.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-228.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa17" centerPoint3DX="1720.9" centerPoint3DY="1298.5">
+                  <matrix>
+                    <Matrix tx="1721.4" ty="1405"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-166.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa18" centerPoint3DX="1840.3" centerPoint3DY="1387.3">
+                  <matrix>
+                    <Matrix tx="1840.3" ty="1484.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-177"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa16" centerPoint3DX="2130.3" centerPoint3DY="1291.3">
+                  <matrix>
+                    <Matrix a="-1" tx="2130.3" ty="1439.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-228.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="casa19" centerPoint3DX="1990.7" centerPoint3DY="1427.6">
+                  <matrix>
+                    <Matrix a="-1" tx="1990.7" ty="1545.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-205"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="0.996414184570312" b="-0.0837860107421875" c="0.0837860107421875" d="0.996414184570312" tx="1027.95" ty="1401.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="-0.3988037109375" b="0.916946411132812" c="-0.916946411132812" d="-0.3988037109375" tx="1332.55" ty="1722.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="0.4075927734375" b="0.913040161132812" c="-0.913040161132812" d="0.4075927734375" tx="1271.05" ty="1479.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="0.157394409179688" b="0.987411499023438" c="-0.987411499023438" d="0.157394409179688" tx="1341.9" ty="1592.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="-0.921875" b="-0.387344360351562" c="0.387344360351562" d="-0.921875" tx="978.4" ty="1867.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="-0.90789794921875" b="0.418960571289062" c="-0.418960571289062" d="-0.90789794921875" tx="1249.35" ty="1839.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="-0.985397338867188" b="0.169708251953125" c="-0.169708251953125" d="-0.985397338867188" tx="1116.15" ty="1888.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="-0.485092163085938" b="-0.874313354492188" c="0.874313354492188" d="-0.485092163085938" tx="859.5" ty="1790"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="-0.242263793945312" b="-0.970077514648438" c="0.970077514648438" d="-0.242263793945312" tx="796.7" ty="1666.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="0.915603637695312" b="-0.401885986328125" c="0.401885986328125" d="0.915603637695312" tx="735.05" ty="1435.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="0.321212768554688" b="-0.946884155273438" c="0.946884155273438" d="0.321212768554688" tx="678.45" ty="1723.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector" centerPoint3DX="782.9" centerPoint3DY="1849.9">
+                  <matrix>
+                    <Matrix a="0.0921630859375" b="-0.995681762695312" c="0.995681762695312" d="0.0921630859375" tx="782.35" ty="1848.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="0.555343627929688" b="-0.83148193359375" c="0.83148193359375" d="0.555343627929688" tx="669.35" ty="1570.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="-0.622512817382812" b="0.782470703125" c="-0.782470703125" d="-0.622512817382812" tx="1455.25" ty="1756.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="0.4075927734375" b="0.91302490234375" c="-0.91302490234375" d="0.4075927734375" tx="1391.45" ty="1437.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="-0.103500366210938" b="0.994491577148438" c="-0.994491577148438" d="-0.103500366210938" tx="1454.75" ty="1580.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="-0.990692138671875" b="-0.135543823242188" c="0.135543823242188" d="-0.990692138671875" tx="1234.15" ty="1986.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="-0.985382080078125" b="0.169692993164062" c="-0.169692993164062" d="-0.985382080078125" tx="1375.8" ty="1888.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="-0.85723876953125" b="-0.514633178710938" c="0.514633178710938" d="-0.85723876953125" tx="1055.1" ty="1989.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="-0.518569946289062" b="-0.8548583984375" c="0.8548583984375" d="-0.518569946289062" tx="887.75" ty="1957.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.45" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector" selected="true">
+                  <matrix>
+                    <Matrix a="0.908096313476562" b="0.418594360351562" c="-0.418594360351562" d="0.908096313476562" tx="886.8" ty="1291.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="0.454940795898438" b="0.890365600585938" c="-0.890365600585938" d="0.454940795898438" tx="1048.75" ty="1267.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="directionVector">
+                  <matrix>
+                    <Matrix a="0.343215942382812" b="0.939102172851562" c="-0.939102172851562" d="0.343215942382812" tx="1224.2" ty="1326.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
