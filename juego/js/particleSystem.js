@@ -55,20 +55,18 @@ class ParticleSystem {
     this.MINIMUM_STAMINA_TO_MOVE = 0.01;
     this.CELL_SIZE = 40;
 
-    this.stageScale = 1;
     this.buttonPanelHeight = 100;
 
-    this.viewPortHeight =
-      (window.innerHeight - this.buttonPanelHeight) / this.stageScale;
-    this.viewportWidth = window.innerWidth / this.stageScale;
+    this.viewPortHeight = window.innerHeight - this.buttonPanelHeight;
+    this.viewportWidth = window.innerWidth;
 
     this.Matter = Matter;
-    // Matter.use(MatterAttractors);
+
     this.engine = Matter.Engine.create();
     this.world = Matter.World;
 
-    this.worldHeight = height / this.stageScale;
-    this.worldWidth = width / this.stageScale;
+    this.worldHeight = height;
+    this.worldWidth = width;
 
     this.spritesheets = {};
 
@@ -183,27 +181,22 @@ class ParticleSystem {
   createPixiStage(cb) {
     this.renderer = PIXI.autoDetectRenderer(
       this.viewportWidth,
-      this.viewPortHeight,
-      {
-        // backgroundColor: "0x1099bb",
-        antialias: false,
-        backgroundAlpha: 0,
-        transparent: true,
-        resolution: 1,
-        autoresize: false,
-      }
+      this.viewPortHeight
     );
 
     this.pixiApp = new PIXI.Application();
 
     this.pixiApp
       .init({
+        autoresize: true,
+        resizeTo: window,        
+        width: this.viewportWidth,
+        height: this.viewPortHeight,        
+        autoDensity: true, // Escala automáticamente el canvas para que se vea bien
+        antialias: false,
         backgroundAlpha: 0,
         transparent: true,
-        width: this.viewportWidth,
-        height: this.viewPortHeight,
-        resolution: 1, // Renderiza a la mitad de resolución
-        autoDensity: true, // Escala automáticamente el canvas para que se vea bien
+        resolution: 1,
       })
       .then((e) => {
         globalThis.__PIXI_APP__ = this.pixiApp;
@@ -527,7 +520,10 @@ class ParticleSystem {
     this.grid = [];
 
     //MAKE SURE NO ONE HAS ANY CELL
-    this.people.forEach((k) => (k.cell = null));
+    this.getAllObjects().forEach((k) => {
+      if (k.cell) k.cell = null;
+      if (k.cellsOccupied) k.cellsOccupied = [];
+    });
 
     for (
       let i = 0;
@@ -713,23 +709,21 @@ class ParticleSystem {
       }
 
       this.evaluateKeyDowns(window.keyIsDown);
-
-      // else if (window.keyIsDown == 67) {
-      //   //C (cold)
-      //   let closeParticles = this.getParticlesAndTheirDistance(x, y, null);
-      //   for (let p of closeParticles) {
-      //     let part = p.body.particle || {};
-
-      //     if (p.distance < 25) {
-      //       let part = p.body.particle || {};
-      //       part.highlight();
-      //       part.heatUp(-50);
-      //     } else {
-      //       part.unHighlight();
-      //     }
-      //   }
-      // }
     };
+
+    window.onresize = (e) => {
+      this.handleWindowResize(e);
+    };
+  }
+
+  handleWindowResize(e) {
+    // this.filters=
+    this.viewPortHeight = window.innerHeight - this.buttonPanelHeight;
+    this.viewportWidth = window.innerWidth;
+
+    this.canvas.width = this.viewportWidth;
+    this.canvas.height = this.viewPortHeight;
+    // this.bg.width=this.view
   }
 
   seeWhatObjectsImOn(mousePosition) {
@@ -1399,7 +1393,7 @@ class ParticleSystem {
   }
 
   disableFilters() {
-    for (let f of this.pixiApp.stage.filters) {
+    for (let f of this.pixiApp.stage.filters || []) {
       f.enabled = false;
     }
   }

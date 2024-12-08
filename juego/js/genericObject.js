@@ -411,8 +411,9 @@ class GenericObject {
     //   this.world.remove(this.engine.world, constr);
     // }
 
-    if (this.graphics)
+    if (this.graphics) {
       this.particleSystem.mainContainer.removeChild(this.graphics);
+    }
     this.particleSystem.mainContainer.removeChild(this.container);
 
     if (this.body) {
@@ -420,6 +421,10 @@ class GenericObject {
     }
 
     if (this.image) this.image.destroy();
+
+    for (let as of Object.values(this.animatedSprites || {})) {
+      as.destroy();
+    }
 
     this.particleSystem.people = this.particleSystem.people.filter(
       (k) => k.id != this.id
@@ -432,6 +437,8 @@ class GenericObject {
     this.particleSystem.grounds = this.particleSystem.grounds.filter(
       (k) => k.id != this.id
     );
+
+    this.container.destroy();
 
     // if ((opt || {}).leaveAshes) {
     // }
