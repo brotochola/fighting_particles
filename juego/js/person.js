@@ -168,7 +168,7 @@ class Person extends GenericObject {
   }
 
   lookAround() {
-    if (this.oncePerSecond()) {
+    if (this.oncePerSecond()) {      
       this.checkIfImNotConsideredViolentAnyMore();
       this.seePeople();
       this.discernirAmigosYEnemigosYEvaluarLaSituacion();
@@ -645,26 +645,7 @@ class Person extends GenericObject {
     return this.particleSystem.getCellAt(x, y);
   }
 
-  // getClosePeopleWithWebWorkers() {
-  //   let dataToSend = {
-  //     people: this.particleSystem.saveLevel(),
-  //     myX: this.pos.x,
-  //     myY: this.pos.y,
-  //     maxSight: this.sightDistance,
-  //   };
 
-  //   mandarAProcesarEnSegundoPlano("findClosePeople", dataToSend, (e) => {
-  //     // console.log("volvio la data", e);
-  //     this.nearPeople = e.resp
-  //       .filter((k) => k.dist < this.sightDistance)
-  //       .map((p) => {
-  //         return {
-  //           part: this.particleSystem.getPersonByID(p.id),
-  //           dist: p.dist,
-  //         };
-  //       });
-  //   });
-  // }
   createCircleInPixi() {
     // this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);
 

@@ -20,10 +20,10 @@ class ParticleSystem {
 
     //PERSPECTIVE STUFF
 
-    this.minScaleOfSprites = 1;
-    this.maxScaleOfSprites = 8;
-    this.worldPerspective = 0.25;
-    this.doPerspective = false;
+    // this.minScaleOfSprites = 1;
+    // this.maxScaleOfSprites = 8;
+    // this.worldPerspective = 0.25;
+    // this.doPerspective = false;
 
     this.cameraHeight = window.innerHeight / 2;
     //LLAMO MULTIPLIERS/REDUCERS A ESTOS COEFICIENTES Q SE USAN PARA TUNEAR EL JUEGO
@@ -72,6 +72,8 @@ class ParticleSystem {
 
     this.spritesheets = {};
 
+    this.sideMarginForLevels = 500;
+
     // this.canvas = document.getElementById(canvasId);
     // this.context = this.canvas.getContext("2d");
     // this.canvas.width = width;
@@ -86,6 +88,7 @@ class ParticleSystem {
     this.bullets = [];
     this.createPixiStage(() => {
       this.createGrid();
+      this.setMainContainerInStartingPosition();
 
       this.runEngine();
 
@@ -231,6 +234,12 @@ class ParticleSystem {
     //DEBUG
 
     ///
+  }
+
+  setMainContainerInStartingPosition() {
+    //LA IDEA ES DEJAR CHANGUI A LA IZQ Y ARRIBA
+    this.mainContainer.x = -this.sideMarginForLevels;
+    this.mainContainer.y = -this.sideMarginForLevels;
   }
 
   createGridDebug() {
@@ -521,14 +530,22 @@ class ParticleSystem {
     this.people.forEach((k) => (k.cell = null));
 
     for (
-      let i = Math.floor((-1.5 * this.worldHeight) / this.CELL_SIZE) + 2;
-      i < Math.floor((this.worldHeight * 1.5) / this.CELL_SIZE) + 2;
+      let i = 0;
+      i <
+      Math.floor(
+        (this.worldHeight + this.sideMarginForLevels) / this.CELL_SIZE
+      ) +
+        2;
       i++
     ) {
       this.grid[i] = [];
       for (
-        let j = Math.floor((-1.5 * this.worldWidth) / this.CELL_SIZE) + 2;
-        j < Math.floor((this.worldWidth * 1.5) / this.CELL_SIZE) + 2;
+        let j = 0;
+        j <
+        Math.floor(
+          (this.worldWidth + this.sideMarginForLevels) / this.CELL_SIZE
+        ) +
+          2;
         j++
       ) {
         this.grid[i][j] = new Cell(i, j, this.CELL_SIZE, this.grid, this);
@@ -749,7 +766,8 @@ class ParticleSystem {
     )
       .getMoreNeighbours(3, 3)
       .forEach((cell) => {
-        cell.showDirectionVector();
+        cell.showDirectionVector(2, "orange");
+        cell.showDirectionVector(1, 0x00ff00);
       });
   }
   // addEventListenerToMouse() {
@@ -906,7 +924,7 @@ class ParticleSystem {
     window.lastParticle = particle;
     return particle;
   }
-  addDirectionVector(k) {
+  addDirectionArrow(k) {
     this.directionArrows.push(
       new DirectionArrow({
         ...k,
@@ -1268,17 +1286,20 @@ class ParticleSystem {
     return [...this.people, ...this.cars];
   }
 
-  updateWorldAndGridSize(listOfElements) {
+  updateWorldAndGridSize(listOfElements = []) {
     const { width, height } =
       getWidthAndHeightFromListOfElements(listOfElements);
 
     console.log("# NEW WIDTH AND HEIGHT", width, height);
 
-    this.worldWidth = width;
-    this.worldHeight = height;
+    this.worldWidth = width < window.innerWidth ? window.innerWidth : width;
+    this.worldHeight =
+      height < window.innerHeight ? window.innerHeight : height;
 
     this.bg.width = this.worldWidth;
     this.bg.height = this.worldHeight;
+
+    this.setMainContainerInStartingPosition();
 
     this.createGrid();
 
@@ -1310,6 +1331,8 @@ class ParticleSystem {
 
     this.updateWorldAndGridSize(listOfElements);
 
+    this.setMainContainerInStartingPosition();
+
     listOfElements.forEach((k) => {
       if (k.type == "boca" || k.type == "river") {
         this.addFan(Math.floor(k.x), Math.floor(k.y), false, k.type);
@@ -1323,8 +1346,8 @@ class ParticleSystem {
         this.addCivilian(k.x, k.y);
       } else if (k.type.startsWith("ambulancia")) {
         this.addAmbulance(k.x, k.y);
-      } else if (k.type.startsWith("directionVector")) {
-        this.addDirectionVector(k);
+      } else if (k.type.startsWith("directionArrow")) {
+        this.addDirectionArrow(k);
       }
     });
 

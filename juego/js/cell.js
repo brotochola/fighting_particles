@@ -19,16 +19,17 @@ class Cell {
     this.startingFrame = randomInt(8);
     this.gases = [];
     this.cellsOccupied = [];
+    this.directionVector1 = new p5.Vector();
+    this.directionVector2 = new p5.Vector();
   }
 
-  setDirectionVector(x, y) {
-    if (this.directionVector) {
-      this.directionVector.x += x;
-      this.directionVector.y += y;
-      this.directionVector.x *= 0.5;
-      this.directionVector.y *= 0.5;
-    } else {
-      this.directionVector = new p5.Vector(x, y);
+  setDirectionVector(x, y, type) {
+    let vec = this["directionVector" + type];
+    if (vec) {
+      vec.x += x;
+      vec.y += y;
+      vec.x *= 0.5;
+      vec.y *= 0.5;
     }
   }
 
@@ -243,18 +244,19 @@ class Cell {
     this.graphics.stroke({ color, width: 3 });
   }
 
-  showDirectionVector() {
-    this.highlight("white");
+  showDirectionVector(type = 1, color) {
+    let vec = this["directionVector" + type];
+    this.highlight(color);
     this.graphics.moveTo(
       this.pos.x + this.cellWidth / 2,
       this.pos.y + this.cellWidth / 2
     );
     let halfCell = this.cellWidth * 0.5;
     this.graphics.lineTo(
-      this.pos.x + halfCell + (this.directionVector || {}).x * halfCell,
-      this.pos.y + halfCell + (this.directionVector || {}).y * halfCell
+      this.pos.x + halfCell + (vec || {}).x * halfCell,
+      this.pos.y + halfCell + (vec || {}).y * halfCell
     );
-    this.graphics.stroke({ color: "white", width: 2 });
+    this.graphics.stroke({ color, width: 2 });
 
     if (this.blocked) {
       this.graphics.rect(
@@ -263,8 +265,15 @@ class Cell {
         this.cellWidth,
         this.cellWidth
       );
-      this.graphics.fill({ color: "white",alpha:0.8 });
+      this.graphics.fill({ color, alpha: 0.8 });
     }
+  }
+
+  getParticlesFromHereAndNeighboorCells() {
+    let ret = this.getNeighbours()
+      .map((k) => k.particlesHere)
+      .flat();
+    return ret.concat(this.particlesHere);
   }
 
   unHighlight() {

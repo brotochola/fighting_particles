@@ -319,23 +319,30 @@ class GenericObject {
   unHighlight() {
     this.highlighted = false;
   }
-  getVectorToRepelBlockedCells() {
-    let vec = new p5.Vector();
-    let count = 0;
+
+  getFutureCell(lookAheadFrames = 50) {
     let futurePosition = this.pos
       .copy()
-      .add(new p5.Vector(this.body.velocity.x, this.body.velocity.y).mult(10));
+      .add(
+        new p5.Vector(this.body.velocity.x, this.body.velocity.y).mult(
+          lookAheadFrames
+        )
+      );
 
-    let futureCell = this.particleSystem.getCellAt(
+    this.futureCell = this.particleSystem.getCellAt(
       futurePosition.x,
       futurePosition.y
     );
+  }
+  getVectorToRepelBlockedCells() {
+    let vec = new p5.Vector();
+    let count = 0;
 
-    if (!futureCell) {
+    if (!this.futureCell) {
       return vec;
     }
-    
-    futureCell
+
+    this.futureCell
       .getNeighbours()
       .filter((k) => k.blocked)
       .forEach((k) => {
@@ -579,41 +586,43 @@ class GenericObject {
     ).length;
   }
 
-  getVectorAwayFromGroup(arrOfTeam, direction, options) {
+  getVectorAwayFromGroup(arrOfTeam, mult = 1, options) {
     // if(this instanceof Civil) debugger
-    let peopleISee;
+    let entities = [];
 
-    if ((options || {}).onlyNearPeople) {
-      peopleISee = this.nearPeople
-        .map((k) => k.part)
-        .filter((k) => arrOfTeam.includes(k.team) && k != this);
+    if ((options || {}).useFuturePositionNearPeople) {
+      entities = this.futureCell
+        ? this.futureCell.getParticlesFromHereAndNeighboorCells()
+        : [];
     } else {
-      peopleISee = this.peopleICanSee.filter(
-        (k) => arrOfTeam.includes(k.team) && k != this
-      );
-    }
+      if ((options || {}).onlyNearPeople) {
+        entities = this.nearPeople
+          .map((k) => k.part)
+          .filter((k) => arrOfTeam.includes(k.team) && k != this);
+      } else {
+        entities = this.peopleICanSee.filter(
+          (k) => arrOfTeam.includes(k.team) && k != this
+        );
+      }
 
-    if ((options || {}).discardNearPeople) {
-      peopleISee = peopleISee.filter(
-        (m) => !this.nearPeople.map((k) => k.part).includes(m)
-      );
+      if ((options || {}).discardNearPeople) {
+        entities = entities.filter(
+          (m) => !this.nearPeople.map((k) => k.part).includes(m)
+        );
+      }
     }
-
-    if (peopleISee.length == 0) {
+    if (entities.length == 0) {
       return new p5.Vector(0, 0);
     }
 
-    let avgX = getAvg(peopleISee.map((k) => k.pos.x));
-    let avgY = getAvg(peopleISee.map((k) => k.pos.y));
+    let avgX = getAvg(entities.map((k) => k.pos.x));
+    let avgY = getAvg(entities.map((k) => k.pos.y));
 
     let vecAway = p5.Vector.sub(new p5.Vector(avgX, avgY), this.pos);
 
     vecAway.setMag(1);
 
-    if (direction == -1) {
-      vecAway.x *= -1;
-      vecAway.y *= -1;
-    }
+    vecAway.mult(mult);
 
     return vecAway;
   }
@@ -628,15 +637,9 @@ class GenericObject {
 
   getParticlesFromCloseCells() {
     if (!this.cell) return [];
-    let arr = [];
-    arr.push(...this.getParticlesFromCell());
 
-    for (let cell of this.cell.getNeighbours()) {
-      for (let p of cell.particlesHere) {
-        arr.push(p);
-      }
-    }
-    let ret = arr
+    let ret = this.cell
+      .getParticlesFromHereAndNeighboorCells()
       .map((k) => {
         return {
           dist: cheaperDist(this.pos.x, this.pos.y, k.pos.x, k.pos.y),

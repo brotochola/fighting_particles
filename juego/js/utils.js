@@ -405,6 +405,9 @@ function getWidthAndHeightFromListOfElements(points) {
     }
   );
 
+  
+
+
   let width = bounds.highestX + 500;
   let height = bounds.highestY + 500;
   // debugger

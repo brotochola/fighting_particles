@@ -8,6 +8,8 @@
           <DOMBitmapItem name="casas/Bitmap 14" itemID="674d0200-00000443" sourceExternalFilepath="Bitmap 14.png" sourceLastImported="1733100032" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="casas/Bitmap 14.png" bitmapDataHRef="M 28 1733100153.dat" frameRight="3640" frameBottom="5320"/>
           <DOMBitmapItem name="Bitmap 14" itemID="6754ca0b-00000859" sourceExternalFilepath="Bitmap 14.png" sourceLastImported="1733609995" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 14.png" bitmapDataHRef="M 51 1733609995.dat" frameRight="3300" frameBottom="1600"/>
           <DOMBitmapItem name="Bitmap 15" itemID="6754cb16-0000087b" sourceExternalFilepath="Bitmap 15.png" sourceLastImported="1733610262" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 15.png" bitmapDataHRef="M 52 1733610262.dat" frameRight="4740" frameBottom="4740"/>
+          <DOMBitmapItem name="Bitmap 16" itemID="67561c4e-0000099f" sourceExternalFilepath="Bitmap 16.png" sourceLastImported="1733696590" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 16.png" bitmapDataHRef="M 53 1733696590.dat" frameRight="3180" frameBottom="3180"/>
+          <DOMBitmapItem name="Bitmap 17" itemID="67561c81-000009aa" sourceExternalFilepath="Bitmap 17.png" sourceLastImported="1733696641" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Bitmap 17.png" bitmapDataHRef="M 54 1733696641.dat" frameRight="2020" frameBottom="2020"/>
           <DOMBitmapItem name="casas/Bitmap 18" itemID="674d0202-0000044f" sourceExternalFilepath="Bitmap 18.png" sourceLastImported="1733100034" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="casas/Bitmap 18.png" bitmapDataHRef="M 30 1733100153.dat" frameRight="8000" frameBottom="8360"/>
           <DOMBitmapItem name="casas/Bitmap 2" itemID="674feda2-0000036b" sourceExternalFilepath="../xfl/LIBRARY/casas/Bitmap 2.png" sourceLastImported="1733151137" externalFileSize="42130" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="casas/Bitmap 2.png" bitmapDataHRef="M 16 1732644623.dat" frameRight="2680" frameBottom="3160"/>
           <DOMBitmapItem name="Duplicate Items Folder/Bitmap 21" itemID="674d0279-000004d9" sourceExternalFilepath="Bitmap 21.png" sourceLastImported="1733100076" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="Duplicate Items Folder/Bitmap 21.png" bitmapDataHRef="M 31 1733100153.dat" frameRight="5600" frameBottom="7860"/>
@@ -66,18 +68,21 @@
           <Include href="casa20.xml" loadImmediate="false" itemID="6750a99a-00000635" lastModified="1733339603"/>
           <Include href="casa21.xml" loadImmediate="false" itemID="6750a9a0-00000637" lastModified="1733339552"/>
           <Include href="civil.xml" loadImmediate="false" itemID="67513179-000006e6" lastModified="1733374395"/>
-          <Include href="directionVector.xml" loadImmediate="false" itemID="6754c9cf-0000084b" lastModified="1733611615"/>
+          <Include href="directionArrow1.xml" loadImmediate="false" itemID="67561d98-000009f1" lastModified="1733696920"/>
+          <Include href="directionArrow2.xml" loadImmediate="false" itemID="67561ccd-000009c2" lastModified="1733696717"/>
           <Include href="Duplicate Items Folder/piso.xml" loadImmediate="false" itemID="6750a95f-000005ce" lastModified="1733094006"/>
           <Include href="level1.xml" loadImmediate="false" itemID="65a008ae-0000048f" lastModified="1733181172"/>
           <Include href="level2.xml" loadImmediate="false" itemID="65776f63-00000273" lastModified="1733099922"/>
           <Include href="level3.xml" loadImmediate="false" itemID="674d0271-000004c9" lastModified="1733151902"/>
-          <Include href="level4.xml" loadImmediate="false" itemID="6750a955-000005a3" lastModified="1733613199"/>
+          <Include href="level4.xml" loadImmediate="false" itemID="6750a955-000005a3" lastModified="1733698203"/>
           <Include href="level5.xml" loadImmediate="false" itemID="6754ca49-0000085f" lastModified="1733689933"/>
           <Include href="piso.xml" loadImmediate="false" itemID="674cea4e-00000409" lastModified="1733094006"/>
           <Include href="piso_de_prueba.xml" loadImmediate="false" itemID="6750ad12-000006ae" lastModified="1733340434"/>
           <Include href="river.xml" loadImmediate="false" itemID="65a007d5-0000041c" lastModified="1733150941"/>
           <Include href="Symbol 1.xml" loadImmediate="false" itemID="67534a68-00000832" lastModified="1733511784"/>
           <Include href="Symbol 2.xml" loadImmediate="false" itemID="6754cb1a-0000087d" lastModified="1733610266"/>
+          <Include href="Symbol 2 copy.xml" loadImmediate="false" itemID="67561c21-00000999" lastModified="1733696545"/>
+          <Include href="Symbol 3.xml" loadImmediate="false" itemID="67561c52-000009a1" lastModified="1733696594"/>
           <Include href="Symbol 42.xml" loadImmediate="false" itemID="674ff74d-0000055b" lastModified="1733293904"/>
      </symbols>
      <timelines>
@@ -86,16 +91,7 @@
                     <DOMLayer name="level1" color="#9933CC" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="level1">
-                                             <matrix>
-                                                  <Matrix tx="-272.25" ty="-206"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="1732.05" y="706.15"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
+                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
@@ -119,15 +115,15 @@
                                                   <Point x="1732.05" y="706.15"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="level4">
+                                        <DOMSymbolInstance libraryItemName="level4" selected="true">
                                              <matrix>
-                                                  <Matrix tx="-2392.1" ty="-551.15"/>
+                                                  <Matrix tx="-1572.9" ty="-1266.35"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point x="-0.05" y="-314.1"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="level5" selected="true">
+                                        <DOMSymbolInstance libraryItemName="level5">
                                              <matrix>
                                                   <Matrix tx="-1932.3" ty="2223.4"/>
                                              </matrix>

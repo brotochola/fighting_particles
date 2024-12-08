@@ -90,16 +90,10 @@ class Ambulancia extends GenericObject {
   //     this.setTarget(idols[0]);
   //   }
   // }
-  seePeople() {
-    // let time = performance.now();
-    let offset = Math.floor(this.sightDistance / this.particleSystem.CELL_SIZE);
-    //ya q estamos lo guardo
-    this.peopleICanSee = this.findClosePeople(offset, offset);
-
-    // console.log(performance.now() - time, "XXXXXXX");
-  }
 
   lookAround() {
+    this.getFutureCell();
+
     if (this.oncePerSecond()) {
       this.checkIfImNotConsideredViolentAnyMore();
       this.seePeople();
@@ -137,11 +131,11 @@ class Ambulancia extends GenericObject {
 
     let vectores = [
       this.getVectorToRepelBlockedCells(),
-      this.getVectorAwayFromGroup(["auto", "civil", "boca", "river"], -1, {
-        onlyNearPeople: true,
-      }).mult(0.33),
-
-      this.cell.directionVector,
+      this.getVectorAwayFromGroup(["boca", "river", "civil", "auto"], -1, {
+        // onlyNearPeople: true,
+        useFuturePositionNearPeople: true,
+      }),
+      this.cell.directionVector1,
     ];
 
     for (let i = 0; i < vectores.length; i++) {

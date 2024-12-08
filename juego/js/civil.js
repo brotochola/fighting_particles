@@ -44,13 +44,10 @@ class Civil extends Person {
       vecAmigos,
       this.getVectorToRepelBlockedCells(),
       this.getVectorToRepelGas(),
-      // this.getVectorAwayFromGroup("poli", -1).mult(0.2),
-      // this.getVectorAwayFromGroup("boca", -1).mult(0.2),
-      // this.getVectorAwayFromGroup("river", -1).mult(1),
       this.getVectorAwayFromGroup(["auto", "river", "boca"], -1, {
         onlyNearPeople: true,
-      }).mult(1),
-      this.cell.directionVector,
+      }),
+      this.cell.directionVector2,
     ];
 
     // this.avoidGas();
