@@ -636,11 +636,20 @@ class ParticleSystem {
     };
 
     this.mainContainer.interactive = true;
+    this.mainContainer.on("pointerdown", (e) => {
+      this.leftMouseButtonDown = true;
+    });
+    this.mainContainer.on("pointerup", (e) => {
+      this.leftMouseButtonDown = false;
+      this.unHighlightAllCells();
+    });
     this.mainContainer.on("pointermove", (e) => {
       this.lastPointerMoveEvent = e;
 
       this.seeWhatObjectsImOn(e);
-      this.showDirectionVectorOfCells(e);
+      if (this.leftMouseButtonDown) this.showDirectionVectorOfCells(e);
+      else {
+      }
     });
     canvas.onmousedown = (e) => {
       window.isDown = e.which;
@@ -729,12 +738,14 @@ class ParticleSystem {
     // });
   }
 
-  showDirectionVectorOfCells(mousePosition) {
+  unHighlightAllCells() {
     this.grid.flat().forEach((cell) => cell.unHighlight());
-
+  }
+  showDirectionVectorOfCells(mousePosition) {
+    this.unHighlightAllCells();
     this.getCellAt(
       mousePosition.x - this.mainContainer.x,
-      +mousePosition.y - this.mainContainer.y
+      mousePosition.y - this.mainContainer.y
     )
       .getMoreNeighbours(3, 3)
       .forEach((cell) => {
@@ -1317,7 +1328,7 @@ class ParticleSystem {
       }
     });
 
-    this.scanMapToKnowWhichCellsAreWalkable();
+    // this.scanMapToKnowWhichCellsAreWalkable();
   }
 
   toggleDebugMode() {

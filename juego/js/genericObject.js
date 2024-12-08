@@ -322,7 +322,19 @@ class GenericObject {
   getVectorToRepelBlockedCells() {
     let vec = new p5.Vector();
     let count = 0;
-    this.cell
+    let futurePosition = this.pos
+      .copy()
+      .add(new p5.Vector(this.body.velocity.x, this.body.velocity.y).mult(10));
+
+    let futureCell = this.particleSystem.getCellAt(
+      futurePosition.x,
+      futurePosition.y
+    );
+
+    if (!futureCell) {
+      debugger;
+    }
+    futureCell
       .getNeighbours()
       .filter((k) => k.blocked)
       .forEach((k) => {
@@ -380,9 +392,9 @@ class GenericObject {
     // return ret;
   }
 
-  remove(opt) {
+  remove() {
     // console.log("removing", this);
-
+    this.dead = true;
     if (this.cell) this.cell.removeMe(this);
 
     this.removeMeAsTarget();

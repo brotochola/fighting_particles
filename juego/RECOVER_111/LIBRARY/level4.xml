@@ -1110,7 +1110,7 @@
                     <Point x="-0.5" y="0.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="directionVector">
+                <DOMSymbolInstance libraryItemName="directionVector" selected="true">
                   <matrix>
                     <Matrix a="0.0262451171875" b="-0.999496459960938" c="0.999496459960938" d="0.0262451171875" tx="1456.9" ty="743.15"/>
                   </matrix>

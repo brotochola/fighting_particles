@@ -30,8 +30,25 @@ class House extends GenericObject {
     this.updateMyPositionInGrid();
     this.update();
 
+    this.setMyOccupiedCellsAsBlocked()
+
     // this.body.angle = this.startingAngle;
     // this.addParticleEmitter();
+  }
+
+  setMyOccupiedCellsAsBlocked() {
+    this.occupiedCells = this.getCellsALargeObjectIsAt();
+    for (let cell of this.occupiedCells) {
+      let x = cell.x * cell.cellWidth + cell.cellWidth * 0.5;
+      let y = cell.y * cell.cellWidth + cell.cellWidth * 0.5;
+
+      let bodies = this.particleSystem
+        .findBodiesAtPoint({ x, y })
+        .filter((k) => k.label == "house");
+      if (bodies.length > 0) {
+        cell.blocked = true;
+      }
+    }
   }
 
   createSprite() {

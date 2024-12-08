@@ -225,7 +225,7 @@ class Cell {
       }
     }
   }
-  
+
   highlight(color = "red") {
     if (!this.graphics) {
       this.graphics = new PIXI.Graphics();
@@ -255,6 +255,16 @@ class Cell {
       this.pos.y + halfCell + (this.directionVector || {}).y * halfCell
     );
     this.graphics.stroke({ color: "white", width: 2 });
+
+    if (this.blocked) {
+      this.graphics.rect(
+        this.x * this.cellWidth,
+        this.y * this.cellWidth,
+        this.cellWidth,
+        this.cellWidth
+      );
+      this.graphics.fill({ color: "white",alpha:0.8 });
+    }
   }
 
   unHighlight() {
