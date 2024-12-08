@@ -332,8 +332,9 @@ class GenericObject {
     );
 
     if (!futureCell) {
-      debugger;
+      return vec;
     }
+    
     futureCell
       .getNeighbours()
       .filter((k) => k.blocked)
