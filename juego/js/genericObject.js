@@ -30,7 +30,7 @@ class GenericObject {
     this.currentAnimation = null; //"parado";
     this.animatedSprites = {};
     this.createContainers();
-    this.cellsOccupied = [];
+    this.occupiedCells = [];
 
     // this.createBody(10);
   }
@@ -75,7 +75,9 @@ class GenericObject {
   discernirAmigosYEnemigosYEvaluarLaSituacion() {
     // let time = performance.now();
 
-    this.enemiesICanSee = this.peopleICanSee.filter((k) => k.team != this.team);
+    this.enemiesICanSee = this.peopleICanSee.filter(
+      (k) => k.team !== this.team && k.team != "civil" && k.team != "auto"
+    );
 
     this.friendsICanSee = this.peopleICanSee.filter((k) => k.team == this.team);
 
@@ -276,6 +278,7 @@ class GenericObject {
   }
 
   update(COUNTER) {
+    if (this.REMOVED) return;
     this.COUNTER = COUNTER;
     this.ratioOfY = this.getRatioOfY();
     this.ratioOfX = this.getRatioOfX();
@@ -283,6 +286,7 @@ class GenericObject {
     // if (this.oncePerSecond()) console.log(this.name, performance.now());
   }
   render() {
+    if (this.REMOVED) return;
     // if (!this.doNotShowIfOutOfScreen()) return;
 
     //POSICION X E Y
@@ -320,7 +324,7 @@ class GenericObject {
     this.highlighted = false;
   }
 
-  getFutureCell(lookAheadFrames = 50) {
+  getFutureCell(lookAheadFrames = 30) {
     let futurePosition = this.pos
       .copy()
       .add(
@@ -344,7 +348,9 @@ class GenericObject {
 
     this.futureCell
       .getNeighbours()
-      .filter((k) => k.blocked)
+      .filter(
+        (k) => k.blocked && !this.occupiedCells.includes(k) && k != this.cell
+      )
       .forEach((k) => {
         count++;
         vec.x += k.centerX;
@@ -386,13 +392,12 @@ class GenericObject {
       return;
     }
 
-    if (this.cell) this.cell.removeMe(this);
-
     try {
+      if (this.cell) this.cell.removeMe(this);
       this.cell = newCell;
       this.cell.addMe(this);
     } catch (e) {
-      console.error("this particle is not in any cell", this.cellX, this.cellY);
+      console.warn(this.name + " left the world");
       this.remove();
       // debugger;
     }
@@ -402,6 +407,7 @@ class GenericObject {
 
   remove() {
     // console.log("removing", this);
+    this.REMOVED = true;
     this.dead = true;
     if (this.cell) this.cell.removeMe(this);
 
@@ -618,12 +624,16 @@ class GenericObject {
         );
       }
     }
+
+    entities = entities.filter((k) => k != this);
     if (entities.length == 0) {
       return new p5.Vector(0, 0);
     }
 
     let avgX = getAvg(entities.map((k) => k.pos.x));
     let avgY = getAvg(entities.map((k) => k.pos.y));
+
+    
 
     let vecAway = p5.Vector.sub(new p5.Vector(avgX, avgY), this.pos);
 
@@ -839,7 +849,7 @@ class GenericObject {
     // this.addTempCircleAt00();
   }
 
-  getCellsALargeObjectIsAt() {
+  getCellsThatMatchThisContainer() {
     let numberOfCellsInX = Math.ceil(
       this.container.width / this.particleSystem.CELL_SIZE
     );
@@ -863,16 +873,18 @@ class GenericObject {
   }
 
   updateMyPositionInGridForLargerObjects() {
-    for (let c of this.cellsOccupied) {
+    for (let c of this.occupiedCells) {
       c.removeMe(this);
     }
-    this.cellsOccupied = [];
+    this.occupiedCells = [];
     // debugger
 
-    let changuiX =
-      Math.ceil(this.container.width / this.particleSystem.CELL_SIZE) * 0.5;
-    let changuiY =
-      Math.ceil(this.container.height / this.particleSystem.CELL_SIZE) * 0.5;
+    let changuiX = Math.ceil(
+      (this.container.width * 0.5) / this.particleSystem.CELL_SIZE
+    );
+    let changuiY = Math.ceil(
+      (this.container.height * 0.5) / this.particleSystem.CELL_SIZE
+    );
 
     // let desdeX = this.cellX - changuiX;
     // let hastaX = this.cellX + changuiX;
@@ -880,15 +892,14 @@ class GenericObject {
     // let hastaY = this.cellY + changuiY;
 
     this.cell.getMoreNeighbours(changuiX, changuiY).forEach((cell) => {
-      // cell.highlight()
-      let posX = cell.x * cell.cellWidth + cell.cellWidth * 0.5;
-      let posY = cell.y * cell.cellWidth + cell.cellWidth * 0.5;
-
-      let bodies = this.particleSystem.findBodiesAtPoint({ x: posX, y: posY });
+      let bodies = this.particleSystem.findBodiesAtPoint({
+        x: cell.centerX,
+        y: cell.centerY,
+      });
       for (let body of bodies) {
         if (body.particle == this) {
           cell.addMe(this);
-          this.cellsOccupied.push(cell);
+          this.occupiedCells.push(cell);
           // cell.showDirectionVector()
           break;
         }

@@ -25,6 +25,7 @@ class Civil extends Person {
 
   cambiarEstadoSegunCosas() {}
   doActions() {
+    if (!this.cell) return;
     if (this.isItMyFrame()) {
       this.hacerCosasEstadoIDLE();
     }

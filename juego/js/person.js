@@ -40,7 +40,6 @@ class Person extends GenericObject {
     this.friendsICanSee = [];
     this.enemiesICanSee = [];
     this.friendsClose = [];
-    
 
     this.lastViolentAct = null;
 
@@ -117,7 +116,6 @@ class Person extends GenericObject {
     this.debugText.text = txt;
   }
 
- 
   emitBlood(angle) {
     // this.particleContainer.x = this.body.position.x;
     // this.particleContainer.y = this.body.position.y;
@@ -168,12 +166,10 @@ class Person extends GenericObject {
   }
 
   lookAround() {
-    if (this.oncePerSecond()) {      
+    if (this.oncePerSecond()) {
       this.checkIfImNotConsideredViolentAnyMore();
       this.seePeople();
       this.discernirAmigosYEnemigosYEvaluarLaSituacion();
-
-      
 
       this.nearPeople = this.getParticlesFromCloseCells();
       this.enemiesClose = this.nearPeople.filter(
@@ -188,6 +184,7 @@ class Person extends GenericObject {
   }
 
   update(COUNTER) {
+    if (this.REMOVED) return;
     super.update(COUNTER);
 
     // if (this.state != "dead") {
@@ -218,7 +215,7 @@ class Person extends GenericObject {
 
     this.render();
 
-    this.saveLog();
+    // this.saveLog();
   }
 
   removeMeFromArray() {
@@ -424,6 +421,7 @@ class Person extends GenericObject {
   }
 
   getVectorToRepelGas() {
+    if (!this.cell) return;
     let cellWithMostGas = this.cell
       .getNeighbours()
       .sort((a, b) => (a.gas > b.gas ? -1 : 1))[0];
@@ -447,9 +445,6 @@ class Person extends GenericObject {
 
     return vecGas;
   }
-
-
-
 
   //   // let dist = cheaperDist(
   //   //   this.vecAwayFromCops.x,
@@ -644,7 +639,6 @@ class Person extends GenericObject {
 
     return this.particleSystem.getCellAt(x, y);
   }
-
 
   createCircleInPixi() {
     // this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);

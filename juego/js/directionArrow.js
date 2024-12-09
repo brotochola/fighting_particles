@@ -6,7 +6,7 @@ class DirectionArrow extends GenericObject {
 
     this.width = this.type == 1 ? 180 : 90;
     this.container.destroy()
-    
+
     this.container = { width: this.width, height: this.width };
     this.image = {
       pivot: { x: this.container.width / 2, y: this.container.height / 2 },
@@ -17,8 +17,8 @@ class DirectionArrow extends GenericObject {
   }
 
   putDirectionVectorsInCells() {
-    this.cellsOccupied = this.getCellsALargeObjectIsAt();
-    this.cellsOccupied.forEach((cell, i) => {
+    this.occupiedCells = this.getCellsThatMatchThisContainer();
+    this.occupiedCells.forEach((cell, i) => {
       let result = new p5.Vector(1, 0);
       result.rotate(this.rotation);
 

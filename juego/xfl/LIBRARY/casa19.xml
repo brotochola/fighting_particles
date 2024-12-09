@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="casa19" itemID="6750a987-00000631" lastModified="1733366738">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="casa19" itemID="6750a987-00000631" lastModified="1733716978">
   <timeline>
     <DOMTimeline name="casa19" layerDepthEnabled="true">
       <layers>
@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMBitmapInstance libraryItemName="casas/casa19">
+                <DOMBitmapInstance libraryItemName="Bitmap 18">
                   <matrix>
                     <Matrix tx="-139" ty="-323"/>
                   </matrix>

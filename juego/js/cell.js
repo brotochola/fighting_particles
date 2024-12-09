@@ -18,7 +18,6 @@ class Cell {
     // this.createRectInPixi();
     this.startingFrame = randomInt(8);
     this.gases = [];
-    this.cellsOccupied = [];
     this.directionVector1 = new p5.Vector();
     this.directionVector2 = new p5.Vector();
   }
@@ -79,7 +78,7 @@ class Cell {
             arrRet.push(cell);
           }
         } catch (e) {
-          console.error("Error accessing cell:", e);
+          // console.error("Error accessing cell:", e);
         }
       }
     }

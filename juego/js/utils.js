@@ -368,7 +368,7 @@ function combineColors(color1, color2) {
   return combinedColor;
 }
 
-function isMouseOverPixel(mousePosition, sprite) {
+function isMouseOverPixel(mousePos, sprite) {
   let bounds = sprite.getBounds();
   // // Obtén la posición del mouse relativa al sprite
   // const localPosition = sprite.toLocal(mousePosition);
@@ -376,10 +376,10 @@ function isMouseOverPixel(mousePosition, sprite) {
 
   // Asegúrate de que esté dentro del rango de la textura
   if (
-    mousePosition.x < bounds.minX ||
-    mousePosition.y < bounds.minY ||
-    mousePosition.x > bounds.maxX ||
-    mousePosition.y > bounds.maxY
+    mousePos.global.x < bounds.minX ||
+    mousePos.global.y < bounds.minY ||
+    mousePos.global.x > bounds.maxX ||
+    mousePos.global.y > bounds.maxY
   ) {
     return false;
   }
@@ -404,9 +404,6 @@ function getWidthAndHeightFromListOfElements(points) {
       highestY: -Infinity,
     }
   );
-
-  
-
 
   let width = bounds.highestX + 500;
   let height = bounds.highestY + 500;

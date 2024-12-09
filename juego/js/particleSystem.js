@@ -111,16 +111,6 @@ class ParticleSystem {
     });
     this.configElement.style.display = "none";
   }
-  togglePerspectiveMode() {
-    this.doPerspective = !this.doPerspective;
-    this.bg.visible = !this.bg.visible;
-    let htmlBG = document.querySelector("#bg");
-    // if (htmlBG.style.display == "none") {
-    //   htmlBG.style.display = "block";
-    // } else {
-    //   htmlBG.style.display = "none";
-    // }
-  }
 
   getDurationOfOneFrame() {
     return 1000 / PIXI.ticker.shared.FPS;
@@ -179,24 +169,19 @@ class ParticleSystem {
   }
 
   createPixiStage(cb) {
-    this.renderer = PIXI.autoDetectRenderer(
-      this.viewportWidth,
-      this.viewPortHeight
-    );
-
     this.pixiApp = new PIXI.Application();
 
     this.pixiApp
       .init({
-        autoresize: true,
-        resizeTo: window,        
+        // autoresize: true,
+        // resizeTo: window,
         width: this.viewportWidth,
-        height: this.viewPortHeight,        
+        height: this.viewPortHeight,
         autoDensity: true, // Escala automáticamente el canvas para que se vea bien
-        antialias: false,
         backgroundAlpha: 0,
         transparent: true,
-        resolution: 1,
+        // resolution: 0.5,
+        antialias: false,
       })
       .then((e) => {
         globalThis.__PIXI_APP__ = this.pixiApp;
@@ -215,6 +200,7 @@ class ParticleSystem {
           this.mainContainer.name = "Main Container";
           this.pixiApp.stage.addChild(this.mainContainer);
 
+          // this.pixiApp.renderer.roundPixels;
           this.pixiApp.stage.sortableChildren = true;
           this.mainContainer.sortableChildren = true;
 
@@ -261,7 +247,7 @@ class ParticleSystem {
     let cellX = Math.floor(x / this.CELL_SIZE);
     let cellY = Math.floor(y / this.CELL_SIZE);
     if (isNaN(cellY) || isNaN(cellX)) {
-      return console.warn("getCellAt x or y wrong");
+      return console.warn("getCellAt x or y wrong", x, y);
     }
     return (this.grid[cellY] || [])[cellX];
   }
@@ -370,7 +356,7 @@ class ParticleSystem {
   createBoxOfParticles(x, y, lines, rows, substance) {}
 
   runEngine() {
-    this.render = Matter.Render.create({
+    this.matterJSrender = Matter.Render.create({
       // bounds: {
       //   min: {
       //     x: 500,
@@ -417,7 +403,7 @@ class ParticleSystem {
     // });
 
     // // keep the mouse in sync with rendering
-    // this.render.mouse = mouse;
+    // this.matterJSrender.mouse = mouse;
     // this.world.add(this.engine.world, mouseConstraint || {});
 
     this.engine.world.gravity.y = 0;
@@ -425,7 +411,7 @@ class ParticleSystem {
     // World.add(engine.world, constr);
 
     // run the renderer
-    this.Matter.Render.run(this.render);
+    this.Matter.Render.run(this.matterJSrender);
 
     // create runner
     this.runner = this.Matter.Runner.create({ isFixed: true, delta: 12 });
@@ -448,9 +434,13 @@ class ParticleSystem {
     if (!closeP[0]) return;
 
     const maxDistance = 20;
-    this.getAllObjectThatGottaUpdate().forEach((person) =>
-      person.unHighlight()
-    );
+    this.getPeopleAndCars().forEach((person) => {
+      try {
+        person.unHighlight();
+      } catch (e) {
+        debugger;
+      }
+    });
 
     if (
       dist(x, y, closeP[0].body.position.x, closeP[0].body.position.y) <
@@ -467,17 +457,13 @@ class ParticleSystem {
     }
   }
 
-  getParticlesAndTheirDistance(x, y, substance) {
+  getParticlesAndTheirDistance(x, y) {
     let arr = [];
     let chosenParticles;
-    let peopleAndCars = [...this.people, ...this.cars];
-    if (substance) {
-      chosenParticles = peopleAndCars.filter((k) => k.substance == substance);
-    } else {
-      chosenParticles = peopleAndCars;
-    }
-    for (let i = 0; i < chosenParticles.length; i++) {
-      let b = chosenParticles[i].body;
+    let peopleAndCars = this.getPeopleAndCars();
+
+    for (let i = 0; i < peopleAndCars.length; i++) {
+      let b = peopleAndCars[i].body;
       let distance = dist(x, y, b.position.x, b.position.y);
       arr.push({ body: b, distance: distance });
     }
@@ -486,16 +472,10 @@ class ParticleSystem {
     return newArr;
   }
   removeParticle(x, y) {
-    let closePs = this.getParticlesAndTheirDistance(x, y);
-    if (!closePs[0]) return;
-    let closest = closePs[0];
+    this.indicateWhichParticleItIs(x, y);
+    if (!this.selectedPerson) return;
 
-    if (
-      dist(x, y, closest.body.position.x, closest.body.position.y) <
-      this.diameter * 3
-    ) {
-      closest.body.particle.remove();
-    }
+    this.selectedPerson.remove();
   }
 
   // createStick(w, h) {
@@ -522,7 +502,7 @@ class ParticleSystem {
     //MAKE SURE NO ONE HAS ANY CELL
     this.getAllObjects().forEach((k) => {
       if (k.cell) k.cell = null;
-      if (k.cellsOccupied) k.cellsOccupied = [];
+      if (k.occupiedCells) k.occupiedCells = [];
     });
 
     for (
@@ -561,7 +541,7 @@ class ParticleSystem {
     //   window.innerHeight - this.buttonPanelHeight - margin
     // );
 
-    let leftLimit = this.doPerspective ? this.viewportWidth / 2 : 0;
+    let leftLimit = 0;
 
     if (
       // this.screenX > this.viewportWidth - margin ||
@@ -595,7 +575,7 @@ class ParticleSystem {
     if (this.mainContainer.x < rightEndOfScreen)
       this.mainContainer.x = rightEndOfScreen;
 
-    let bottomEnd = -this.worldHeight + this.viewPortHeight - leftLimit;
+    let bottomEnd = -this.worldHeight + this.viewPortHeight; //+this.buttonPanelHeight;
     if (this.mainContainer.y < bottomEnd) this.mainContainer.y = bottomEnd;
 
     // this.movePerspectiveCSSBackground();
@@ -651,6 +631,10 @@ class ParticleSystem {
     this.mainContainer.interactive = true;
     this.mainContainer.on("pointerdown", (e) => {
       this.leftMouseButtonDown = true;
+
+      this.indicateWhichParticleItIs(this.mouseX, this.mouseY);
+      window.tempCell = this.getCellAt(this.mouseX, this.mouseY);
+      if (e.buttons == 4) this.removeParticle(this.mouseX, this.mouseY);
     });
     this.mainContainer.on("pointerup", (e) => {
       this.leftMouseButtonDown = false;
@@ -659,57 +643,20 @@ class ParticleSystem {
     this.mainContainer.on("pointermove", (e) => {
       this.lastPointerMoveEvent = e;
 
+      this.mouseX = e.global.x - this.mainContainer.x;
+      this.mouseY = e.global.y - this.mainContainer.y;
+
       this.seeWhatObjectsImOn(e);
-      if (this.leftMouseButtonDown) this.showDirectionVectorOfCells(e);
-      else {
-      }
-    });
-    canvas.onmousedown = (e) => {
-      window.isDown = e.which;
-      let box = canvas.getBoundingClientRect();
-      let x = e.x - box.x - this.mainContainer.x;
-      let y = e.y - box.y - this.mainContainer.y;
+      if (this.leftMouseButtonDown)
+        this.showDirectionVectorOfCells(this.mouseX, this.mouseY);
 
-      if (e.which == 1) {
-        this.indicateWhichParticleItIs(x, y);
-        window.tempCell = this.getCellAt(x, y);
-      } else if (e.which == 3) {
-        // if (this.checkIfAPointCollidesWithTheGrounds(x, y)) {
-        //   this.addFan(x, y);
-        // } else {
-        //   this.addFan(x, y);
-        // }
-      }
-    };
-    canvas.onmouseup = (e) => {
-      window.isDown = false;
-    };
-    canvas.onmousemove = (e) => {
-      let box = canvas.getBoundingClientRect();
-
-      this.screenX = e.x - box.x;
-      this.screenY = e.y - box.y;
-
-      let x = this.screenX - this.mainContainer.x;
-      let y = this.screenY - this.mainContainer.y;
-
-      this.mouseX = x;
-      this.mouseY = y;
-
-      if (!window.isDown && window.keyIsDown.length == 0) return;
-
-      if (window.isDown == 2) {
+      if (e.buttons == 4) {
         //REMOVE PARTICLES
-
-        this.removeParticle(x, y);
-
-        return;
-      } else if (window.isDown == 3) {
-        // this.addFan(x, y);
+        this.removeParticle(this.mouseX, this.mouseY);
       }
 
       this.evaluateKeyDowns(window.keyIsDown);
-    };
+    });
 
     window.onresize = (e) => {
       this.handleWindowResize(e);
@@ -723,15 +670,28 @@ class ParticleSystem {
 
     this.canvas.width = this.viewportWidth;
     this.canvas.height = this.viewPortHeight;
+    this.matterJSrender.canvas.width = this.worldWidth;
+    this.matterJSrender.canvas.height = this.worldHeight;
+
+    this.pixiApp.renderer.resize(this.viewportWidth, this.viewPortHeight);
+
+    // this.pixiApp.renderer.width=this.viewportWidth;
+    // this.pixiApp.renderer.height=this.viewportHeight;
     // this.bg.width=this.view
   }
 
-  seeWhatObjectsImOn(mousePosition) {
+  seeWhatObjectsImOn(mousePos) {
+    let objects = this.getCellAt(
+      this.mouseX,
+      this.mouseY
+    ).getParticlesFromHereAndNeighboorCells();
+    // console.log(objects)
+
     this.fixedObjects
       .map((k) => k.container)
       .forEach((element) => {
         element.alpha = 1;
-        if (isMouseOverPixel(mousePosition, element)) {
+        if (isMouseOverPixel(mousePos, element)) {
           // console.log(`Mouse sobre:`, element.owner);
           element.alpha = 0.33;
           element.owner.mouseover = true;
@@ -742,9 +702,9 @@ class ParticleSystem {
 
     // this.grounds.map((k) => {
     //   let cont = k.container;
-    //   k.cellsOccupied.forEach((k) => k.unHighlight());
-    //   if (isMouseOverPixel(mousePosition, cont)) {
-    //     k.cellsOccupied.forEach((k) => k.showDirectionVector());
+    //   k.occupiedCells.forEach((k) => k.unHighlight());
+    //   if (isMouseOverPixel(x,y, cont)) {
+    //     k.occupiedCells.forEach((k) => k.showDirectionVector());
     //   }
     // });
   }
@@ -752,12 +712,9 @@ class ParticleSystem {
   unHighlightAllCells() {
     this.grid.flat().forEach((cell) => cell.unHighlight());
   }
-  showDirectionVectorOfCells(mousePosition) {
+  showDirectionVectorOfCells(x, y) {
     this.unHighlightAllCells();
-    this.getCellAt(
-      mousePosition.x - this.mainContainer.x,
-      mousePosition.y - this.mainContainer.y
-    )
+    this.getCellAt(x, y)
       .getMoreNeighbours(3, 3)
       .forEach((cell) => {
         cell.showDirectionVector(2, "orange");
@@ -1013,7 +970,7 @@ class ParticleSystem {
     //   fence.update(this.COUNTER);
     // }
     this.getAllObjectThatGottaUpdate().forEach((k) => {
-      k.update(this.COUNTER);
+      if (!k.REMOVED) k.update(this.COUNTER);
     });
     this.UI.update(this.COUNTER);
 
@@ -1024,8 +981,6 @@ class ParticleSystem {
     });
 
     this.updateFilters();
-
-    // this.drawInSmallerCanvas();
   }
 
   updateFilters() {
@@ -1036,28 +991,6 @@ class ParticleSystem {
       this.CRTfilter.time = this.COUNTER * 0.5;
       this.CRTfilter.seed = this.COUNTER * 0.5 * (Math.random() * 0.1 - 0.05);
     }
-  }
-  createSmallerCanvas() {
-    let SCALE = 4;
-    this.smallerCanvas = document.createElement("canvas");
-    this.smallerCanvas.id = "smallerCanvas";
-    if (this.canvas && this.smallerCanvas) {
-      this.smallerCanvas.width = this.canvas.width / SCALE;
-      this.smallerCanvas.height = this.canvas.height / SCALE;
-      document.body.appendChild(this.smallerCanvas);
-    }
-  }
-  drawInSmallerCanvas() {
-    var sourceImageData = this.canvas.toDataURL("image/png");
-    var destCanvasContext = this.smallerCanvas.getContext("2d");
-
-    destCanvasContext.drawImage(
-      this.canvas,
-      0,
-      0,
-      this.smallerCanvas.width,
-      this.smallerCanvas.height
-    );
   }
 
   // calculateAverageTemperature(subst) {
@@ -1089,39 +1022,6 @@ class ParticleSystem {
   //     // const overallEnergy = this.calculateOverallEnergy();
   //     // const averageTemperature = this.calculateAverageTemperature();
   //     // infoDiv.innerHTML = `Overall Energy: ${overallEnergy.toFixed(2)} | Average Temperature: ${averageTemperature.toFixed(2)}`;
-  //   }
-
-  //   startSimulation() {
-  //     // Start the simulation loop
-  //     const updateAndRender = () => {
-  //       this.update();
-  //       this.render();
-  //       requestAnimationFrame(updateAndRender);
-  //     };
-  //     updateAndRender();
-  //   }
-
-  //   init() {
-  //     //CREATES PARTICLES OF WOOD
-  //     for (let i = 0; i < 110; i++) {
-  //       for (let j = 0; j < 22; j++) {
-  //         let random1 = Math.random() * 0.1 + 0.95;
-  //         let random2 = Math.random() * 0.1 + 0.95;
-  //         const x = i * random1 + 300;
-  //         const y = 200 + j * random2;
-  //         this.addFan(x, y, "wood");
-  //       }
-  //     }
-  //     for (let p of this.people) {
-  //       for (let p2 of this.people) {
-  //         if (p == p2) continue;
-  //         const distance = Math.sqrt(
-  //           Math.pow(p.x - p2.x, 2) + Math.pow(p.y - p2.y, 2)
-  //         );
-  //         if (distance > 2) continue;
-  //         p.nearPeople.push(p2);
-  //       }
-  //     }
   //   }
 
   findOutIfThereIsAlreadyAConstraintWithTheseTwoBodies(b1, b2) {
@@ -1286,12 +1186,13 @@ class ParticleSystem {
 
     console.log("# NEW WIDTH AND HEIGHT", width, height);
 
-    this.worldWidth = width < window.innerWidth ? window.innerWidth : width;
-    this.worldHeight =
-      height < window.innerHeight ? window.innerHeight : height;
+    this.worldWidth = width;
+    this.worldHeight = height;
 
     this.bg.width = this.worldWidth;
     this.bg.height = this.worldHeight;
+
+    this.handleWindowResize();
 
     this.setMainContainerInStartingPosition();
 

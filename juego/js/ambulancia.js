@@ -15,7 +15,7 @@ class Ambulancia extends GenericObject {
     this.initStartingAttributes();
 
     this.weight = 2000;
-    this.speed = 10;
+    this.speed = 12;
 
     this.spriteSpeed = Math.floor(4 * this.speed);
 
@@ -69,7 +69,7 @@ class Ambulancia extends GenericObject {
 
     this.body.frictionAir = 0.01;
     this.body.restitution = 0.9;
-    this.body.frictionAir = 0.3;
+    this.body.frictionAir = 0.1;
     this.body.inertia = Infinity;
   }
   alignAmbulanceSprite() {
@@ -92,7 +92,7 @@ class Ambulancia extends GenericObject {
   // }
 
   lookAround() {
-    this.getFutureCell();
+    this.getFutureCell(30);
 
     if (this.oncePerSecond()) {
       this.checkIfImNotConsideredViolentAnyMore();
@@ -126,14 +126,19 @@ class Ambulancia extends GenericObject {
 
   hacerCosasEstadoIDLE() {
     //UN TOQ DE INERCIA DEL MOTOR
-    this.vel.x = (this.body.velocity.x + this.vel.x) * 0.4;
-    this.vel.y = (this.body.velocity.y + this.vel.y) * 0.4;
+    let inercia=0.01//0.2
+    this.vel.x = (this.body.velocity.x + this.vel.x) * inercia;
+    this.vel.y = (this.body.velocity.y + this.vel.y) * inercia;
 
     let vectores = [
       this.getVectorToRepelBlockedCells(),
-      this.getVectorAwayFromGroup(["boca", "river", "civil", "auto"], -1, {
+      this.getVectorAwayFromGroup(["boca", "river", "civil", "auto"], -1.2, {
         // onlyNearPeople: true,
         useFuturePositionNearPeople: true,
+      }),
+      this.getVectorAwayFromGroup(["boca", "river", "civil", "auto"], -1, {
+        onlyNearPeople: true,
+        // useFuturePositionNearPeople: true,
       }),
       this.cell.directionVector1,
     ];
@@ -144,6 +149,8 @@ class Ambulancia extends GenericObject {
         this.vel.y += vectores[i].y * 2;
       }
     }
+
+    this.vel.mult(3);
 
     this.vel.limit(this.speed);
 
@@ -160,6 +167,7 @@ class Ambulancia extends GenericObject {
   }
 
   update(COUNTER) {
+    if (this.REMOVED) return;
     this.COUNTER = COUNTER;
 
     // if (this.state != "dead") {
@@ -174,7 +182,6 @@ class Ambulancia extends GenericObject {
 
     this.updateMyPositionInGrid();
     this.updateMyPositionInGridForLargerObjects();
-
     this.lookAround();
     this.cambiarEstadoSegunCosas();
     this.updateMyStats(); //feel
