@@ -117,7 +117,7 @@
                                                   <Point x="1732.05" y="706.15"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="level4">
+                                        <DOMSymbolInstance libraryItemName="level4" selected="true">
                                              <matrix>
                                                   <Matrix tx="-1572.9" ty="-1266.35"/>
                                              </matrix>
@@ -125,7 +125,7 @@
                                                   <Point x="-0.05" y="-314.1"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="level5" selected="true">
+                                        <DOMSymbolInstance libraryItemName="level5">
                                              <matrix>
                                                   <Matrix tx="-1932.3" ty="2223.4"/>
                                              </matrix>

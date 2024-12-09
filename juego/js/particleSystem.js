@@ -999,7 +999,7 @@ class ParticleSystem {
     //   fence.update(this.COUNTER);
     // }
     this.getAllObjectThatGottaUpdate().forEach((k) => {
-      if (!k.REMOVED) k.update(this.COUNTER);
+      if (!k.REMOVED && !k.dead) k.update(this.COUNTER);
     });
     this.UI.update(this.COUNTER);
 

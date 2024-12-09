@@ -230,6 +230,7 @@ class Cell {
   highlight(color = "red") {
     if (!this.graphics) {
       this.graphics = new PIXI.Graphics();
+      this.graphics.name="cell_"+this.x+"_"+this.y
       this.particleSystem.mainContainer.addChild(this.graphics);
     }
 

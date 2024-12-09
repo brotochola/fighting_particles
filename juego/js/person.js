@@ -178,7 +178,9 @@ class Person extends GenericObject {
       part.pos.x - this.pos.x
     );
 
-    this.bleed(incomingAngleOfHit);
+    
+
+    if (howMuchHealthThisIsTakingFromMe > 0.5) this.bleed(incomingAngleOfHit);
   }
 
   bleed(angle) {
@@ -591,7 +593,7 @@ class Person extends GenericObject {
   }
 
   leaveBloodOnTheGroundAsIDie() {
-    this.particleSystem.bloodContainer.cacheAsBitmap=false
+    this.particleSystem.bloodContainer.cacheAsBitmap = false;
     this.container.removeChild(this.bloodSplat);
 
     this.particleSystem.bloodContainer.addChild(this.bloodSplat);
@@ -603,22 +605,29 @@ class Person extends GenericObject {
     this.bloodSplat.visible = true;
     this.bloodSplat.rotation = Math.random() * 10;
     this.bloodSplat.scale.set(0.5 + Math.random() * 0.3);
-    this.image.onComplete=()=>{
-     
-      this.putMyDeadBodyInTheBloodContainer()
-      this.particleSystem.bloodContainer.cacheAsBitmap=true
-    }
+    this.bloodSplat.zIndex=-2
+    this.image.onComplete = () => {
+      this.putMyDeadBodyInTheBloodContainer();
+      this.particleSystem.bloodContainer.cacheAsBitmap = true;
+    };
   }
 
   putMyDeadBodyInTheBloodContainer() {
     this.container.removeChild(this.image);
     this.particleSystem.bloodContainer.addChild(this.image);
-    this.image.x=this.pos.x
-    this.image.y=this.pos.y
-
-    this.container.removeChildren()
-    this.container.destroy()
-
+    this.image.x = this.pos.x;
+    this.image.y = this.pos.y;
+    
+    this.image.zIndex=-1
+    
+    this.container.removeChildren();
+    this.particleSystem.mainContainer.removeChild(this.container)
+    //LOS PONGO EN NULL ASI EL METODO REMOVE() NO LOS BORRA
+    this.image=null
+    delete this.animatedSprites.muerte
+    
+    this.remove()
+  
   }
 
   makeMeLookLeft() {
@@ -705,16 +714,6 @@ class Person extends GenericObject {
     return this.particleSystem.getCellAt(x, y);
   }
 
-  createCircleInPixi() {
-    // this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);
-
-    //CIRCLE
-    this.graphics = new PIXI.Graphics();
-    this.graphics.beginFill("0x220000");
-    this.graphics.drawCircle(0, 0, this.diameter);
-    this.graphics.endFill();
-    this.container.addChild(this.graphics);
-  }
   createShadow() {
     // this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);
 

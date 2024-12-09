@@ -25,7 +25,7 @@ class GenericObject {
     this.startingFrame = randomInt(6);
     this.maxLuckyNumbers = 25;
     this.myLuckyNumber = randomInt(this.maxLuckyNumbers - 1);
-    this.drawTargetLine = false; //true;
+    // this.drawTargetLine = false; //true;
 
     this.currentAnimation = null; //"parado";
     this.animatedSprites = {};
@@ -472,41 +472,40 @@ class GenericObject {
     return ret;
   }
 
-  drawLineBetweenMeAndTarget() {
-    // console.log("line", obj.pos.x, obj.pos.y);
-    if (this.targetLine) this.container.removeChild(this.targetLine);
+  // drawLineBetweenMeAndTarget() {
+  //   // console.log("line", obj.pos.x, obj.pos.y);
+  //   if (this.targetLine) this.container.removeChild(this.targetLine);
 
-    if (
-      !this.drawTargetLine ||
-      !this.target ||
-      this.dead ||
-      !this.target.pos ||
-      !(this.target.pos || {}).x
-    ) {
-      return;
-    }
+  //   if (
+  //     !this.drawTargetLine ||
+  //     !this.target ||
+  //     this.dead ||
+  //     !this.target.pos ||
+  //     !(this.target.pos || {}).x
+  //   ) {
+  //     return;
+  //   }
 
-    this.targetLine = new PIXI.Graphics();
-    this.container.addChild(this.targetLine);
+    
 
-    // Move it to the beginning of the line
-    // this.targetLine.position.set(0, 0);
+  //   // Move it to the beginning of the line
+  //   // this.targetLine.position.set(0, 0);
 
-    // Draw the line (endPoint should be relative to myGraph's position)
+  //   // Draw the line (endPoint should be relative to myGraph's position)
 
-    let relativePosition = {
-      x: this.target.pos.x - this.pos.x,
-      y: this.target.pos.y - this.pos.y,
-    };
+  //   let relativePosition = {
+  //     x: this.target.pos.x - this.pos.x,
+  //     y: this.target.pos.y - this.pos.y,
+  //   };
 
-    this.targetLine.alpha = 0.5;
+  //   this.targetLine.alpha = 0.5;
 
-    this.targetLine
-      .lineStyle(3, 0xffffff)
-      .lineTo(relativePosition.x, relativePosition.y);
+  //   this.targetLine
+  //     .lineStyle(3, 0xffffff)
+  //     .lineTo(relativePosition.x, relativePosition.y);
 
-    // this.targetLine.opa
-  }
+  //   // this.targetLine.opa
+  // }
 
   updateMyStats() {
     if (this.health <= 0) {
@@ -618,7 +617,7 @@ class GenericObject {
           .filter((k) => arrOfTeam.includes(k.team) && k != this && !k.dead);
       } else {
         entities = this.peopleICanSee.filter(
-          (k) => arrOfTeam.includes(k.team) && k != this
+          (k) => arrOfTeam.includes(k.team) && k != this && !k.dead
         );
       }
 
