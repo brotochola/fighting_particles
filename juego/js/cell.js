@@ -27,8 +27,9 @@ class Cell {
     if (vec) {
       vec.x += x;
       vec.y += y;
-      vec.x *= 0.5;
-      vec.y *= 0.5;
+      //NO SE PROMEDIAN DEL TODO, SE SUMAN UN TOQ
+      vec.x *= 0.75;
+      vec.y *= 0.75;
     }
   }
 

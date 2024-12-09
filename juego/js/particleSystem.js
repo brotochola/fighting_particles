@@ -116,8 +116,33 @@ class ParticleSystem {
     return 1000 / PIXI.ticker.shared.FPS;
   }
 
+  // ponerSangreDondeEstabaUnChaboncito(chaboncito) {
+  //   let splatDeSangre = new PIXI.AnimatedSprite(
+  //     this.particleSystem.res["splat_ss"].animations["splat"]
+  //   );
+
+  //   let angulo = Math.atan2(
+  //     this.player.container.y - chaboncito.sprite.y,
+  //     this.player.container.x - chaboncito.sprite.x
+  //   );
+  //   splatDeSangre.rotation = angulo;
+
+  //   splatDeSangre.x = chaboncito.sprite.x;
+  //   splatDeSangre.y = chaboncito.sprite.y;
+  //   this.app.stage.addChild(splatDeSangre);
+  //   splatDeSangre.play();
+
+  //   splatDeSangre.animationSpeed = 1;
+  //   splatDeSangre.loop = false;
+  //   splatDeSangre.onComplete = () => {};
+  //   // this.sprite.play();
+  //   // this.app.stage.addChild(this.sprite);
+
+  //   splatDeSangre.anchor.set(0.5, 0.5);
+  // }
   async cargarAssets() {
     const assetsToLoad = {
+      splat_ss: "img/splat_ss/splat.json",
       boca_ss: "img/boca_ss/boca.json",
       humo_ss: "img/humo_ss/humo.json",
       ambulancia_ss: "img/ambulancia_ss/ambulancia.json",
@@ -200,6 +225,8 @@ class ParticleSystem {
           this.mainContainer.name = "Main Container";
           this.pixiApp.stage.addChild(this.mainContainer);
 
+          this.createBloodContainer();
+
           // this.pixiApp.renderer.roundPixels;
           this.pixiApp.stage.sortableChildren = true;
           this.mainContainer.sortableChildren = true;
@@ -215,6 +242,13 @@ class ParticleSystem {
     ///
   }
 
+  createBloodContainer() {
+    this.bloodContainer = new PIXI.Container();
+    this.bloodContainer.name = "Blood Container";
+    this.mainContainer.addChild(this.bloodContainer);
+    this.bloodContainer.zIndex = 1;
+    this.bloodContainer.cullable = true;
+  }
   setMainContainerInStartingPosition() {
     //LA IDEA ES DEJAR CHANGUI A LA IZQ Y ARRIBA
     this.mainContainer.x = -this.sideMarginForLevels;
@@ -255,12 +289,7 @@ class ParticleSystem {
   getObjectsAt(x, y) {
     // let ret;
 
-    let cellX = Math.floor(x / this.CELL_SIZE);
-    let cellY = Math.floor(y / this.CELL_SIZE);
-    if (isNaN(cellY) || isNaN(cellX)) {
-      return console.warn("x or y wrong");
-    }
-    let newCell = (this.grid[cellY] || [])[cellX];
+    let newCell = this.getCellAt(x, y);
 
     return (newCell || {}).particlesHere || [];
   }
@@ -1221,6 +1250,7 @@ class ParticleSystem {
 
   restartLevel(listOfElements) {
     this.getAllObjects().forEach((k) => k.remove());
+    this.bloodContainer.removeChildren();
 
     this.grounds.forEach((k) => k.remove());
 

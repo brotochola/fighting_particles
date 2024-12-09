@@ -58,19 +58,43 @@ class Person extends GenericObject {
       this.weight
     );
 
-    // this.createParticleContainer()
     this.createDebugContainer();
 
     this.createAnimatedSprite(
       this.options.spritesheetName || this.team + "_ss",
       this instanceof Ambulancia ? "1" : "parado"
     );
+
+    this.createBloodSpriteSheet();
     this.alignSpriteMiddleBottom();
 
     // this.createSprite("idle_" + this.team);
 
     this.updateMyPositionInGrid();
     this.resetAnimationActions();
+  }
+
+  createBloodSpriteSheet() {
+    this.bloodSplat = new PIXI.AnimatedSprite(
+      this.particleSystem.res["splat_ss"].animations["splat"]
+    );
+    this.bloodSplat.stop();
+    this.bloodSplat.loop = false;
+    this.bloodSplat.visible = false;
+    // this.bloodSplat.s
+    this.bloodSplat.animationSpeed = 0.66;
+    this.bloodSplat.anchor.set(0.5, 0.5);
+    this.bloodSplat.scale.set(0.2 + Math.random() * 0.1);
+    this.bloodSplat.x = 0;
+    this.bloodSplat.y = -this.container.height / 4;
+    this.container.addChild(this.bloodSplat);
+    this.bloodSplat.name = "blood";
+    this.bloodSplat.alpha = 0.5 + Math.random() * 0.1;
+
+    this.bloodSplat.onComplete = () => {
+      this.bloodSplat.stop();
+      this.bloodSplat.visible = false;
+    };
   }
 
   resetAnimationActions() {
@@ -116,15 +140,6 @@ class Person extends GenericObject {
     this.debugText.text = txt;
   }
 
-  emitBlood(angle) {
-    // this.particleContainer.x = this.body.position.x;
-    // this.particleContainer.y = this.body.position.y;
-    // this.emitter.update(this.particleSystem.getDurationOfOneFrame() * 100000);
-    // this.emitter.initBehaviors[3].min = angle;
-    // this.emitter.initBehaviors[3].max = angle;
-    // this.emitter.emit = true;
-  }
-
   fireBullet() {
     if (!this.target || this.dead) return;
 
@@ -155,9 +170,21 @@ class Person extends GenericObject {
       howMuchHealthThisIsTakingFromMe *
       this.particleSystem.MULTIPLIERS.FEAR_REDUCER; //ANGER GOES UP ACCORDING TO courage. MORE courage, YOU GET ANGRIER
 
-    // let incomingAngleOfHit = Math.atan2(part.pos.y, part.pos.x);
     this.frenar();
     this.setAction("recibir_golpe");
+
+    let incomingAngleOfHit = Math.atan2(
+      part.pos.y - this.pos.y,
+      part.pos.x - this.pos.x
+    );
+
+    this.bleed(incomingAngleOfHit);
+  }
+
+  bleed(angle) {
+    this.bloodSplat.rotation = angle;
+    this.bloodSplat.gotoAndPlay(0);
+    this.bloodSplat.visible = true;
   }
 
   frenar() {
@@ -194,7 +221,8 @@ class Person extends GenericObject {
 
     this.pos.x = this.body.position.x;
     this.pos.y = this.body.position.y;
-    this.container.zIndex = Math.floor(this.pos.y - (this.z || 0));
+    this.container.zIndex =
+      Math.floor(this.pos.y - (this.z || 0)) - (this.dead ? 100 : 0);
 
     this.updateMyPositionInGrid();
 
@@ -541,7 +569,6 @@ class Person extends GenericObject {
     if (this.dead) return;
 
     this.setState("muerto");
-    this.dead = true;
 
     this.removeMatterBodyAfterIDied();
     this.removeMeFromArray();
@@ -551,9 +578,47 @@ class Person extends GenericObject {
     this.changeAnimation("muerte", true, true);
 
     this.health = 0;
+    this.cell.removeMe(this);
+
+    this.leaveBloodOnTheGroundAsIDie();
+
+    lastParticle.container.cullable = true;
+
+    this.dead = true;
 
     // console.log(this.name, " died");
     // this.createSprite("die_1");
+  }
+
+  leaveBloodOnTheGroundAsIDie() {
+    this.particleSystem.bloodContainer.cacheAsBitmap=false
+    this.container.removeChild(this.bloodSplat);
+
+    this.particleSystem.bloodContainer.addChild(this.bloodSplat);
+
+    this.bloodSplat.x = this.pos.x;
+    this.bloodSplat.y = this.pos.y;
+    this.bloodSplat.onComplete = null;
+    this.bloodSplat.gotoAndPlay(0);
+    this.bloodSplat.visible = true;
+    this.bloodSplat.rotation = Math.random() * 10;
+    this.bloodSplat.scale.set(0.5 + Math.random() * 0.3);
+    this.image.onComplete=()=>{
+     
+      this.putMyDeadBodyInTheBloodContainer()
+      this.particleSystem.bloodContainer.cacheAsBitmap=true
+    }
+  }
+
+  putMyDeadBodyInTheBloodContainer() {
+    this.container.removeChild(this.image);
+    this.particleSystem.bloodContainer.addChild(this.image);
+    this.image.x=this.pos.x
+    this.image.y=this.pos.y
+
+    this.container.removeChildren()
+    this.container.destroy()
+
   }
 
   makeMeLookLeft() {

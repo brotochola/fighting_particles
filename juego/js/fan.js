@@ -127,9 +127,7 @@ class Fan extends Person {
   }
 
   cambiarEstadoSegunCosas() {
-    if (this.health <= 0) {
-      this.die();
-    } else if (this.health < 0.1) {
+    if (this.health < 0.1) {
       this.setState(this.states.HUYENDO);
     } else if (this.health > 0.1 && this.health < 0.5) {
       if (this.fear > 0.9) {

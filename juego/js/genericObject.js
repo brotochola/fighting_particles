@@ -509,6 +509,10 @@ class GenericObject {
   }
 
   updateMyStats() {
+    if (this.health <= 0) {
+      this.die();
+      return;
+    }
     if (!this.isItMyFrame()) return;
     // miedo -= prediccion *k //mis amigos me sacan el miedo
 
@@ -611,7 +615,7 @@ class GenericObject {
       if ((options || {}).onlyNearPeople) {
         entities = this.nearPeople
           .map((k) => k.part)
-          .filter((k) => arrOfTeam.includes(k.team) && k != this);
+          .filter((k) => arrOfTeam.includes(k.team) && k != this && !k.dead);
       } else {
         entities = this.peopleICanSee.filter(
           (k) => arrOfTeam.includes(k.team) && k != this
@@ -632,8 +636,6 @@ class GenericObject {
 
     let avgX = getAvg(entities.map((k) => k.pos.x));
     let avgY = getAvg(entities.map((k) => k.pos.y));
-
-    
 
     let vecAway = p5.Vector.sub(new p5.Vector(avgX, avgY), this.pos);
 

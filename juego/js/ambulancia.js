@@ -59,9 +59,14 @@ class Ambulancia extends GenericObject {
     this.polisApaciguandoCerca = [];
     this.angulo = 0;
 
-    this.angularFriction = 0.02;
+    this.inercia = 0.01;
 
-    //OPT DEBERIA TENER VALORES MINIMOS Y MAXIMOS PARA GENERAR FANS DE DIFERENTES TIPOS
+    this.angularFriction = 0.02;
+    this.maxNumberForStartingFrames = 4;
+    this.startingFrame = randomInt(this.maxNumberForStartingFrames);
+  }
+  isItMyFrame() {
+    return this.COUNTER % this.maxNumberForStartingFrames == this.startingFrame;
   }
 
   createBodyParaLaAmbulancia() {
@@ -92,9 +97,14 @@ class Ambulancia extends GenericObject {
   // }
 
   lookAround() {
-    this.getFutureCell(30);
+    if (this.isItMyFrame()) {
+      this.getFutureCell(30);
+      // this.
+    }
 
     if (this.oncePerSecond()) {
+      this.getPolisApaciguando();
+
       this.checkIfImNotConsideredViolentAnyMore();
       this.seePeople();
       this.discernirAmigosYEnemigosYEvaluarLaSituacion();
@@ -126,9 +136,8 @@ class Ambulancia extends GenericObject {
 
   hacerCosasEstadoIDLE() {
     //UN TOQ DE INERCIA DEL MOTOR
-    let inercia=0.01//0.2
-    this.vel.x = (this.body.velocity.x + this.vel.x) * inercia;
-    this.vel.y = (this.body.velocity.y + this.vel.y) * inercia;
+    this.vel.x = (this.body.velocity.x + this.vel.x) * this.inercia;
+    this.vel.y = (this.body.velocity.y + this.vel.y) * this.inercia;
 
     let vectores = [
       this.getVectorToRepelBlockedCells(),
@@ -136,10 +145,7 @@ class Ambulancia extends GenericObject {
         // onlyNearPeople: true,
         useFuturePositionNearPeople: true,
       }),
-      this.getVectorAwayFromGroup(["boca", "river", "civil", "auto"], -1, {
-        onlyNearPeople: true,
-        // useFuturePositionNearPeople: true,
-      }),
+
       this.cell.directionVector1,
     ];
 
@@ -150,7 +156,7 @@ class Ambulancia extends GenericObject {
       }
     }
 
-    this.vel.mult(3);
+    this.vel.mult(2);
 
     this.vel.limit(this.speed);
 
@@ -162,8 +168,6 @@ class Ambulancia extends GenericObject {
 
     this.isThereACopInMyWay =
       this.checkIfTheresSomeoneInTheWay("poli").length > 0;
-
-    this.getPolisApaciguando();
   }
 
   update(COUNTER) {
