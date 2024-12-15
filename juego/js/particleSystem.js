@@ -57,7 +57,7 @@ class ParticleSystem {
 
     this.buttonPanelHeight = 100;
 
-    this.viewPortHeight = window.innerHeight - this.buttonPanelHeight;
+    this.viewportHeight = window.innerHeight - this.buttonPanelHeight;
     this.viewportWidth = window.innerWidth;
 
     this.Matter = Matter;
@@ -101,6 +101,7 @@ class ParticleSystem {
       this.createUI();
       this.addFiltersToStage();
       this.disableFilters();
+      this.addShaders();
     });
   }
   createUI() {
@@ -198,10 +199,12 @@ class ParticleSystem {
 
     this.pixiApp
       .init({
+        hello: true,
+        preference: "webgl",
         // autoresize: true,
         // resizeTo: window,
         width: this.viewportWidth,
-        height: this.viewPortHeight,
+        height: this.viewportHeight,
         autoDensity: true, // Escala automáticamente el canvas para que se vea bien
         backgroundAlpha: 0,
         transparent: true,
@@ -226,6 +229,7 @@ class ParticleSystem {
           this.pixiApp.stage.addChild(this.mainContainer);
 
           this.createBloodContainer();
+          this.createShadowsContainer();
 
           // this.pixiApp.renderer.roundPixels;
           this.pixiApp.stage.sortableChildren = true;
@@ -242,11 +246,17 @@ class ParticleSystem {
     ///
   }
 
+  createShadowsContainer() {
+    this.shadowsContainer = new PIXI.Container();
+    this.shadowsContainer.name = "Shadows Container";
+    this.mainContainer.addChild(this.shadowsContainer);
+    this.shadowsContainer.zIndex = 1;
+  }
   createBloodContainer() {
     this.bloodContainer = new PIXI.Container();
     this.bloodContainer.name = "Blood Container";
     this.mainContainer.addChild(this.bloodContainer);
-    this.bloodContainer.zIndex = 1;
+    this.bloodContainer.zIndex = 2;
     this.bloodContainer.cullable = true;
   }
   setMainContainerInStartingPosition() {
@@ -585,7 +595,7 @@ class ParticleSystem {
     }
 
     if (
-      // this.screenY > this.viewPortHeight - this.buttonPanelHeight - margin ||
+      // this.screenY > this.viewportHeight - this.buttonPanelHeight - margin ||
       window.keyIsDown.includes(83)
     ) {
       this.mainContainer.y -= move;
@@ -604,7 +614,7 @@ class ParticleSystem {
     if (this.mainContainer.x < rightEndOfScreen)
       this.mainContainer.x = rightEndOfScreen;
 
-    let bottomEnd = -this.worldHeight + this.viewPortHeight; //+this.buttonPanelHeight;
+    let bottomEnd = -this.worldHeight + this.viewportHeight; //+this.buttonPanelHeight;
     if (this.mainContainer.y < bottomEnd) this.mainContainer.y = bottomEnd;
 
     // this.movePerspectiveCSSBackground();
@@ -615,7 +625,7 @@ class ParticleSystem {
   }
 
   getRatioOfBGY() {
-    return -this.mainContainer.y / (this.worldHeight - this.viewPortHeight);
+    return -this.mainContainer.y / (this.worldHeight - this.viewportHeight);
   }
 
   // movePerspectiveCSSBackground() {
@@ -694,15 +704,15 @@ class ParticleSystem {
 
   handleWindowResize(e) {
     // this.filters=
-    this.viewPortHeight = window.innerHeight - this.buttonPanelHeight;
+    this.viewportHeight = window.innerHeight - this.buttonPanelHeight;
     this.viewportWidth = window.innerWidth;
 
     this.canvas.width = this.viewportWidth;
-    this.canvas.height = this.viewPortHeight;
+    this.canvas.height = this.viewportHeight;
     this.matterJSrender.canvas.width = this.worldWidth;
     this.matterJSrender.canvas.height = this.worldHeight;
 
-    this.pixiApp.renderer.resize(this.viewportWidth, this.viewPortHeight);
+    this.pixiApp.renderer.resize(this.viewportWidth, this.viewportHeight);
 
     // this.pixiApp.renderer.width=this.viewportWidth;
     // this.pixiApp.renderer.height=this.viewportHeight;
@@ -1020,6 +1030,29 @@ class ParticleSystem {
       this.CRTfilter.time = this.COUNTER * 0.5;
       this.CRTfilter.seed = this.COUNTER * 0.5 * (Math.random() * 0.1 - 0.05);
     }
+
+    if (
+      this.shadowShader &&
+      this.shadowShader.resources.uniforms instanceof Object
+    ) {
+      this.shadowShader.resources.uniforms.uniforms.uTime +=
+        0.04 * this.pixiApp.ticker.deltaTime;
+      this.shadowShader.resources.uniforms.uniforms.uPointPosition = [
+        this.mouseX || 500,
+        this.mouseY || 600,
+      ];
+
+      // this.shadowShader.resources.people.uniforms.uPositions = makeArraysLength(
+      //   particleSystem.getPeopleAsPixiPoints(),
+      //   100
+      // );
+    }
+  }
+
+  getPeopleAsPixiPoints() {
+    return this.people.map((k) => {
+      return new PIXI.Point(k.pos.x, k.pos.y);
+    });
   }
 
   // calculateAverageTemperature(subst) {
@@ -1288,6 +1321,58 @@ class ParticleSystem {
       this.canvas.style.display = "block";
       document.querySelector("canvas:not(#pixiCanvas)").style.display = "none";
     }
+  }
+  async addShaders() {
+    this.vertex = await (await fetch("shaders/vertex.glsl")).text();
+
+    //FRAGMENT SHADER:
+
+    this.fragment = await (await fetch("shaders/shadow.glsl")).text();
+
+    this.shadowShader = new PIXI.Filter({
+      glProgram: new PIXI.GlProgram({
+        fragment: this.fragment,
+        vertex: this.vertex,
+      }),
+      resources: {
+        uniforms: {
+          uTime: { value: 0.0, type: "f32" },
+        },
+      },
+    });
+
+    // // Aplicar el filtro al sprite
+    this.shadowsContainer.filters = [this.shadowShader];
+
+    // this.shadowShader = PIXI.Shader.from({
+    //   fragment: this.fragment,
+    //   vertex: this.vertex,
+    //   uniforms: {
+    //     uPointPosition: [
+    //       this.pixiApp.screen.width / 2,
+    //       this.pixiApp.screen.height / 2,
+    //     ],
+    //     uCanvasSize: [this.viewportWidth, this.viewportHeight],
+    //   },
+    // });
+
+    // const geometry = new PIXI.Geometry()
+    // .addAttribute(
+    //     'aVertexPosition', // Attribute name
+    //     [-1, -1, 1, -1, 1, 1, -1, 1], // Vertex positions (x, y)
+    //     2 // Size of each vertex (2 = x, y)
+    // )
+    // .addAttribute(
+    //     'aTextureCoord', // Texture coordinates
+    //     [0, 1, 1, 1, 1, 0, 0, 0], // UV mapping for the texture
+    //     2 // Size of each UV coordinate (2 = u, v)
+    // )
+    // .addIndex([0, 1, 2, 0, 2, 3]); // Define triangle indices for rendering
+
+    // const mesh = new PIXI.Mesh({ geometry, shader: this.shadowShader });
+    // this.mesh=mesh
+    // this.mainContainer.addChild(mesh);
+    // mesh.zIndex = 1;
   }
 
   addFiltersToStage() {

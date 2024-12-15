@@ -202,7 +202,7 @@ class GenericObject {
   }
 
   getRatioOfY() {
-    return this.getMyAbsolutePosition().y / this.particleSystem.viewPortHeight;
+    return this.getMyAbsolutePosition().y / this.particleSystem.viewportHeight;
   }
   doNotShowIfOutOfScreen() {
     if (

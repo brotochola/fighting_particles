@@ -72,6 +72,8 @@ class Person extends GenericObject {
 
     this.updateMyPositionInGrid();
     this.resetAnimationActions();
+
+    this.createShadow();
   }
 
   createBloodSpriteSheet() {
@@ -178,8 +180,6 @@ class Person extends GenericObject {
       part.pos.x - this.pos.x
     );
 
-    
-
     if (howMuchHealthThisIsTakingFromMe > 0.5) this.bleed(incomingAngleOfHit);
   }
 
@@ -243,9 +243,17 @@ class Person extends GenericObject {
     // this.emitBlood();
     // if (this.emitter) this.emitter.emit = false;
 
+
+    this.updateShadowPosition()
+
     this.render();
 
     // this.saveLog();
+  }
+
+  updateShadowPosition(){
+    this.shadow.x=this.pos.x
+    this.shadow.y=this.pos.y
   }
 
   removeMeFromArray() {
@@ -605,7 +613,7 @@ class Person extends GenericObject {
     this.bloodSplat.visible = true;
     this.bloodSplat.rotation = Math.random() * 10;
     this.bloodSplat.scale.set(0.5 + Math.random() * 0.3);
-    this.bloodSplat.zIndex=-2
+    this.bloodSplat.zIndex = -2;
     this.image.onComplete = () => {
       this.putMyDeadBodyInTheBloodContainer();
       this.particleSystem.bloodContainer.cacheAsBitmap = true;
@@ -617,17 +625,16 @@ class Person extends GenericObject {
     this.particleSystem.bloodContainer.addChild(this.image);
     this.image.x = this.pos.x;
     this.image.y = this.pos.y;
-    
-    this.image.zIndex=-1
-    
+
+    this.image.zIndex = -1;
+
     this.container.removeChildren();
-    this.particleSystem.mainContainer.removeChild(this.container)
+    this.particleSystem.mainContainer.removeChild(this.container);
     //LOS PONGO EN NULL ASI EL METODO REMOVE() NO LOS BORRA
-    this.image=null
-    delete this.animatedSprites.muerte
-    
-    this.remove()
-  
+    this.image = null;
+    delete this.animatedSprites.muerte;
+
+    this.remove();
   }
 
   makeMeLookLeft() {
@@ -718,13 +725,16 @@ class Person extends GenericObject {
     // this.image = new PIXI.Sprite(this.particleSystem.res["walk"].texture);
 
     //CIRCLE
-    this.graphics = new PIXI.Graphics();
-    this.graphics.beginFill("0x000000");
-    this.graphics.alpha = 0.16;
-    this.graphics.drawEllipse(0, 0, this.diameter * 0.82, this.diameter / 4);
-    this.graphics.endFill();
-    this.graphics.position.x = 10;
-    this.graphics.position.y = 40;
-    this.container.addChild(this.graphics);
+
+    let width=this.diameter
+    this.shadow = new PIXI.Graphics();
+    this.shadow.beginFill("0x000000");
+    // this.graphics.alpha = 0.16;
+    this.shadow.drawCircle(0, 0, width);
+    this.shadow.endFill();
+    this.shadow.pivot.set(width/2,width/2);
+    // this.graphics.position.y = 40;
+    // this.container.addChild(this.graphics);
+    this.particleSystem.shadowsContainer.addChild(this.shadow);
   }
 }

@@ -42,6 +42,7 @@ class Humo extends GenericObject {
   }
 
   render() {
+    if (!this.container || this.container.destroyed) return;
     this.container.y = this.pos.y; // this.calculateContainersY();
     this.container.x = this.pos.x; //this.calculateContainersX();
 

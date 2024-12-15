@@ -410,3 +410,17 @@ function getWidthAndHeightFromListOfElements(points) {
   // debugger
   return { width, height };
 }
+
+function makeArraysLength(arr, newLength) {
+  let newArr = JSON.parse(JSON.stringify(arr));
+  if (arr.length > newLength) {
+    newArr.splice(newLength, 9999);
+    return newArr;
+  } else {
+    for (let i = 0; i < newLength - arr.length; i++) {
+      newArr.push(arr[0]);
+    }
+
+    return newArr;
+  }
+}
