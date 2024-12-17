@@ -73,7 +73,7 @@ class Person extends GenericObject {
     this.updateMyPositionInGrid();
     this.resetAnimationActions();
 
-    // this.createShadow();
+    this.createShadow();
   }
 
   createBloodSpriteSheet() {
@@ -243,18 +243,72 @@ class Person extends GenericObject {
     // this.emitBlood();
     // if (this.emitter) this.emitter.emit = false;
 
-
-    this.updateShadowPosition()
+    this.updateShadowPosition();
 
     this.render();
 
     // this.saveLog();
   }
 
-  updateShadowPosition(){
-    if(!this.shadow) return
-    this.shadow.x=this.pos.x
-    this.shadow.y=this.pos.y
+  updateShadowPosition() {
+    if (!this.shadow) return;
+    //POS
+    this.shadow.x = this.pos.x;
+    this.shadow.y = this.pos.y;
+
+    // if (!this.isItMyFrame()) return;
+
+    const carsWithLight = this.peopleICanSee
+      .filter((k) => k instanceof Ambulancia)
+      .map((k) => {
+        return { k, dist: cheaperDistObj(this, k) };
+      });
+
+    const blockedCellsICanSee = this.getBlockedCellsICanSee().map((k) => {
+      return { k, dist: cheaperDistObj(this, k) };
+    });
+
+    const arr = [...carsWithLight, ...blockedCellsICanSee];
+
+    if (!arr.length) {
+      this.shadow.alpha = 0;
+      return;
+    }
+
+    arr.sort((a, b) => (a.dist > b.dist ? 1 : -1));
+
+    const maxDistanceForShadow = 300;
+
+    // const avg = new p5.Vector();
+    // for (let light of carsWithLight) {
+    //   avg.add(light.k.pos);
+    // }
+
+    // for (let cell of blockedCellsICanSee) {
+    //   avg.x += cell.k.centerX;
+    //   avg.y += cell.k.centerY;
+    // }
+
+    // avg.div(carsWithLight.length + blockedCellsICanSee.length);
+
+
+
+    // const distToAvg = cheaperDist(avg.x, avg.y, this.pos.x, this.pos.y);
+
+    //ANGLE
+    let vec = this.pos.copy().sub(arr[0].k.pos);
+    let angle = Math.atan2(vec.y, vec.x);
+    this.shadowAngle = angle + Math.PI * 1.5;
+    this.shadow.rotation = this.shadowAngle;
+    
+    //ALPHA
+    this.shadow.alpha = 1 - arr[0].dist / maxDistanceForShadow;
+    if (this.shadow.alpha < 0) this.shadow.alpha = 0;
+    if (this.shadow.alpha > 1) this.shadow.alpha = 1;
+
+    //SCALE
+    this.shadow.scale.y = 1.5 - this.shadow.alpha;
+    this.shadow.scale.x = 1.25 - this.shadow.alpha;
   }
 
   removeMeFromArray() {
@@ -727,14 +781,14 @@ class Person extends GenericObject {
 
     //CIRCLE
 
-    let width=this.diameter
+    let width = this.diameter * 1.5;
     this.shadow = new PIXI.Graphics();
-    this.shadow.beginFill("0x000000");
-    // this.graphics.alpha = 0.16;
-    this.shadow.drawCircle(0, 0, width);
+    this.shadow.beginFill(0x000000);
+    this.shadow.alpha = 0.26;
+    this.shadow.drawEllipse(0, 0, width, width * 2);
     this.shadow.endFill();
-    this.shadow.pivot.set(width/2,width/2);
-    // this.graphics.position.y = 40;
+    this.shadow.pivot.set(0, -width * 0.95);
+    // this.shadow.position.y = 40;
     // this.container.addChild(this.graphics);
     this.particleSystem.shadowsContainer.addChild(this.shadow);
   }

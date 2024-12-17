@@ -60,6 +60,12 @@ function cheaperDist(x1, y1, x2, y2) {
   return Math.abs(a) + Math.abs(b);
 }
 
+function cheaperDistObj(obj1,obj2) {
+  var a = obj1.pos.x - obj2.pos.x;
+  var b = obj1.pos.y - obj2.pos.y;
+  return Math.abs(a) + Math.abs(b);
+}
+
 function getRandomBrownishColor(minA, maxA) {
   let r = Math.floor(100 + Math.random() * 45);
   let g = Math.floor(20 + Math.random() * 40);
@@ -423,4 +429,28 @@ function makeArraysLength(arr, newLength) {
 
     return newArr;
   }
+}
+
+function createDataTexture(data) {
+  const width = data.length / 2; // Cantidad de píxeles (x, y)
+  const height = 1;
+
+  const textureData = new Uint8ClampedArray(width * height * 4);
+
+  for (let i = 0; i < width; i++) {
+      textureData[i * 4] = data[i * 2];      // R: x
+      textureData[i * 4 + 1] = data[i * 2 + 1];  // G: y
+      textureData[i * 4 + 2] = 0;            // B: vacío
+      textureData[i * 4 + 3] = 255;          // A: opacidad
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d");
+  const imageData = new ImageData(textureData, width, height);
+  ctx.putImageData(imageData, 0, 0);
+
+  return PIXI.Texture.from(canvas);
 }

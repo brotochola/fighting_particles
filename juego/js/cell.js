@@ -3,7 +3,7 @@ class Cell {
     this.particleSystem = particleSystem;
     this.grid = grid;
     this.cellWidth = cellWidth;
-    this.pos = { x: x * cellWidth, y: y * cellWidth };
+    this.pos = new p5.Vector(x * cellWidth, y * cellWidth);
     this.x = x;
     this.y = y;
     this.centerX = this.x * this.cellWidth + this.cellWidth * 0.5;
@@ -230,7 +230,7 @@ class Cell {
   highlight(color = "red") {
     if (!this.graphics) {
       this.graphics = new PIXI.Graphics();
-      this.graphics.name="cell_"+this.x+"_"+this.y
+      this.graphics.name = "cell_" + this.x + "_" + this.y;
       this.particleSystem.mainContainer.addChild(this.graphics);
     }
 

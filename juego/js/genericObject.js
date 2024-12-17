@@ -104,6 +104,13 @@ class GenericObject {
     // console.log(performance.now() - time, "XXXXXXX");
   }
 
+  getBlockedCellsICanSee() {
+    if(!this.cell) return []
+    let offset = Math.floor(this.sightDistance / this.particleSystem.CELL_SIZE);
+
+    return this.cell.getMoreNeighbours(offset, offset).filter(k=>k.blocked)
+  }
+
   whichSpriteAmIShowing() {
     // return this.currentAnimation;
     // return (
@@ -405,6 +412,12 @@ class GenericObject {
     // return ret;
   }
 
+  removeShadow() {
+    if (this.shadow) {
+      this.shadow.destroy();
+    }
+  }
+
   remove() {
     // console.log("removing", this);
     this.REMOVED = true;
@@ -421,6 +434,10 @@ class GenericObject {
       this.particleSystem.mainContainer.removeChild(this.graphics);
     }
     this.particleSystem.mainContainer.removeChild(this.container);
+
+    if (this.shadow) {
+      this.shadow.parent.removeChild(this.shadow);
+    }
 
     if (this.body) {
       this.world.remove(this.engine.world, this.body);
@@ -485,8 +502,6 @@ class GenericObject {
   //   ) {
   //     return;
   //   }
-
-    
 
   //   // Move it to the beginning of the line
   //   // this.targetLine.position.set(0, 0);

@@ -103,7 +103,7 @@ class ParticleSystem {
       this.createUI();
       this.addFiltersToStage();
       this.disableFilters();
-      this.addShaders();
+      // this.addShaders();
     });
   }
   createUI() {
@@ -202,6 +202,7 @@ class ParticleSystem {
     this.pixiApp
       .init({
         hello: true,
+
         preference: "webgl",
         // autoresize: true,
         // resizeTo: window,
@@ -231,7 +232,7 @@ class ParticleSystem {
           this.pixiApp.stage.addChild(this.mainContainer);
 
           this.createBloodContainer();
-          // this.createShadowsContainer();
+          this.createShadowsContainer();
 
           // this.pixiApp.renderer.roundPixels;
           this.pixiApp.stage.sortableChildren = true;
@@ -248,12 +249,14 @@ class ParticleSystem {
     ///
   }
 
-  // createShadowsContainer() {
-  //   this.shadowsContainer = new PIXI.Container();
-  //   this.shadowsContainer.name = "Shadows Container";
-  //   this.mainContainer.addChild(this.shadowsContainer);
-  //   this.shadowsContainer.zIndex = 1;
-  // }
+  createShadowsContainer() {
+    this.shadowsContainer = new PIXI.Container();
+    this.shadowsContainer.name = "Shadows Container";
+    this.mainContainer.addChild(this.shadowsContainer);
+    this.shadowsContainer.zIndex = 1;
+    this.shadowsContainer.filters = [new PIXI.filters.KawaseBlurFilter(3)];
+    
+  }
   createBloodContainer() {
     this.bloodContainer = new PIXI.Container();
     this.bloodContainer.name = "Blood Container";
@@ -1047,10 +1050,10 @@ class ParticleSystem {
         const bounds =
           this.people[this.people.length - 1].container.getBounds();
         this.shadowShader.resources.uniforms.uniforms.puntoX =
-          bounds.minX / this.viewportWidth;
+          ((bounds.minX + bounds.maxX) * 0.5) / this.viewportWidth;
 
         this.shadowShader.resources.uniforms.uniforms.puntoY =
-          bounds.minY / this.viewportHeight;
+          bounds.maxY / this.viewportHeight;
       } else {
         this.shadowShader.resources.uniforms.uniforms.puntoX = 0.5;
 
@@ -1064,7 +1067,7 @@ class ParticleSystem {
       this.shadowShader.resources.uniforms.uniforms.offsetY =
         this.mainContainer.y;
       this.shadowShader.resources.uniforms.uniforms.arrOfPos = new Float32Array(
-        100
+        [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
       );
 
       // this.shadowShader.resources.people.uniforms.uPositions = makeArraysLength(
@@ -1306,9 +1309,14 @@ class ParticleSystem {
     }
   }
 
+  removeAllCorpsesBloodAndShadows() {
+    this.shadowsContainer.removeChildren();
+    this.bloodContainer.removeChildren();
+  }
+
   restartLevel(listOfElements) {
     this.getAllObjects().forEach((k) => k.remove());
-    this.bloodContainer.removeChildren();
+    this.removeAllCorpsesBloodAndShadows();
 
     this.grounds.forEach((k) => k.remove());
 
@@ -1372,10 +1380,9 @@ class ParticleSystem {
           uTime: { value: 0.0, type: "f32" },
           mousePosX: { value: 0.0, type: "f32" },
           mousePosY: { value: 0.0, type: "f32" },
-          arrOfPos: {
-            value: Array.from({ length: 100 }, () => Math.random()),
-            // value: new Float32Array(100),
-          },
+          arrOfPos: createDataTexture([
+            0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
+          ]),
         },
       },
     });
