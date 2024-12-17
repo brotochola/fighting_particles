@@ -73,7 +73,7 @@ class Person extends GenericObject {
     this.updateMyPositionInGrid();
     this.resetAnimationActions();
 
-    this.createShadow();
+    // this.createShadow();
   }
 
   createBloodSpriteSheet() {
@@ -252,6 +252,7 @@ class Person extends GenericObject {
   }
 
   updateShadowPosition(){
+    if(!this.shadow) return
     this.shadow.x=this.pos.x
     this.shadow.y=this.pos.y
   }

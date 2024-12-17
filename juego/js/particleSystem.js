@@ -72,6 +72,8 @@ class ParticleSystem {
 
     this.sideMarginForLevels = 500;
 
+    // this.mousePosUniform = new PIXI.Point(0.1, 0.1);
+
     // this.canvas = document.getElementById(canvasId);
     // this.context = this.canvas.getContext("2d");
     // this.canvas.width = width;
@@ -229,7 +231,7 @@ class ParticleSystem {
           this.pixiApp.stage.addChild(this.mainContainer);
 
           this.createBloodContainer();
-          this.createShadowsContainer();
+          // this.createShadowsContainer();
 
           // this.pixiApp.renderer.roundPixels;
           this.pixiApp.stage.sortableChildren = true;
@@ -246,12 +248,12 @@ class ParticleSystem {
     ///
   }
 
-  createShadowsContainer() {
-    this.shadowsContainer = new PIXI.Container();
-    this.shadowsContainer.name = "Shadows Container";
-    this.mainContainer.addChild(this.shadowsContainer);
-    this.shadowsContainer.zIndex = 1;
-  }
+  // createShadowsContainer() {
+  //   this.shadowsContainer = new PIXI.Container();
+  //   this.shadowsContainer.name = "Shadows Container";
+  //   this.mainContainer.addChild(this.shadowsContainer);
+  //   this.shadowsContainer.zIndex = 1;
+  // }
   createBloodContainer() {
     this.bloodContainer = new PIXI.Container();
     this.bloodContainer.name = "Blood Container";
@@ -1037,10 +1039,33 @@ class ParticleSystem {
     ) {
       this.shadowShader.resources.uniforms.uniforms.uTime +=
         0.04 * this.pixiApp.ticker.deltaTime;
-      this.shadowShader.resources.uniforms.uniforms.uPointPosition = [
-        this.mouseX || 500,
-        this.mouseY || 600,
-      ];
+
+      // this.mousePosUniform.x = this.mouseX;
+      // this.mousePosUniform.y = this.mouseY;
+
+      if (this.people.length) {
+        const bounds =
+          this.people[this.people.length - 1].container.getBounds();
+        this.shadowShader.resources.uniforms.uniforms.puntoX =
+          bounds.minX / this.viewportWidth;
+
+        this.shadowShader.resources.uniforms.uniforms.puntoY =
+          bounds.minY / this.viewportHeight;
+      } else {
+        this.shadowShader.resources.uniforms.uniforms.puntoX = 0.5;
+
+        this.shadowShader.resources.uniforms.uniforms.puntoY = 0.5;
+      }
+
+      this.shadowShader.resources.uniforms.uniforms.mousePosX = this.mouseX;
+      this.shadowShader.resources.uniforms.uniforms.mousePosY = this.mouseY;
+      this.shadowShader.resources.uniforms.uniforms.offsetX =
+        this.mainContainer.x;
+      this.shadowShader.resources.uniforms.uniforms.offsetY =
+        this.mainContainer.y;
+      this.shadowShader.resources.uniforms.uniforms.arrOfPos = new Float32Array(
+        100
+      );
 
       // this.shadowShader.resources.people.uniforms.uPositions = makeArraysLength(
       //   particleSystem.getPeopleAsPixiPoints(),
@@ -1336,13 +1361,27 @@ class ParticleSystem {
       }),
       resources: {
         uniforms: {
+          width: { value: this.mainContainer.width, type: "f32" },
+          height: { value: this.mainContainer.height, type: "f32" },
+
+          puntoX: { value: 0.0, type: "f32" },
+          puntoY: { value: 0.0, type: "f32" },
+
+          offsetX: { value: 0.0, type: "f32" },
+          offsetY: { value: 0.0, type: "f32" },
           uTime: { value: 0.0, type: "f32" },
+          mousePosX: { value: 0.0, type: "f32" },
+          mousePosY: { value: 0.0, type: "f32" },
+          arrOfPos: {
+            value: Array.from({ length: 100 }, () => Math.random()),
+            // value: new Float32Array(100),
+          },
         },
       },
     });
 
     // // Aplicar el filtro al sprite
-    this.shadowsContainer.filters = [this.shadowShader];
+    this.bg.filters = [this.shadowShader];
 
     // this.shadowShader = PIXI.Shader.from({
     //   fragment: this.fragment,
